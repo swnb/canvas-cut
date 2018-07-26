@@ -117,6 +117,7 @@ class Obj extends ControObj {
                     this.width,
                     this.height
 
+
                 )
                 this.polygonFill(this.polygonPoints);
                 break;
