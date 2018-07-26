@@ -123,6 +123,29 @@ class Obj extends ControObj {
     }
 }
 
+class SelfCreateObj extends ControObj {
+    private polygonPoints: Pos[] = [];
+    constructor(
+        context: CanvasRenderingContext2D,
+        startP: Pos,
+        width: number,
+        height: number,
+        polygonPoints: Pos[]
+    ) {
+        super(context, startP, width, height);
+        this.polygonPoints = polygonPoints;
+    }
+    draw() {
+        // 生成icon
+        this.drawIcon();
+
+        console.log(this.polygonPoints);
+        // 开始根据情况进行绘画
+        this.polygonFill(this.polygonPoints);
+        return this;
+    }
+}
+
 export default Obj;
 
 export function createObj(
@@ -133,4 +156,14 @@ export function createObj(
     height: number
 ) {
     return new Obj(context, objType, startP, width, height);
+}
+
+export function createObjBySelf(
+    context: CanvasRenderingContext2D,
+    startP: Pos,
+    width: number,
+    height: number,
+    polygonPoints: Pos[]
+) {
+    return new SelfCreateObj(context, startP, width, height, polygonPoints);
 }
