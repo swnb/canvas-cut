@@ -96,7 +96,7 @@ class Obj extends ControObj {
 
         //画图形
         switch (this.objType.type) {
-            case "Parallelogram":
+            case "Parallelogram": {
                 this.context.fillStyle = "white";
                 this.polygonPoints = Objs.Parallelogram(
                     this.x,
@@ -106,6 +106,34 @@ class Obj extends ControObj {
                     this.height
                 );
                 this.polygonFill(this.polygonPoints);
+                break;
+            }
+            case "Triangle": {
+                this.context.fillStyle = "blue";
+                this.polygonPoints = Objs.Triangle(
+                    this.x,
+                    this.y,
+                    this.objType.typecode,
+                    this.width,
+                    this.height
+
+                )
+                this.polygonFill(this.polygonPoints);
+                break;
+            }
+            case "Echelon": {
+                this.context.fillStyle = "yellow";
+                this.polygonPoints = Objs.Echelon(
+                    this.x,
+                    this.y,
+                    this.objType.typecode,
+                    this.width,
+                    this.height
+                );
+                this.polygonFill(this.polygonPoints);
+                break;
+            }
+
         }
 
         // 画出中心的一个矩形，待删除

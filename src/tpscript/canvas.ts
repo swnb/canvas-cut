@@ -37,7 +37,7 @@ class Cut extends Draw {
         this.rect(478, 350, 100, 100);
 
         const type: ObjType = {
-            type: "Parallelogram",
+            type: "Triangle",
             typecode: 3
         };
 

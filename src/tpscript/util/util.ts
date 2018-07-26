@@ -1,8 +1,8 @@
-import { getDeg, getAngle } from "./getDeg";
+import {getAngle,getDeg}from './getDeg'
 
-import { getDirection } from "./getdirection";
+import {getIntersection} from './getIntersection'
 
-import { getIntersection } from "./getIntersection";
+import {getDirection} from "./getdirection"
 
 const isInsideCircle = (
     x: number,
@@ -24,7 +24,6 @@ export default {
     getDeg,
     // 得到交点
     getIntersection,
-
     // 获取垂直的向量，和之前的向量垂直
     getDirection
 };
