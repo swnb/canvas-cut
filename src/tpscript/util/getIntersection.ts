@@ -1,33 +1,18 @@
+
+type Pos = [number, number]
+
 interface Res {
     res: boolean;
     point?: Pos;
 }
 
-type Pos = [number, number];
-
-export const getIntersection = (
-    la1: Pos,
-    la2: Pos,
-    lb1: Pos,
-    lb2: Pos
-): Res => {
+export const getIntersection = (la1: Pos, la2: Pos, lb1: Pos, lb2: Pos): Res => {
     const result: Res = {
         res: false,
         point: undefined
     };
 
-    console.log(
-        "line one from",
-        la1,
-        " to ",
-        la2,
-        " line two from ",
-        lb1,
-        " to ",
-        lb2
-    );
-
-    if (lb2[0] === lb1[0]) {
+    if (lb2[0] - lb1[0] < Number.EPSILON) {
         const x = lb1[0];
         const ak = (la2[1] - la1[1]) / (la2[0] - la1[0]);
         const y =
@@ -78,15 +63,15 @@ const pointAtLine = (
 ): boolean => {
     const startToPoint = Math.sqrt(
         Math.pow(point[0] - startPoint[0], 2) +
-            Math.pow(point[1] - startPoint[1], 2)
+        Math.pow(point[1] - startPoint[1], 2)
     );
     const endToPoint = Math.sqrt(
         Math.pow(point[0] - endPoint[0], 2) +
-            Math.pow(point[1] - endPoint[1], 2)
+        Math.pow(point[1] - endPoint[1], 2)
     );
     const startToEnd = Math.sqrt(
         Math.pow(startPoint[0] - endPoint[0], 2) +
-            Math.pow(startPoint[1] - endPoint[1], 2)
+        Math.pow(startPoint[1] - endPoint[1], 2)
     );
 
     // 打印出来误差

@@ -68,7 +68,7 @@ export default {
       this.canvas.width = this.width;
       this.canvas.height = this.height;
       this.drawcanvas = drawcanvas(this.canvas.getContext("2d"));
-    }, 10);
+    }, 100);
   },
   destroyed() {
     const ele = [...document.querySelectorAll("img")].find(ele =>

@@ -96,7 +96,7 @@ class Obj extends ControObj {
 
         //画图形
         switch (this.objType.type) {
-            case "Parallelogram":
+            case "Parallelogram": {
                 this.context.fillStyle = "white";
                 this.polygonPoints = Objs.Parallelogram(
                     this.x,
@@ -106,6 +106,32 @@ class Obj extends ControObj {
                     this.height
                 );
                 this.polygonFill(this.polygonPoints);
+                break;
+            }
+            case "Triangle": {
+                this.context.fillStyle = "blue";
+                this.polygonPoints = Objs.Triangle(
+                    this.x,
+                    this.y,
+                    this.objType.typecode,
+                    this.width,
+                    this.height
+                );
+                this.polygonFill(this.polygonPoints);
+                break;
+            }
+            case "Echelon": {
+                this.context.fillStyle = "yellow";
+                this.polygonPoints = Objs.Echelon(
+                    this.x,
+                    this.y,
+                    this.objType.typecode,
+                    this.width,
+                    this.height
+                );
+                this.polygonFill(this.polygonPoints);
+                break;
+            }
         }
 
         // 画出中心的一个矩形，待删除
@@ -122,6 +148,8 @@ class Obj extends ControObj {
         return this;
     }
 }
+
+export default Obj;
 
 class SelfCreateObj extends ControObj {
     private polygonPoints: Pos[] = [];
@@ -146,7 +174,15 @@ class SelfCreateObj extends ControObj {
     }
 }
 
-export default Obj;
+export function createObjBySelf(
+    context: CanvasRenderingContext2D,
+    startP: Pos,
+    width: number,
+    height: number,
+    polygonPoints: Pos[]
+) {
+    return new SelfCreateObj(context, startP, width, height, polygonPoints);
+}
 
 export function createObj(
     context: CanvasRenderingContext2D,
@@ -156,14 +192,4 @@ export function createObj(
     height: number
 ) {
     return new Obj(context, objType, startP, width, height);
-}
-
-export function createObjBySelf(
-    context: CanvasRenderingContext2D,
-    startP: Pos,
-    width: number,
-    height: number,
-    polygonPoints: Pos[]
-) {
-    return new SelfCreateObj(context, startP, width, height, polygonPoints);
 }
