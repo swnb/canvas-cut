@@ -1,6 +1,6 @@
 type Pos = [number, number];
 
-const getDirection = (startPos: Pos, endPos: Pos): [Pos, Pos] => {
+export const getDirection = (startPos: Pos, endPos: Pos): [Pos, Pos] => {
     const [ey, ex] = [endPos[0], endPos[1]];
     const [sy, sx] = [startPos[0], startPos[1]];
 

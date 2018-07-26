@@ -1,3 +1,9 @@
+import { getDeg, getAngle } from "./getDeg";
+
+import { getDirection } from "./getdirection";
+
+import { getIntersection } from "./getIntersection";
+
 const isInsideCircle = (
     x: number,
     y: number,

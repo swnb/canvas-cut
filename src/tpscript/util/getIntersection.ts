@@ -3,7 +3,14 @@ interface Res {
     point?: Pos;
 }
 
-const getIntersection = (la1: Pos, la2: Pos, lb1: Pos, lb2: Pos): Res => {
+type Pos = [number, number];
+
+export const getIntersection = (
+    la1: Pos,
+    la2: Pos,
+    lb1: Pos,
+    lb2: Pos
+): Res => {
     const result: Res = {
         res: false,
         point: undefined

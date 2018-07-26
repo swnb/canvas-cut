@@ -1,5 +1,5 @@
 // 获取角度，需要重新写
-const getAngle = (
+export const getAngle = (
     centerX: number,
     centerY: number,
     evX: number,
@@ -48,7 +48,7 @@ const getAngle = (
 };
 
 // 获取角度的第二个版本
-const getDeg = (
+export const getDeg = (
     centerX: number,
     centerY: number,
     x: number,
