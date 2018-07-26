@@ -16,7 +16,18 @@ export const getIntersection = (
         point: undefined
     };
 
-    if (lb2[0] - lb1[0] < Number.EPSILON) {
+    console.log(
+        "line one from",
+        la1,
+        " to ",
+        la2,
+        " line two from ",
+        lb1,
+        " to ",
+        lb2
+    );
+
+    if (lb2[0] === lb1[0]) {
         const x = lb1[0];
         const ak = (la2[1] - la1[1]) / (la2[0] - la1[0]);
         const y =
