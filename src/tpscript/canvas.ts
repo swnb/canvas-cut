@@ -46,7 +46,7 @@ class Cut extends Draw {
         return this;
     }
 
-    update() { }
+    update() {}
 
     draw() {
         this.allObj.forEach(ele => {
@@ -106,9 +106,7 @@ class Cut extends Draw {
             ele.y = ev.offsetY - y + originY;
             ele.clear();
             ele.drawBg();
-            this.allObj.forEach(element => {
-                element.draw();
-            });
+            this.draw();
         };
     };
     listenerRotate = (ele: Obj | SelfCreateObj, x: number, y: number) => {
@@ -263,14 +261,14 @@ class Cut extends Draw {
                 });
 
                 if (ele.length === 2) {
-                    previous.push(...ele);
+                    previous.push(this.allObj[index], ...ele);
                     return previous;
                 } else {
                     previous.push(this.allObj[index]);
                     return previous;
                 }
             },
-            this.allObj
+            []
         );
     }
     loop() {
