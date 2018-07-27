@@ -30,6 +30,8 @@ class Cut extends Draw {
     }
 
     init(): Cut {
+        // 创建一个简单的图形
+
         this.context.lineWidth = 4;
 
         const startPos: Pos = [200, 200];
@@ -44,6 +46,8 @@ class Cut extends Draw {
         const obj = createObj(this.context, type, startPos, 200, 300).draw();
 
         this.allObj.push(obj);
+
+        // 创建一个新的物体，这个物体生成菜单
 
         return this;
     }
@@ -285,9 +289,6 @@ class Cut extends Draw {
         );
 
         this.redraw();
-    }
-    loop() {
-        this.draw();
     }
 }
 
