@@ -4,6 +4,8 @@ import { getIntersection } from "./getIntersection";
 
 import { getDirection } from "./getdirection";
 
+import { isInsideArea } from "./insidearea";
+
 const isInsideCircle = (
     x: number,
     y: number,
@@ -17,6 +19,8 @@ const isInsideCircle = (
 export default {
     // 是否在元素的里面
     isInsideCircle,
+    // 是否在一个多边形区域内
+    isInsideArea,
     // 获取角度
     getAngle,
     // 得到角度

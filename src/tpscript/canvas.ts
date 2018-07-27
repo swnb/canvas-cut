@@ -30,6 +30,8 @@ class Cut extends Draw {
     }
 
     init(): Cut {
+        this.context.lineWidth = 4;
+
         const startPos: Pos = [200, 200];
         this.rect(0, 0, 1280, 800, false);
         this.rect(478, 350, 100, 100);
@@ -56,14 +58,23 @@ class Cut extends Draw {
     ontouch(x: number, y: number) {
         this.circle(x, y, 10);
 
-        console.log(this.allObj.length);
+        console.log(this.allObj);
         // 从最后开始查找，从最前面开始找，找到了就是了
-        const ele = this.allObj.reverse().find(
+        const ele = [...this.allObj].reverse().find(
             (obj: Obj | SelfCreateObj): boolean => {
                 const rotatePos: [number, number, number] = obj.rotatePos;
                 const directPos: [number, number, number] = obj.directPos;
-                // console.log(rotatePos);
-                if (util.isInsideCircle(x, y, directPos)) {
+                // 判断一个点是否在这个区域内部
+                if (
+                    util.isInsideArea(
+                        [x, y],
+                        [obj.x, obj.y],
+                        obj.width,
+                        obj.height,
+                        obj.polygonPoints
+                    ) ||
+                    util.isInsideCircle(x, y, directPos)
+                ) {
                     obj.mode = "move";
                     return true;
                 } else if (util.isInsideCircle(x, y, rotatePos)) {
@@ -104,9 +115,7 @@ class Cut extends Draw {
             ele.update(ev.offsetX - x + originX, ev.offsetY - y + originY);
             ele.x = ev.offsetX - x + originX;
             ele.y = ev.offsetY - y + originY;
-            ele.clear();
-            ele.drawBg();
-            this.draw();
+            this.redraw();
         };
     };
     listenerRotate = (ele: Obj | SelfCreateObj, x: number, y: number) => {
@@ -154,7 +163,6 @@ class Cut extends Draw {
         };
     };
     listenerClip = (x: number, y: number) => {
-        this.context.lineWidth = 4;
         this.context.strokeStyle = "#f36";
         this.context.beginPath();
         this.context.moveTo(x, y);
@@ -205,6 +213,7 @@ class Cut extends Draw {
                 index: number
             ): Array<Obj | SelfCreateObj> => {
                 const ele = element.map(ele => {
+                    // 方向向量
                     const direct = ele.pop() as [number, number];
 
                     // 位置点阵的信息
@@ -261,7 +270,10 @@ class Cut extends Draw {
                 });
 
                 if (ele.length === 2) {
-                    previous.push(this.allObj[index], ...ele);
+                    previous.push(
+                        // this.allObj[index],
+                        ...ele
+                    );
                     return previous;
                 } else {
                     previous.push(this.allObj[index]);
@@ -270,6 +282,8 @@ class Cut extends Draw {
             },
             []
         );
+
+        this.redraw();
     }
     loop() {
         this.draw();

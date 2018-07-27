@@ -90,4 +90,10 @@ export default abstract class Draw {
         this.context.closePath();
         this.context.fillStyle = prefillStyle;
     }
+    public draw() {}
+    public redraw() {
+        this.clear();
+        this.drawBg();
+        this.draw();
+    }
 }

@@ -136,14 +136,6 @@ export class Obj extends ControObj {
         }
 
         // 画出中心的一个矩形，待删除
-        this.rect(
-            this.x + this.width / 2,
-            this.y + this.height / 2,
-            20,
-            20,
-            false
-        );
-
         this.context.closePath();
         this.context.stroke();
         return this;
