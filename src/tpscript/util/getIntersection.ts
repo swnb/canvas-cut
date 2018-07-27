@@ -35,7 +35,7 @@ export const getIntersection = (la1: Pos, la2: Pos, lb1: Pos, lb2: Pos): Res => 
     const bk = (lb2[1] - lb1[1]) / (lb2[0] - lb1[0]);
 
     // 加速他的计算，避免损耗
-    if (Math.abs(ak - bk) < Number.EPSILON) return result;
+    if (ak === bk) return result;
 
     const ab = (la1[0] * la2[1] - la2[0] * la1[1]) / (la1[0] - la2[0]);
     const bb = (lb1[0] * lb2[1] - lb2[0] * lb1[1]) / (lb1[0] - lb2[0]);
