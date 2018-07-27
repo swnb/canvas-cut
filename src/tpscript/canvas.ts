@@ -30,12 +30,12 @@ class Cut extends Draw {
     }
 
     init(): Cut {
-        const startPos: Pos = [600, 350];
+        const startPos: Pos = [200, 200];
         this.rect(0, 0, 1280, 800, false);
         this.rect(478, 350, 100, 100);
 
         const type: ObjType = {
-            type: "Parallelogram",
+            type: "Echelon",
             typecode: 3
         };
 
@@ -46,7 +46,7 @@ class Cut extends Draw {
         return this;
     }
 
-    update() {}
+    update() { }
 
     draw() {
         this.allObj.forEach(ele => {
