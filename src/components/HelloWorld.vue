@@ -25,7 +25,6 @@ export default {
       pathRecord: [],
       lineColor: "#ACBFEA",
       lineWidth: 3,
-      nodeHeadBgColor: "#AFCFFE",
       drawcanvas: null
     };
   },
