@@ -74,7 +74,7 @@ interface ObjType {
 }
 
 // 这里的代码要改写，最好使用函数来代替，声称你需要的代码，这样对于代码是很好的
-class Obj extends ControObj {
+export class Obj extends ControObj {
     private objType: ObjType;
 
     // 点阵的信息，用于对于，只能生成一次
@@ -90,6 +90,7 @@ class Obj extends ControObj {
         super(context, startP, width, height);
         this.objType = objType;
     }
+    update(xdivi: number, ydivi: number) {}
     draw() {
         // 生成icon
         this.drawIcon();
@@ -149,10 +150,8 @@ class Obj extends ControObj {
     }
 }
 
-export default Obj;
-
-class SelfCreateObj extends ControObj {
-    private polygonPoints: Pos[] = [];
+export class SelfCreateObj extends ControObj {
+    public polygonPoints: Pos[] = [];
     constructor(
         context: CanvasRenderingContext2D,
         startP: Pos,
@@ -163,11 +162,17 @@ class SelfCreateObj extends ControObj {
         super(context, startP, width, height);
         this.polygonPoints = polygonPoints;
     }
+    update(x: number, y: number) {
+        const [xdivi, ydivi] = [x - this.x, y - this.y];
+        this.polygonPoints = this.polygonPoints.map(
+            (point: Pos): Pos => [point[0] + xdivi, point[1] + ydivi]
+        );
+        return this;
+    }
     draw() {
         // 生成icon
         this.drawIcon();
 
-        console.log(this.polygonPoints);
         // 开始根据情况进行绘画
         this.polygonFill(this.polygonPoints);
         return this;
