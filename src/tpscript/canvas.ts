@@ -1,8 +1,6 @@
 import Draw from "./draw";
 
-import Obj from "./object";
-
-import { createObj, createObjBySelf } from "./object";
+import { Obj, createObj, SelfCreateObj, createObjBySelf } from "./object";
 
 import util from "./util/util";
 
@@ -20,7 +18,7 @@ class Cut extends Draw {
         return new Cut(context);
     }
 
-    private allObj: Array<Obj> = [];
+    private allObj: Array<Obj | SelfCreateObj> = [];
 
     public context: CanvasRenderingContext2D;
 
@@ -57,14 +55,14 @@ class Cut extends Draw {
     }
     ontouch(x: number, y: number) {
         this.circle(x, y, 10);
-        console.log("position at ", x, y);
 
+        console.log(this.allObj.length);
         // 从最后开始查找，从最前面开始找，找到了就是了
         const ele = this.allObj.reverse().find(
-            (obj: Obj): boolean => {
+            (obj: Obj | SelfCreateObj): boolean => {
                 const rotatePos: [number, number, number] = obj.rotatePos;
                 const directPos: [number, number, number] = obj.directPos;
-                console.log(rotatePos);
+                // console.log(rotatePos);
                 if (util.isInsideCircle(x, y, directPos)) {
                     obj.mode = "move";
                     return true;
@@ -89,7 +87,7 @@ class Cut extends Draw {
         }
     }
     // 利用闭包实现一些特殊的功能，去抖动
-    listenerMove = (ele: Obj, x: number, y: number) => {
+    listenerMove = (ele: Obj | SelfCreateObj, x: number, y: number) => {
         const [originX, originY] = [ele.x, ele.y];
         let timeRecord = Date.now();
         return (ev: MouseEvent) => {
@@ -101,15 +99,19 @@ class Cut extends Draw {
             } else {
                 timeRecord = now;
             }
+
+            //  这个update一定要在前面实现，这个变化的数据不能继续扩张
+            ele.update(ev.offsetX - x + originX, ev.offsetY - y + originY);
             ele.x = ev.offsetX - x + originX;
             ele.y = ev.offsetY - y + originY;
-            console.log(ele.x, ele.y);
             ele.clear();
             ele.drawBg();
-            ele.draw();
+            this.allObj.forEach(element => {
+                element.draw();
+            });
         };
     };
-    listenerRotate = (ele: Obj, x: number, y: number) => {
+    listenerRotate = (ele: Obj | SelfCreateObj, x: number, y: number) => {
         let [originX, originY] = [
             ele.x + ele.width / 2,
             ele.y + ele.height / 2
@@ -151,8 +153,6 @@ class Cut extends Draw {
             ele.drawBg();
             ele.draw();
             ele.context.restore();
-
-            // [startX, startY] = [ev.offsetX, ev.offsetY];
         };
     };
     listenerClip = (x: number, y: number) => {
@@ -200,63 +200,78 @@ class Cut extends Draw {
     getInsertPoints(lineA1: Pos, LineA2: Pos) {
         // 将this.obj的所有物体进行整合，整合之后得到所有的物体的一个集合
         // 这里的问题其实在于是否要全部更新所有存在的对象，我的想法是全部更新，之后考虑部分更新到部分
-        slice(this.allObj, lineA1, LineA2).forEach(element => {
-            element.forEach(ele => {
-                const direct = ele.pop() as [number, number];
+        this.allObj = slice(this.allObj, lineA1, LineA2).reduce(
+            (
+                previous: Array<Obj | SelfCreateObj>,
+                element: Array<Pos[]>,
+                index: number
+            ): Array<Obj | SelfCreateObj> => {
+                const ele = element.map(ele => {
+                    const direct = ele.pop() as [number, number];
 
-                // 位置点阵的信息
-                const points = ele.map(
-                    (pos: [number, number]): [number, number] => [
-                        pos[0] + direct[0],
-                        pos[1] + direct[1]
-                    ]
-                );
+                    // 位置点阵的信息
+                    const points = ele.map(
+                        (pos: [number, number]): [number, number] => [
+                            pos[0] + direct[0],
+                            pos[1] + direct[1]
+                        ]
+                    );
 
-                const maxPointWithSmallestPoint: [Pos, Pos] = points.reduce(
-                    (previous: [Pos, Pos], ele): [Pos, Pos] => {
-                        if (ele[0] < previous[0][0]) {
-                            previous[0][0] = ele[0];
-                        }
-                        if (ele[1] < previous[0][1]) {
-                            previous[0][1] = ele[1];
-                        }
-                        if (ele[0] > previous[1][0]) {
-                            previous[1][0] = ele[0];
-                        }
-                        if (ele[1] > previous[1][1]) {
-                            previous[1][1] = ele[1];
-                        }
-                        return previous;
-                    },
-                    [points[0], points[1]] as [Pos, Pos]
-                );
+                    const maxPointWithSmallestPoint: [Pos, Pos] = points.reduce(
+                        (previous: [Pos, Pos], ele): [Pos, Pos] => {
+                            if (ele[0] < previous[0][0]) {
+                                previous[0][0] = ele[0];
+                            }
+                            if (ele[1] < previous[0][1]) {
+                                previous[0][1] = ele[1];
+                            }
+                            if (ele[0] > previous[1][0]) {
+                                previous[1][0] = ele[0];
+                            }
+                            if (ele[1] > previous[1][1]) {
+                                previous[1][1] = ele[1];
+                            }
+                            return previous;
+                        },
+                        [points[0], points[1]] as [Pos, Pos]
+                    );
 
-                const startPoints: Pos = maxPointWithSmallestPoint[0];
+                    const startPoints: Pos = maxPointWithSmallestPoint[0];
 
-                const [width, height] = [
-                    maxPointWithSmallestPoint[1][0] -
-                        maxPointWithSmallestPoint[0][0],
-                    maxPointWithSmallestPoint[1][1] -
-                        maxPointWithSmallestPoint[0][1]
-                ];
+                    const [width, height] = [
+                        maxPointWithSmallestPoint[1][0] -
+                            maxPointWithSmallestPoint[0][0],
+                        maxPointWithSmallestPoint[1][1] -
+                            maxPointWithSmallestPoint[0][1]
+                    ];
 
-                // 得到的新的obj物体
-                const obj = createObjBySelf(
-                    this.context,
-                    startPoints,
-                    width,
-                    height,
-                    [
-                        ...ele.map(
-                            (pos: [number, number]): [number, number] => [
-                                pos[0] + direct[0],
-                                pos[1] + direct[1]
-                            ]
-                        )
-                    ]
-                ).draw();
-            });
-        });
+                    // 得到的新的obj物体
+                    return createObjBySelf(
+                        this.context,
+                        startPoints,
+                        width,
+                        height,
+                        [
+                            ...ele.map(
+                                (pos: [number, number]): [number, number] => [
+                                    pos[0] + direct[0],
+                                    pos[1] + direct[1]
+                                ]
+                            )
+                        ]
+                    ).draw();
+                });
+
+                if (ele.length === 2) {
+                    previous.push(...ele);
+                    return previous;
+                } else {
+                    previous.push(this.allObj[index]);
+                    return previous;
+                }
+            },
+            this.allObj
+        );
     }
     loop() {
         this.draw();
