@@ -48,7 +48,7 @@ class Cut extends Draw {
         return this;
     }
 
-    update() { }
+    update() {}
 
     draw() {
         this.allObj.forEach(ele => {
@@ -217,12 +217,7 @@ class Cut extends Draw {
                     const direct = ele.pop() as [number, number];
 
                     // 位置点阵的信息
-                    const points = ele.map(
-                        (pos: [number, number]): [number, number] => [
-                            pos[0] + direct[0],
-                            pos[1] + direct[1]
-                        ]
-                    );
+                    const points = util.deepcoyeArray(ele);
 
                     const maxPointWithSmallestPoint: [Pos, Pos] = points.reduce(
                         (previous: [Pos, Pos], ele): [Pos, Pos] => {
@@ -247,26 +242,32 @@ class Cut extends Draw {
 
                     const [width, height] = [
                         maxPointWithSmallestPoint[1][0] -
-                        maxPointWithSmallestPoint[0][0],
+                            maxPointWithSmallestPoint[0][0],
                         maxPointWithSmallestPoint[1][1] -
-                        maxPointWithSmallestPoint[0][1]
+                            maxPointWithSmallestPoint[0][1]
                     ];
 
                     // 得到的新的obj物体
-                    return createObjBySelf(
+                    const newObj = createObjBySelf(
                         this.context,
                         startPoints,
                         width,
                         height,
-                        [
-                            ...ele.map(
-                                (pos: [number, number]): [number, number] => [
-                                    pos[0] + direct[0],
-                                    pos[1] + direct[1]
-                                ]
-                            )
-                        ]
+                        util.deepcoyeArray(ele)
+                        // ...ele.map(
+                        // (pos: [number, number]): [number, number] => [
+                        // pos[0] + direct[0],
+                        // pos[1] + direct[1]
+                        // ]
+                        // )
                     ).draw();
+
+                    // 让每一个物体都能取重新画，但是不能让这些物体自己调度自己
+                    newObj.redraw = this.redraw.bind(this);
+
+                    util.slowMove(newObj, direct, util.deepcoyeArray(ele));
+
+                    return newObj;
                 });
 
                 if (ele.length === 2) {
