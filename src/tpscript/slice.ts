@@ -103,12 +103,7 @@ export default (
                             pieceOfArray.push(array[1].pos);
 
                             // 确定偏移的方向
-                            const directs = util.getDirection(
-                                array[0].pos,
-                                array[1].pos
-                            );
-
-                            pieceOfArray.push(directs[1]);
+                            pieceOfArray.push(array[0].pos, array[1].pos);
 
                             return pieceOfArray;
                         }
@@ -130,12 +125,7 @@ export default (
                             );
 
                             // 确定偏移的方向
-                            const directs = util.getDirection(
-                                array[0].pos,
-                                array[1].pos
-                            );
-
-                            pieceOfArray.push(directs[0]);
+                            pieceOfArray.push(array[0].pos, array[1].pos);
                             return pieceOfArray;
                         }
                         default:

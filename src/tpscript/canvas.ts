@@ -218,7 +218,14 @@ class Cut extends Draw {
             ): Array<Obj | SelfCreateObj> => {
                 const ele = element.map(ele => {
                     // 方向向量
-                    const direct = ele.pop() as [number, number];
+                    const direct1 = ele.pop() as [number, number];
+                    const direct2 = ele.pop() as [number, number];
+
+                    const direct = util.getDirection(
+                        direct1,
+                        direct2,
+                        util.deepcoyeArray(ele)
+                    );
 
                     // 位置点阵的信息
                     const points = util.deepcoyeArray(ele);
