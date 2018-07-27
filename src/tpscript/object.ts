@@ -90,7 +90,7 @@ export class Obj extends ControObj {
         super(context, startP, width, height);
         this.objType = objType;
     }
-    update(xdivi: number, ydivi: number) {}
+    update(xdivi: number, ydivi: number) { }
     draw() {
         // 生成icon
         this.drawIcon();
@@ -124,6 +124,18 @@ export class Obj extends ControObj {
             case "Echelon": {
                 this.context.fillStyle = "yellow";
                 this.polygonPoints = Objs.Echelon(
+                    this.x,
+                    this.y,
+                    this.objType.typecode,
+                    this.width,
+                    this.height
+                );
+                this.polygonFill(this.polygonPoints);
+                break;
+            }
+            case "Irregular": {
+                this.context.fillStyle = "green";
+                this.polygonPoints = Objs.Irregular(
                     this.x,
                     this.y,
                     this.objType.typecode,

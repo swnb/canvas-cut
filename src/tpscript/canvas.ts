@@ -37,8 +37,8 @@ class Cut extends Draw {
         this.rect(478, 350, 100, 100);
 
         const type: ObjType = {
-            type: "Echelon",
-            typecode: 3
+            type: "Irregular",
+            typecode: 2
         };
 
         const obj = createObj(this.context, type, startPos, 200, 300).draw();
@@ -48,7 +48,7 @@ class Cut extends Draw {
         return this;
     }
 
-    update() {}
+    update() { }
 
     draw() {
         this.allObj.forEach(ele => {
@@ -247,9 +247,9 @@ class Cut extends Draw {
 
                     const [width, height] = [
                         maxPointWithSmallestPoint[1][0] -
-                            maxPointWithSmallestPoint[0][0],
+                        maxPointWithSmallestPoint[0][0],
                         maxPointWithSmallestPoint[1][1] -
-                            maxPointWithSmallestPoint[0][1]
+                        maxPointWithSmallestPoint[0][1]
                     ];
 
                     // 得到的新的obj物体
