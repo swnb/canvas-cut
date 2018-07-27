@@ -1,11 +1,15 @@
-import Obj from "./object";
+import { Obj, SelfCreateObj } from "./object";
 
 import util from "./util/util";
 
 type Pos = [number, number];
 
-export default (allObj: Obj[], lineA1: Pos, LineA2: Pos): Array<Pos[][]> =>
-    allObj.map(obj =>
+export default (
+    allObj: (Obj | SelfCreateObj)[],
+    lineA1: Pos,
+    LineA2: Pos
+): Array<Pos[][]> =>
+    allObj.map((obj: Obj | SelfCreateObj) =>
         // 聚合 将生成一个一个的数据点阵转换成线，考虑用映射该信这段代码
         obj.polygonPoints
             .reduce(
@@ -25,7 +29,6 @@ export default (allObj: Obj[], lineA1: Pos, LineA2: Pos): Array<Pos[][]> =>
                 },
                 [] as Array<[Pos, Pos]>
             )
-
             // 得到交点的代码，在这个部分 的代码处理的逻辑较少，考虑加入一些判断的语句
             // 让一般情况下的输出是原来的矩阵
             .map((ele: [Pos, Pos]) => {
@@ -63,13 +66,22 @@ export default (allObj: Obj[], lineA1: Pos, LineA2: Pos): Array<Pos[][]> =>
                 []
             )
             // 之后删除这个打印的语句
-            .map(ele => {
-                console.log("insert number");
-                console.log(ele);
-                return ele;
-            })
+            // .map(ele => {
+            //     console.log("insert number");
+            //     console.log(ele);
+            //     return ele;
+            // })
             // 这个管道的数据在这里应当只有两个,这里 只考虑4边形状，不考虑多边形，那么输出的就只能有两个
             // 这里的代码需要重构，重写下面的代码，问题：无法涵盖你需要的所有东西，并且处理的问题过多，导致混乱
+            .filter(
+                (
+                    _e: { insertIndex: number; pos: Pos },
+                    _i: number,
+                    array: Array<{ insertIndex: number; pos: Pos }>
+                ): boolean => {
+                    return array.length === 2 ? true : false;
+                }
+            )
             .map(
                 (
                     ele: { insertIndex: number; pos: Pos },
@@ -131,5 +143,4 @@ export default (allObj: Obj[], lineA1: Pos, LineA2: Pos): Array<Pos[][]> =>
                     }
                 }
             )
-            .filter(arr => arr.length > 0)
     );
