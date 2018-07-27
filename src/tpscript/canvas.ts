@@ -198,66 +198,63 @@ class Cut extends Draw {
     }
     // 判断是否存在一个线段和它相交
     getInsertPoints(lineA1: Pos, LineA2: Pos) {
+        // 将this.obj的所有物体进行整合，整合之后得到所有的物体的一个集合
+        // 这里的问题其实在于是否要全部更新所有存在的对象，我的想法是全部更新，之后考虑部分更新到部分
         slice(this.allObj, lineA1, LineA2).forEach(element => {
             element.forEach(ele => {
                 const direct = ele.pop() as [number, number];
-                setTimeout(() => {
-                    const points = ele.map(
-                        (pos: [number, number]): [number, number] => [
-                            pos[0] + direct[0],
-                            pos[1] + direct[1]
-                        ]
-                    );
-                    this.polygonFill(points);
-                    // const maxPointWithSmallestPoint: [Pos, Pos] = points.reduce(
-                    //     (previous: [Pos, Pos], ele): [Pos, Pos] => {
-                    //         if (ele[0] < previous[0][0]) {
-                    //             previous[0][0] = ele[0];
-                    //         }
-                    //         if (ele[1] < previous[0][1]) {
-                    //             previous[0][1] = ele[1];
-                    //         }
-                    //         if (ele[0] > previous[1][0]) {
-                    //             previous[1][0] = ele[0];
-                    //         }
-                    //         if (ele[1] > previous[1][1]) {
-                    //             previous[1][1] = ele[1];
-                    //         }
-                    //         return previous;
-                    //     },
-                    //     [points[0], points[1]] as [Pos, Pos]
-                    // );
 
-                    // const startPoints: Pos = maxPointWithSmallestPoint[0];
+                // 位置点阵的信息
+                const points = ele.map(
+                    (pos: [number, number]): [number, number] => [
+                        pos[0] + direct[0],
+                        pos[1] + direct[1]
+                    ]
+                );
 
-                    // const [width, height] = [
-                    //     maxPointWithSmallestPoint[1][0] -
-                    //         maxPointWithSmallestPoint[0][0],
-                    //     maxPointWithSmallestPoint[1][1] -
-                    //         maxPointWithSmallestPoint[0][1]
-                    // ];
-                    // console.log("this is new points ", points);
+                const maxPointWithSmallestPoint: [Pos, Pos] = points.reduce(
+                    (previous: [Pos, Pos], ele): [Pos, Pos] => {
+                        if (ele[0] < previous[0][0]) {
+                            previous[0][0] = ele[0];
+                        }
+                        if (ele[1] < previous[0][1]) {
+                            previous[0][1] = ele[1];
+                        }
+                        if (ele[0] > previous[1][0]) {
+                            previous[1][0] = ele[0];
+                        }
+                        if (ele[1] > previous[1][1]) {
+                            previous[1][1] = ele[1];
+                        }
+                        return previous;
+                    },
+                    [points[0], points[1]] as [Pos, Pos]
+                );
 
-                    // console.log(startPoints);
-                    // console.log(width, height);
+                const startPoints: Pos = maxPointWithSmallestPoint[0];
 
-                    // createObjBySelf(
-                    //     this.context,
-                    //     startPoints,
-                    //     width,
-                    //     height,
-                    //     points
-                    // ).draw();
+                const [width, height] = [
+                    maxPointWithSmallestPoint[1][0] -
+                        maxPointWithSmallestPoint[0][0],
+                    maxPointWithSmallestPoint[1][1] -
+                        maxPointWithSmallestPoint[0][1]
+                ];
 
-                    // this.polygonFill(
-                    //     ele.map(
-                    //         (pos: [number, number]): [number, number] => [
-                    //             pos[0] + direct[0],
-                    //             pos[1] + direct[1]
-                    //         ]
-                    //     )
-                    // );
-                }, 100);
+                // 得到的新的obj物体
+                const obj = createObjBySelf(
+                    this.context,
+                    startPoints,
+                    width,
+                    height,
+                    [
+                        ...ele.map(
+                            (pos: [number, number]): [number, number] => [
+                                pos[0] + direct[0],
+                                pos[1] + direct[1]
+                            ]
+                        )
+                    ]
+                ).draw();
             });
         });
     }
