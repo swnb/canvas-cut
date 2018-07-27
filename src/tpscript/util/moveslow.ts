@@ -21,7 +21,6 @@ export const slowMove = (drawer: Drawer, direct: Pos, points: Array<Pos>) => {
                 ]
             );
             // console.log("speed 0.1");
-            console.log(drawer);
             drawer.redraw();
             count += speed;
             if (count >= limit) {
