@@ -6,6 +6,10 @@ import { getDirection } from "./getdirection";
 
 import { isInsideArea } from "./insidearea";
 
+import { slowMove } from "./moveslow";
+
+import { deepcoyeArray } from "./dcarray";
+
 const isInsideCircle = (
     x: number,
     y: number,
@@ -28,5 +32,9 @@ export default {
     // 得到交点
     getIntersection,
     // 获取垂直的向量，和之前的向量垂直
-    getDirection
+    getDirection,
+    // 慢慢的移动
+    slowMove,
+    // 深拷贝array
+    deepcoyeArray
 };

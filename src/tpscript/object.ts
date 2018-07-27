@@ -75,7 +75,7 @@ interface ObjType {
 
 // 这里的代码要改写，最好使用函数来代替，声称你需要的代码，这样对于代码是很好的
 export class Obj extends ControObj {
-    private objType: ObjType;
+    public objType: ObjType;
 
     // 点阵的信息，用于对于，只能生成一次
     public polygonPoints: Array<Pos> = [];
@@ -90,7 +90,9 @@ export class Obj extends ControObj {
         super(context, startP, width, height);
         this.objType = objType;
     }
-    update(xdivi: number, ydivi: number) { }
+
+    update(xdivi: number, ydivi: number) {}
+
     draw() {
         // 生成icon
         this.drawIcon();
