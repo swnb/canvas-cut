@@ -35,7 +35,6 @@ export default {
       });
     },
     onmousedown(event) {
-      console.log(this.canvas);
       const [x, y] = [event.offsetX, event.offsetY];
 
       const listener = this.drawcanvas.ontouch(x, y);
