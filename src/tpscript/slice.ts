@@ -6,7 +6,7 @@ type Pos = [number, number];
 
 export default (allObj: Obj[], lineA1: Pos, LineA2: Pos): Array<Pos[][]> =>
     allObj.map(obj =>
-        // 聚合 生成一个一个的点阵
+        // 聚合 将生成一个一个的数据点阵转换成线，考虑用映射该信这段代码
         obj.polygonPoints
             .reduce(
                 (
@@ -25,6 +25,9 @@ export default (allObj: Obj[], lineA1: Pos, LineA2: Pos): Array<Pos[][]> =>
                 },
                 [] as Array<[Pos, Pos]>
             )
+
+            // 得到交点的代码，在这个部分 的代码处理的逻辑较少，考虑加入一些判断的语句
+            // 让一般情况下的输出是原来的矩阵
             .map((ele: [Pos, Pos]) => {
                 const result = util.getIntersection(
                     lineA1,
@@ -37,6 +40,7 @@ export default (allObj: Obj[], lineA1: Pos, LineA2: Pos): Array<Pos[][]> =>
                     return result.point;
                 }
             })
+            // 这是一个图形的聚合，实际上得到的代码是一种通讯介质，用管道的形式将它压缩，输出
             .reduce(
                 (
                     previousPoints: Array<{
@@ -58,6 +62,7 @@ export default (allObj: Obj[], lineA1: Pos, LineA2: Pos): Array<Pos[][]> =>
                 },
                 []
             )
+            // 之后删除这个打印的语句
             .map(ele => {
                 console.log("insert number");
                 console.log(ele);
