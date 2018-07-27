@@ -12,7 +12,7 @@ export const getIntersection = (la1: Pos, la2: Pos, lb1: Pos, lb2: Pos): Res => 
         point: undefined
     };
 
-    if (lb2[0] - lb1[0] < Number.EPSILON) {
+    if (lb2[0] === lb1[0] ) {
         const x = lb1[0];
         const ak = (la2[1] - la1[1]) / (la2[0] - la1[0]);
         const y =
