@@ -37,7 +37,7 @@ class Cut extends Draw {
         this.rect(478, 350, 100, 100);
 
         const type: ObjType = {
-            type: "Triangle",
+            type: "Echelon",
             typecode: 3
         };
 
@@ -48,7 +48,7 @@ class Cut extends Draw {
         return this;
     }
 
-    update() {}
+    update() { }
 
     draw() {
         this.allObj.forEach(ele => {
