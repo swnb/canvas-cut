@@ -2,7 +2,7 @@ import Draw from "./draw";
 
 import Obj from "./object";
 
-import { createObj } from "./object";
+import { createObj, createObjBySelf } from "./object";
 
 import util from "./util/util";
 
@@ -37,7 +37,7 @@ class Cut extends Draw {
         this.rect(478, 350, 100, 100);
 
         const type: ObjType = {
-            type: "Echelon",
+            type: "Parallelogram",
             typecode: 3
         };
 
@@ -136,6 +136,7 @@ class Cut extends Draw {
             } else {
                 timeRecord = now;
             }
+
             deg += util.getDeg(
                 originX,
                 originY,
@@ -200,16 +201,62 @@ class Cut extends Draw {
         slice(this.allObj, lineA1, LineA2).forEach(element => {
             element.forEach(ele => {
                 const direct = ele.pop() as [number, number];
-                this.polygonFill(ele);
                 setTimeout(() => {
-                    this.polygonFill(
-                        ele.map(
-                            (pos: [number, number]): [number, number] => [
-                                pos[0] + direct[0],
-                                pos[1] + direct[1]
-                            ]
-                        )
+                    const points = ele.map(
+                        (pos: [number, number]): [number, number] => [
+                            pos[0] + direct[0],
+                            pos[1] + direct[1]
+                        ]
                     );
+                    this.polygonFill(points);
+                    // const maxPointWithSmallestPoint: [Pos, Pos] = points.reduce(
+                    //     (previous: [Pos, Pos], ele): [Pos, Pos] => {
+                    //         if (ele[0] < previous[0][0]) {
+                    //             previous[0][0] = ele[0];
+                    //         }
+                    //         if (ele[1] < previous[0][1]) {
+                    //             previous[0][1] = ele[1];
+                    //         }
+                    //         if (ele[0] > previous[1][0]) {
+                    //             previous[1][0] = ele[0];
+                    //         }
+                    //         if (ele[1] > previous[1][1]) {
+                    //             previous[1][1] = ele[1];
+                    //         }
+                    //         return previous;
+                    //     },
+                    //     [points[0], points[1]] as [Pos, Pos]
+                    // );
+
+                    // const startPoints: Pos = maxPointWithSmallestPoint[0];
+
+                    // const [width, height] = [
+                    //     maxPointWithSmallestPoint[1][0] -
+                    //         maxPointWithSmallestPoint[0][0],
+                    //     maxPointWithSmallestPoint[1][1] -
+                    //         maxPointWithSmallestPoint[0][1]
+                    // ];
+                    // console.log("this is new points ", points);
+
+                    // console.log(startPoints);
+                    // console.log(width, height);
+
+                    // createObjBySelf(
+                    //     this.context,
+                    //     startPoints,
+                    //     width,
+                    //     height,
+                    //     points
+                    // ).draw();
+
+                    // this.polygonFill(
+                    //     ele.map(
+                    //         (pos: [number, number]): [number, number] => [
+                    //             pos[0] + direct[0],
+                    //             pos[1] + direct[1]
+                    //         ]
+                    //     )
+                    // );
                 }, 100);
             });
         });

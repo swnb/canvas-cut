@@ -11,7 +11,7 @@ export const getDirection = (startPos: Pos, endPos: Pos): [Pos, Pos] => {
 
     let direction: [Pos, Pos] = [[1, proportion], [-1, -proportion]];
 
-    const long = 200;
+    const long = 100;
 
     //修正
     direction = direction.map(
