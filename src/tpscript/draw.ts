@@ -44,6 +44,7 @@ export default abstract class Draw {
         this.context.closePath();
         this.context.restore();
         this.context.fill();
+        this.context.stroke();
     }
     public polygon(pos: Array<Pos>) {
         this.context.beginPath();
