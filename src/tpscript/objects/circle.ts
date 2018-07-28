@@ -45,8 +45,7 @@ export class Circle extends ControObj {
                     this.middlePoint[0],
                     this.middlePoint[1],
                     this.width,
-                    this.height,
-                    this.r
+                    this.height
                 );
                 break;
             }
