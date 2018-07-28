@@ -37,13 +37,13 @@ export const getDirection = (
         somePoints[1] - middlePoints[1]
     ];
 
-    console.log("some line ", someLine);
+    // console.log("some line ", someLine);
 
-    console.log("direction ", direction);
+    // console.log("direction ", direction);
 
     let ele: Pos;
 
-    console.log(someLine[0] * direction[1] - direction[0] * someLine[1]);
+    // console.log(someLine[0] * direction[1] - direction[0] * someLine[1]);
 
     // 线段的长度
     const long = 20;

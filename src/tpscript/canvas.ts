@@ -62,7 +62,6 @@ class Cut extends Draw {
     ontouch(x: number, y: number) {
         this.circle(x, y, 10);
 
-        console.log(this.allObj);
         // 从最后开始查找，从最前面开始找，找到了就是了
         const ele = [...this.allObj].reverse().find(
             (obj: Obj | SelfCreateObj): boolean => {
@@ -172,8 +171,6 @@ class Cut extends Draw {
         this.context.moveTo(x, y);
         let timeRecord = Date.now();
         return (ev: MouseEvent) => {
-            console.log("start slice");
-
             // 实现去抖动的功能
             const now = Date.now();
             const divi = now - timeRecord;
