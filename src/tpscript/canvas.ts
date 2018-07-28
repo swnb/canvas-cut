@@ -4,6 +4,8 @@ import { Menu } from "./menu";
 
 import { Obj, createObj, SelfCreateObj, createObjBySelf } from "./object";
 
+import { Circle } from "./objects/circle";
+
 import util from "./util/util";
 
 import slice from "./slice";
@@ -33,7 +35,6 @@ class Cut extends Draw {
 
     init(): Cut {
         // 创建一个简单的图形
-
         this.context.lineWidth = 4;
 
         const startPos: Pos = [200, 200];
@@ -57,6 +58,17 @@ class Cut extends Draw {
         menu.init();
 
         menu.drawParallelogramObj();
+
+        // 圆形的测试
+
+        const circle = new Circle(this.context, startPos, 100, 200, 150);
+
+        circle
+            .init({
+                type: "cirle",
+                typecode: 2
+            })
+            .draw();
 
         return this;
     }

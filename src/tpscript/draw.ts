@@ -33,6 +33,23 @@ export default abstract class Draw {
         stroke ? this.context.stroke() : this.context.fill();
         this.context.closePath();
     }
+    public oval(
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+        r: number
+    ) {
+        console.log(arguments);
+        this.context.beginPath();
+        const radioX = width / r;
+        const radioY = height / r;
+        this.context.save();
+        this.context.scale(radioX, radioY);
+        this.context.arc(x / radioX, y / radioY, r, 0, Math.PI * 2);
+        this.context.restore();
+        this.context.closePath();
+    }
     public polygon(pos: Array<Pos>) {
         this.context.beginPath();
         pos.forEach(
@@ -57,19 +74,6 @@ export default abstract class Draw {
         this.context.strokeStyle = "#33CCFF";
         this.context.stroke();
     }
-    public rotate(deg: number) {
-        this.context.save();
-        this.context.translate(
-            this.x + this.width / 2,
-            this.y + this.height / 2
-        );
-
-        this.context.rotate(deg);
-        this.context.translate(
-            -this.x - this.width / 2,
-            -this.y - this.height / 2
-        );
-    }
     public drawImg(
         Image: HTMLImageElement,
         dX: number,
@@ -90,7 +94,7 @@ export default abstract class Draw {
         this.context.closePath();
         this.context.fillStyle = prefillStyle;
     }
-    public draw() { }
+    public draw() {}
     public redraw() {
         this.clear();
         this.drawBg();
