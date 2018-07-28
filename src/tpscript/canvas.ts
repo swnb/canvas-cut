@@ -22,7 +22,7 @@ class Cut extends Draw {
         return new Cut(context);
     }
 
-    private allObj: Array<Obj | SelfCreateObj> = [];
+    private allObj: Array<Obj | SelfCreateObj | Circle> = [];
 
     public context: CanvasRenderingContext2D;
 
@@ -63,8 +63,7 @@ class Cut extends Draw {
         menu.drawIrregularObj();
 
         // 圆形的测试
-
-        const circle = new Circle(this.context, startPos, 100, 200, 150);
+        const circle = new Circle(this.context, startPos, 150, 50, 20);
 
         circle
             .init({
@@ -73,10 +72,11 @@ class Cut extends Draw {
             })
             .draw();
 
+        // this.allObj.push(circle);
         return this;
     }
 
-    update() { }
+    update() {}
 
     draw() {
         this.allObj.forEach(ele => {
@@ -88,7 +88,7 @@ class Cut extends Draw {
 
         // 从最后开始查找，相当于在页面前面从最前面开始找，找到了就是了
         const ele = [...this.allObj].reverse().find(
-            (obj: Obj | SelfCreateObj): boolean => {
+            (obj: Obj | SelfCreateObj | Circle): boolean => {
                 const rotatePos: [number, number, number] = obj.rotatePos;
                 const directPos: [number, number, number] = obj.directPos;
                 // 判断一个点是否在这个区域内部
@@ -125,7 +125,11 @@ class Cut extends Draw {
         }
     }
     // 利用闭包实现一些特殊的功能，去抖动
-    listenerMove = (ele: Obj | SelfCreateObj, x: number, y: number) => {
+    listenerMove = (
+        ele: Obj | SelfCreateObj | Circle,
+        x: number,
+        y: number
+    ) => {
         const [originX, originY] = [ele.x, ele.y];
         let timeRecord = Date.now();
         return (ev: MouseEvent) => {
@@ -142,6 +146,7 @@ class Cut extends Draw {
             ele.update(ev.offsetX - x + originX, ev.offsetY - y + originY);
             ele.x = ev.offsetX - x + originX;
             ele.y = ev.offsetY - y + originY;
+
             this.redraw();
         };
     };
@@ -267,9 +272,9 @@ class Cut extends Draw {
 
                     const [width, height] = [
                         maxPointWithSmallestPoint[1][0] -
-                        maxPointWithSmallestPoint[0][0],
+                            maxPointWithSmallestPoint[0][0],
                         maxPointWithSmallestPoint[1][1] -
-                        maxPointWithSmallestPoint[0][1]
+                            maxPointWithSmallestPoint[0][1]
                     ];
 
                     // 得到的新的obj物体
