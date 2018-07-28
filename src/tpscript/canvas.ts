@@ -1,6 +1,6 @@
 import Draw from "./draw";
 
-import { Menu } from "./menu"
+import { Menu } from "./menu";
 
 import { Obj, createObj, SelfCreateObj, createObjBySelf } from "./object";
 
@@ -52,15 +52,16 @@ class Cut extends Draw {
         this.allObj.push(obj);
 
         // 创建一个新的物体，这个物体生成菜单
-        const menu = new Menu(this.context, 1000, 50, 80)
+        const menu = new Menu(this.context, 1000, 50, 80);
 
-        menu.drawParallelogramObj([100, 300])
-        menu.init([200, 300])
+        menu.init([200, 300]);
+
+        menu.drawParallelogramObj([100, 300]);
 
         return this;
     }
 
-    update() { }
+    update() {}
 
     draw() {
         this.allObj.forEach(ele => {
@@ -251,9 +252,9 @@ class Cut extends Draw {
 
                     const [width, height] = [
                         maxPointWithSmallestPoint[1][0] -
-                        maxPointWithSmallestPoint[0][0],
+                            maxPointWithSmallestPoint[0][0],
                         maxPointWithSmallestPoint[1][1] -
-                        maxPointWithSmallestPoint[0][1]
+                            maxPointWithSmallestPoint[0][1]
                     ];
 
                     // 得到的新的obj物体
