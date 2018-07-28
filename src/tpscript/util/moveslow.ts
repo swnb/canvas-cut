@@ -19,6 +19,7 @@ export const slowMove = (drawer: Drawer, direct: Pos, points: Array<Pos>) => {
                     pos[1] + direct[1] / 20
                 ]
             );
+            // 调用寄宿主人的重写方法
             drawer.redraw();
             count += speed;
             if (count >= limit) {
