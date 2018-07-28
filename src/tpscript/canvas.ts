@@ -141,8 +141,6 @@ class Cut extends Draw {
                 timeRecord = now;
             }
 
-            this.context.fillStyle = "whitesmoke";
-
             this.rect(midPoint[0], midPoint[1], 10, 10);
 
             const startPoint: Pos = [midPoint[0], midPoint[1] + 10];
