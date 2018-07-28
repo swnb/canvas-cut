@@ -6,7 +6,7 @@ import { Objs } from "./graphicals/praph";
 
 type Pos = [number, number];
 
-class ControObj extends Draw {
+abstract class ControObj extends Draw {
     public x: number;
     public y: number;
 
@@ -50,7 +50,7 @@ class ControObj extends Draw {
     // 旋转的标签
     drawRotateObj(): [number, number, number] {
         const rotateImg = getImg("rotate");
-        // const x = this.x + this.width + this.prefix;
+
         const x = this.x + this.width / 2;
         const y = this.y - this.prefix;
         this.drawImg(
