@@ -63,16 +63,16 @@ class Cut extends Draw {
         menu.drawIrregularObj();
 
         // 圆形的测试
-        const circle = new Circle(this.context, startPos, 150, 50, 20);
+        const circle = new Circle(this.context, startPos, 150, 50, 80);
 
         circle
             .init({
                 type: "cirle",
-                typecode: 2
+                typecode: 1
             })
             .draw();
 
-        // this.allObj.push(circle);
+        this.allObj.push(circle);
         return this;
     }
 
