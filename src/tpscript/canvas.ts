@@ -1,6 +1,6 @@
 import Draw from "./draw";
 
-import { Menu } from "./menu";
+import { Menu } from "./menu/menu";
 
 import {
     Obj,

@@ -1,4 +1,4 @@
-import Draw from "./draw";
+import Draw from "../draw";
 
 type Pos = [number, number];
 

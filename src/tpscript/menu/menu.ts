@@ -1,6 +1,6 @@
-import Draw from "./draw";
+import Draw from "../draw";
 
-import { getImg } from "./imgbase64";
+import { getImg } from "../imgbase64";
 import { Initbg } from "./initbg";
 import { DrawObjbg } from "./drawobjbg";
 
@@ -16,6 +16,7 @@ export class Menu extends Draw {
         { name: "irregular", prefix: 10 },
         { name: "ellipse", prefix: 40 }
     ];
+
     private ListOfnames: string[] = [
         "平行四边形",
         "三角形",
@@ -29,7 +30,7 @@ export class Menu extends Draw {
         [this.x, this.y] = [x, y];
     }
 
-    drawImgById() {
+    draw() {
         const divi = 135;
 
         this.ListOfObjs.forEach(
@@ -58,7 +59,7 @@ export class Menu extends Draw {
         const y = this.y;
         const Bg = new Initbg(this.context, x - 75, y - 25, 130, 725, 12);
         Bg.initbg([100, 200]);
-        this.drawImgById();
+        this.draw();
     }
     drawTriangleObj(): [number, number, number] {
         const len = 200;
