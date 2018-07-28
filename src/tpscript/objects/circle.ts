@@ -1,4 +1,4 @@
-import { ControObj } from "../object";
+import { ControObj } from "./controller";
 
 type Pos = [number, number];
 

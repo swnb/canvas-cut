@@ -1,4 +1,4 @@
-import { Obj, SelfCreateObj } from "./object";
+import { Obj, SelfCreateObj } from "./objects/createobj";
 
 import util from "./util/util";
 
