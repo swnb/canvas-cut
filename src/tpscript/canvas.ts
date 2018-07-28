@@ -129,11 +129,11 @@ class Cut extends Draw {
 
         let [startX, startY] = [x, y];
 
-        const prefixY = 80;
-        const prefixX = 15;
+        // const prefixY = 80;
+        // const prefixX = 15;
 
-        const rotatePosX = ele.rotatePos[0];
-        const rotatePosY = ele.rotatePos[1];
+        // const rotatePosX = ele.rotatePos[0];
+        // const rotatePosY = ele.rotatePos[1];
 
         let timeRecord = Date.now();
 
@@ -158,10 +158,8 @@ class Cut extends Draw {
                 ev.offsetY
             );
 
-            ele.rotate(deg);
-            ele.clear();
-            ele.drawBg();
-            ele.draw();
+            ele.rotate(Math.PI);
+            this.redraw();
             ele.context.restore();
         };
     };
