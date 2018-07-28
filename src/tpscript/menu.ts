@@ -1,7 +1,7 @@
 import Draw from "./draw";
 
 import { getImg } from "./imgbase64";
-import { Initbg } from './initbg';
+import { Initbg } from "./initbg";
 import { DrawObjbg } from "./drawobjbg";
 
 type Pos = [number, number];
@@ -9,16 +9,15 @@ type Pos = [number, number];
 export class Menu extends Draw {
     public r: number = 0;
 
-    private ListOfObjs: string[] = [
-        "parallelogram",
-        "triangle",
-        "echelon",
-        "irregular",
-        "ellipse"
+    private ListOfObjs: { name: string; prefix: number }[] = [
+        { name: "parallelogram", prefix: 10 },
+        { name: "triangle", prefix: -10 },
+        { name: "echelon", prefix: 10 },
+        { name: "irregular", prefix: 10 },
+        { name: "ellipse", prefix: 40 }
     ];
 
     constructor(context: CanvasRenderingContext2D, x: number, y: number) {
-
         super(context);
         [this.x, this.y] = [x, y];
     }
@@ -26,16 +25,18 @@ export class Menu extends Draw {
     drawImgById() {
         const divi = 120;
 
-        this.ListOfObjs.forEach((objType: string, index: number) => {
-            const ImgElement = getImg(objType);
-            this.drawImg(
-                ImgElement,
-                this.x - ImgElement.width / 2,
-                this.y + index * divi,
-                ImgElement.width,
-                ImgElement.height
-            );
-        });
+        this.ListOfObjs.forEach(
+            (obj: { name: string; prefix: number }, index: number) => {
+                const ImgElement = getImg(obj.name);
+                this.drawImg(
+                    ImgElement,
+                    this.x - ImgElement.width / 2,
+                    this.y + index * divi + obj.prefix,
+                    ImgElement.width,
+                    ImgElement.height
+                );
+            }
+        );
     }
     init() {
         const x = this.x;
@@ -43,13 +44,20 @@ export class Menu extends Draw {
         const Bg = new Initbg(this.context, x - 75, y - 25, 130, 725, 12);
         Bg.initbg([100, 200]);
         this.drawImgById();
-
     }
     drawEchelonObj(): [number, number, number] {
         const len = 250;
         const x = this.x;
         const y = this.y;
-        const Bg = new DrawObjbg(this.context, x - 275, y - 25, 130, 300, 12, 240);
+        const Bg = new DrawObjbg(
+            this.context,
+            x - 275,
+            y - 25,
+            130,
+            300,
+            12,
+            240
+        );
         Bg.drawobjbg([100, 200]);
         const e1 = getImg("e1");
         this.drawImg(e1, this.x - len, this.y, e1.width, e1.height);
@@ -63,7 +71,15 @@ export class Menu extends Draw {
         const len = 250;
         const x = this.x;
         const y = this.y;
-        const Bg = new DrawObjbg(this.context, x - 275, y - 25, 130, 600, 12, 180);
+        const Bg = new DrawObjbg(
+            this.context,
+            x - 275,
+            y - 25,
+            130,
+            600,
+            12,
+            180
+        );
         Bg.drawobjbg([100, 200]);
         const t1 = getImg("t1");
         this.drawImg(t1, this.x - len, this.y, t1.width, t1.height);
@@ -83,7 +99,15 @@ export class Menu extends Draw {
         const len = 250;
         const x = this.x;
         const y = this.y;
-        const Bg = new DrawObjbg(this.context, x - 275, y - 25, 130, 550, 12, 50);
+        const Bg = new DrawObjbg(
+            this.context,
+            x - 275,
+            y - 25,
+            130,
+            550,
+            12,
+            50
+        );
         Bg.drawobjbg([100, 200]);
         const p1 = getImg("p1");
         this.drawImg(p1, this.x - len, this.y, p1.width, p1.height);
@@ -101,7 +125,15 @@ export class Menu extends Draw {
         const len = 250;
         const x = this.x;
         const y = this.y;
-        const Bg = new DrawObjbg(this.context, x - 275, y + 300, 130, 200, 12, 50);
+        const Bg = new DrawObjbg(
+            this.context,
+            x - 275,
+            y + 300,
+            130,
+            200,
+            12,
+            50
+        );
         Bg.drawobjbg([100, 200]);
         const I1 = getImg("I1");
         this.drawImg(I1, this.x - len, this.y + 325, I1.width, I1.height);
