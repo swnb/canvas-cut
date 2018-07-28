@@ -10,6 +10,8 @@ import { slowMove } from "./moveslow";
 
 import { deepcoyeArray } from "./dcarray";
 
+import { affineTransform } from "./affineTransformation";
+
 const isInsideCircle = (
     x: number,
     y: number,
@@ -36,5 +38,7 @@ export default {
     // 慢慢的移动
     slowMove,
     // 深拷贝array
-    deepcoyeArray
+    deepcoyeArray,
+    // 仿射变换
+    affineTransform
 };

@@ -65,12 +65,6 @@ export default (
                 },
                 []
             )
-            // 之后删除这个打印的语句
-            // .map(ele => {
-            //     console.log("insert number");
-            //     console.log(ele);
-            //     return ele;
-            // })
             // 这个管道的数据在这里应当只有两个,这里 只考虑4边形状，不考虑多边形，那么输出的就只能有两个
             // 这里的代码需要重构，重写下面的代码，问题：无法涵盖你需要的所有东西，并且处理的问题过多，导致混乱
             .filter(
@@ -103,12 +97,7 @@ export default (
                             pieceOfArray.push(array[1].pos);
 
                             // 确定偏移的方向
-                            const directs = util.getDirection(
-                                array[0].pos,
-                                array[1].pos
-                            );
-
-                            pieceOfArray.push(directs[1]);
+                            pieceOfArray.push(array[0].pos, array[1].pos);
 
                             return pieceOfArray;
                         }
@@ -130,12 +119,7 @@ export default (
                             );
 
                             // 确定偏移的方向
-                            const directs = util.getDirection(
-                                array[0].pos,
-                                array[1].pos
-                            );
-
-                            pieceOfArray.push(directs[0]);
+                            pieceOfArray.push(array[0].pos, array[1].pos);
                             return pieceOfArray;
                         }
                         default:

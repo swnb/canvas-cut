@@ -45,7 +45,9 @@ class Cut extends Draw {
             typecode: 2
         };
 
-        const obj = createObj(this.context, type, startPos, 200, 300).draw();
+        const obj = createObj(this.context, type, startPos, 200, 300).init();
+
+        obj.draw();
 
         this.allObj.push(obj);
 
@@ -68,8 +70,7 @@ class Cut extends Draw {
     ontouch(x: number, y: number) {
         this.circle(x, y, 10);
 
-        console.log(this.allObj);
-        // 从最后开始查找，从最前面开始找，找到了就是了
+        // 从最后开始查找，相当于在页面前面从最前面开始找，找到了就是了
         const ele = [...this.allObj].reverse().find(
             (obj: Obj | SelfCreateObj): boolean => {
                 const rotatePos: [number, number, number] = obj.rotatePos;
@@ -102,7 +103,7 @@ class Cut extends Draw {
             case "move":
                 return this.listenerMove(ele, x, y);
             case "rotate":
-                return this.listenerRotate(ele, x, y);
+                return this.listenerRotate(ele);
             default:
                 return null;
         }
@@ -121,30 +122,20 @@ class Cut extends Draw {
                 timeRecord = now;
             }
 
-            //  这个update一定要在前面实现，这个变化的数据不能继续扩张
+            //  这个update一定要在前面实现，这个变化的数据不能继续扩张它的影响
             ele.update(ev.offsetX - x + originX, ev.offsetY - y + originY);
             ele.x = ev.offsetX - x + originX;
             ele.y = ev.offsetY - y + originY;
             this.redraw();
         };
     };
-    listenerRotate = (ele: Obj | SelfCreateObj, x: number, y: number) => {
-        let [originX, originY] = [
-            ele.x + ele.width / 2,
-            ele.y + ele.height / 2
-        ];
+    listenerRotate = (ele: Obj | SelfCreateObj) => {
+        // 中心点
+        const midPoint: Pos = [ele.x + ele.width / 2, ele.y + ele.height / 2];
 
-        let [startX, startY] = [x, y];
-
-        const prefixY = 80;
-        const prefixX = 15;
-
-        const rotatePosX = ele.rotatePos[0];
-        const rotatePosY = ele.rotatePos[1];
+        const orginPolygonPoints = util.deepcoyeArray(ele.polygonPoints);
 
         let timeRecord = Date.now();
-
-        let deg = 0;
         return (ev: MouseEvent) => {
             console.log("start rotate");
             // 实现去抖动的功能
@@ -156,20 +147,23 @@ class Cut extends Draw {
                 timeRecord = now;
             }
 
-            deg += util.getDeg(
-                originX,
-                originY,
-                startX,
-                startY,
-                ev.offsetX,
-                ev.offsetY
-            );
+            this.rect(midPoint[0], midPoint[1], 10, 10);
 
-            ele.rotate(deg);
-            ele.clear();
-            ele.drawBg();
-            ele.draw();
-            ele.context.restore();
+            const startPoint: Pos = [midPoint[0], midPoint[1] + 10];
+
+            const movePoint: Pos = [ev.offsetX, ev.offsetY];
+
+            this.rect(movePoint[0], movePoint[1], 10, 10);
+            this.rect(startPoint[0], startPoint[1], 10, 10);
+
+            ele.polygonPoints = util.affineTransform(
+                startPoint,
+                midPoint,
+                movePoint,
+                orginPolygonPoints
+            );
+            console.log(ele.polygonPoints);
+            this.redraw();
         };
     };
     listenerClip = (x: number, y: number) => {
@@ -178,8 +172,6 @@ class Cut extends Draw {
         this.context.moveTo(x, y);
         let timeRecord = Date.now();
         return (ev: MouseEvent) => {
-            console.log("start slice");
-
             // 实现去抖动的功能
             const now = Date.now();
             const divi = now - timeRecord;
@@ -224,7 +216,14 @@ class Cut extends Draw {
             ): Array<Obj | SelfCreateObj> => {
                 const ele = element.map(ele => {
                     // 方向向量
-                    const direct = ele.pop() as [number, number];
+                    const direct1 = ele.pop() as [number, number];
+                    const direct2 = ele.pop() as [number, number];
+
+                    const direct = util.getDirection(
+                        direct1,
+                        direct2,
+                        util.deepcoyeArray(ele)
+                    );
 
                     // 位置点阵的信息
                     const points = util.deepcoyeArray(ele);
@@ -264,12 +263,6 @@ class Cut extends Draw {
                         width,
                         height,
                         util.deepcoyeArray(ele)
-                        // ...ele.map(
-                        // (pos: [number, number]): [number, number] => [
-                        // pos[0] + direct[0],
-                        // pos[1] + direct[1]
-                        // ]
-                        // )
                     ).draw();
 
                     // 让每一个物体都能取重新画，但是不能让这些物体自己调度自己
@@ -281,10 +274,7 @@ class Cut extends Draw {
                 });
 
                 if (ele.length === 2) {
-                    previous.push(
-                        // this.allObj[index],
-                        ...ele
-                    );
+                    previous.push(...ele);
                     return previous;
                 } else {
                     previous.push(this.allObj[index]);

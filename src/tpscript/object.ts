@@ -91,13 +91,8 @@ export class Obj extends ControObj {
         this.objType = objType;
     }
 
-    update(xdivi: number, ydivi: number) {}
-
-    draw() {
-        // 生成icon
-        this.drawIcon();
-
-        //画图形
+    init() {
+        //初始化
         switch (this.objType.type) {
             case "Parallelogram": {
                 this.context.fillStyle = "white";
@@ -148,6 +143,23 @@ export class Obj extends ControObj {
                 break;
             }
         }
+        return this;
+    }
+
+    update(x: number, y: number) {
+        const [xdivi, ydivi] = [x - this.x, y - this.y];
+        this.polygonPoints = this.polygonPoints.map(
+            (point: Pos): Pos => [point[0] + xdivi, point[1] + ydivi]
+        );
+        return this;
+    }
+
+    draw() {
+        // 生成icon
+        this.drawIcon();
+
+        // 画多边形
+        this.polygonFill(this.polygonPoints);
 
         // 画出中心的一个矩形，待删除
         this.context.closePath();
