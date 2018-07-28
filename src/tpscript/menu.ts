@@ -1,7 +1,7 @@
 import Draw from "./draw";
 
 import { getImg } from "./imgbase64";
-import { Initbg } from './initbg';
+import { Initbg } from "./initbg";
 import { DrawObjbg } from "./drawobjbg";
 
 type Pos = [number, number];
@@ -9,12 +9,12 @@ type Pos = [number, number];
 export class Menu extends Draw {
     public r: number = 0;
 
-    private ListOfObjs: string[] = [
-        "parallelogram",
-        "triangle",
-        "echelon",
-        "irregular",
-        "ellipse"
+    private ListOfObjs: { name: string; prefix: number }[] = [
+        { name: "parallelogram", prefix: 10 },
+        { name: "triangle", prefix: -10 },
+        { name: "echelon", prefix: 10 },
+        { name: "irregular", prefix: 10 },
+        { name: "ellipse", prefix: 40 }
     ];
     private ListOfnames: string[] = [
         "平行四边形",
@@ -25,7 +25,6 @@ export class Menu extends Draw {
     ]
 
     constructor(context: CanvasRenderingContext2D, x: number, y: number) {
-
         super(context);
         [this.x, this.y] = [x, y];
     }
@@ -33,20 +32,18 @@ export class Menu extends Draw {
     drawImgById() {
         const divi = 120;
 
-        this.ListOfObjs.forEach((objType: string, index: number) => {
-            const ImgElement = getImg(objType);
-            this.drawImg(
-                ImgElement,
-                this.x - ImgElement.width / 2,
-                this.y + index * divi * 12 / 10,
-                ImgElement.width,
-                ImgElement.height
-            );
-            this.context.fillStyle = "#595959";
-            this.context.textAlign = "center";
-            this.context.font = "20px sans-serif";
-            this.context.fillText(this.ListOfnames[index], this.x, this.y + index * divi * 12 / 10 + 120);
-        });
+        this.ListOfObjs.forEach(
+            (obj: { name: string; prefix: number }, index: number) => {
+                const ImgElement = getImg(obj.name);
+                this.drawImg(
+                    ImgElement,
+                    this.x - ImgElement.width / 2,
+                    this.y + index * divi + obj.prefix,
+                    ImgElement.width,
+                    ImgElement.height
+                );
+            }
+        );
     }
     init() {
         const x = this.x;
@@ -54,13 +51,42 @@ export class Menu extends Draw {
         const Bg = new Initbg(this.context, x - 75, y - 25, 130, 725, 12);
         Bg.initbg([100, 200]);
         this.drawImgById();
-
+    }
+    drawEchelonObj(): [number, number, number] {
+        const len = 250;
+        const x = this.x;
+        const y = this.y;
+        const Bg = new DrawObjbg(
+            this.context,
+            x - 275,
+            y - 25,
+            130,
+            300,
+            12,
+            240
+        );
+        Bg.drawobjbg([100, 200]);
+        const e1 = getImg("e1");
+        this.drawImg(e1, this.x - len, this.y, e1.width, e1.height);
+        const e2 = getImg("e2");
+        this.drawImg(e2, this.x - len, this.y * 3, e2.width, e2.height);
+        const e3 = getImg("e3");
+        this.drawImg(e3, this.x - len, this.y * 5, e3.width, e3.height);
+        return [this.x, this.y, this.r];
     }
     drawTriangleObj(): [number, number, number] {
         const len = 200;
         const x = this.x;
         const y = this.y;
-        const Bg = new DrawObjbg(this.context, x - 275, y - 25, 130, 650, 12, 180);
+        const Bg = new DrawObjbg(
+            this.context,
+            x - 275,
+            y - 25,
+            130,
+            600,
+            12,
+            180
+        );
         Bg.drawobjbg([100, 200]);
         this.context.fillStyle = "#595959";
         this.context.font = "15px sans-serif";
@@ -88,7 +114,15 @@ export class Menu extends Draw {
         const len = 200;
         const x = this.x;
         const y = this.y;
-        const Bg = new DrawObjbg(this.context, x - 275, y - 25, 130, 560, 12, 35);
+        const Bg = new DrawObjbg(
+            this.context,
+            x - 275,
+            y - 25,
+            130,
+            550,
+            12,
+            50
+        );
         Bg.drawobjbg([100, 200]);
         this.context.fillStyle = "#595959";
         this.context.font = "15px sans-serif";
@@ -109,30 +143,38 @@ export class Menu extends Draw {
         this.context.fillText("正方形", this.x - len, this.y * 12 - 10);
         return [this.x, this.y, this.r];
     }
-    drawEchelonObj(): [number, number, number] {
-        const len = 200;
-        const x = this.x;
-        const y = this.y;
-        const Bg = new DrawObjbg(this.context, x - 275, y + 200, 130, 370, 12, 100);
-        Bg.drawobjbg([100, 200]);
-        this.context.fillStyle = "#595959";
-        this.context.font = "15px sans-serif";
-        const e1 = getImg("e1");
-        this.drawImg(e1, this.x - len - e1.width / 2, this.y * 5.5, e1.width, e1.height);
-        this.context.fillText("等腰梯形", this.x - len, this.y * 8 - 20);
-        const e2 = getImg("e2");
-        this.drawImg(e2, this.x - len - e2.width / 2, this.y * 8, e2.width, e2.height);
-        this.context.fillText("普通梯形", this.x - len, this.y * 10.5 - 20);
-        const e3 = getImg("e3");
-        this.drawImg(e3, this.x - len - e3.width / 2, this.y * 10.5, e3.width, e3.height);
-        this.context.fillText("直角梯形", this.x - len, this.y * 12.5);
-        return [this.x, this.y, this.r];
-    }
+    // drawEchelonObj(): [number, number, number] {
+    //     const len = 200;
+    //     const x = this.x;
+    //     const y = this.y;
+    //     const Bg = new DrawObjbg(this.context, x - 275, y + 200, 130, 370, 12, 100);
+    //     Bg.drawobjbg([100, 200]);
+    //     this.context.fillStyle = "#595959";
+    //     this.context.font = "15px sans-serif";
+    //     const e1 = getImg("e1");
+    //     this.drawImg(e1, this.x - len - e1.width / 2, this.y * 5.5, e1.width, e1.height);
+    //     this.context.fillText("等腰梯形", this.x - len, this.y * 8 - 20);
+    //     const e2 = getImg("e2");
+    //     this.drawImg(e2, this.x - len - e2.width / 2, this.y * 8, e2.width, e2.height);
+    //     this.context.fillText("普通梯形", this.x - len, this.y * 10.5 - 20);
+    //     const e3 = getImg("e3");
+    //     this.drawImg(e3, this.x - len - e3.width / 2, this.y * 10.5, e3.width, e3.height);
+    //     this.context.fillText("直角梯形", this.x - len, this.y * 12.5);
+    //     return [this.x, this.y, this.r];
+    // }
     drawIrregularObj(): [number, number, number] {
         const len = 200;
         const x = this.x;
         const y = this.y;
-        const Bg = new DrawObjbg(this.context, x - 275, y + 400, 130, 210, 12, 50);
+        const Bg = new DrawObjbg(
+            this.context,
+            x - 275,
+            y + 300,
+            130,
+            200,
+            12,
+            50
+        );
         Bg.drawobjbg([100, 200]);
         this.context.fillStyle = "#595959";
         this.context.font = "15px sans-serif";

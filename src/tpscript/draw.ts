@@ -1,4 +1,5 @@
 // 位置点阵
+
 type Pos = [number, number];
 
 export default abstract class Draw {
@@ -27,11 +28,25 @@ export default abstract class Draw {
         stroke ? this.context.stroke() : this.context.fill();
         this.context.closePath();
     }
-    public circle(x: number, y: number, r: number, stroke?: boolean) {
+    public circle(x: number, y: number, r: number) {
         this.context.beginPath();
         this.context.arc(x, y, r, 0, 2 * Math.PI, true);
-        stroke ? this.context.stroke() : this.context.fill();
+        this.context.fill();
+        this.context.stroke();
         this.context.closePath();
+    }
+    public oval(x: number, y: number, a: number, b: number) {
+        this.context.save();
+        const r = a > b ? a : b;
+        const ratioX = a / r;
+        const ratioY = b / r;
+        this.context.scale(ratioX, ratioY);
+        this.context.beginPath();
+        this.context.arc(x / ratioX, y / ratioY, r, 0, 2 * Math.PI, false);
+        this.context.closePath();
+        this.context.restore();
+        this.context.fill();
+        this.context.stroke();
     }
     public polygon(pos: Array<Pos>) {
         this.context.beginPath();
@@ -57,19 +72,6 @@ export default abstract class Draw {
         this.context.strokeStyle = "#33CCFF";
         this.context.stroke();
     }
-    public rotate(deg: number) {
-        this.context.save();
-        this.context.translate(
-            this.x + this.width / 2,
-            this.y + this.height / 2
-        );
-
-        this.context.rotate(deg);
-        this.context.translate(
-            -this.x - this.width / 2,
-            -this.y - this.height / 2
-        );
-    }
     public drawImg(
         Image: HTMLImageElement,
         dX: number,
@@ -90,7 +92,7 @@ export default abstract class Draw {
         this.context.closePath();
         this.context.fillStyle = prefillStyle;
     }
-    public draw() { }
+    public draw() {}
     public redraw() {
         this.clear();
         this.drawBg();

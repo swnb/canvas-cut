@@ -6,7 +6,7 @@ import { Objs } from "./graphicals/praph";
 
 type Pos = [number, number];
 
-abstract class ControObj extends Draw {
+export abstract class ControObj extends Draw {
     public x: number;
     public y: number;
 
@@ -92,7 +92,7 @@ export class Obj extends ControObj {
     }
 
     init() {
-        //初始化
+        //初始化所有的数据解构
         switch (this.objType.type) {
             case "Parallelogram": {
                 this.context.fillStyle = "white";

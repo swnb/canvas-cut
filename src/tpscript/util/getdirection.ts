@@ -49,11 +49,9 @@ export const getDirection = (
     const long = 20;
 
     if (getCosDeg(someLine, direction) > 0) {
-        console.log("right");
         ele = direction;
     } else {
         ele = [-direction[0], -direction[1]];
-        console.log("reverse");
     }
 
     const x = parseFloat(
