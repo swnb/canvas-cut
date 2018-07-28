@@ -66,7 +66,7 @@ class Cut extends Draw {
         // 创建一个新的物体，这个物体生成菜单
         const menu = new Menu(this.context, 1175, 50);
 
-        menu.init();
+        menu.draw();
 
         menu.drawParallelogramObj();
         // menu.drawTriangleObj();
@@ -85,7 +85,7 @@ class Cut extends Draw {
 
         this.allObj.push(circle);
 
-        // this.menus.push(menu as MenuType);
+        this.menus.push(menu);
         return this;
     }
 
@@ -103,6 +103,8 @@ class Cut extends Draw {
 
     ontouch(x: number, y: number) {
         this.circle(x, y, 10);
+
+        // 查找菜单，点击事件判断
 
         // 从最后开始查找，相当于在页面前面从最前面开始找，找到了就是了
         const ele = [...this.allObj].reverse().find(

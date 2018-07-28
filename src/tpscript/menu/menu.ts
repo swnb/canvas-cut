@@ -30,7 +30,7 @@ export class Menu extends Draw {
         [this.x, this.y] = [x, y];
     }
 
-    draw() {
+    initMenu() {
         const divi = 135;
 
         this.ListOfObjs.forEach(
@@ -54,12 +54,13 @@ export class Menu extends Draw {
             }
         );
     }
-    init() {
+    draw(): Menu {
         const x = this.x;
         const y = this.y;
         const Bg = new Initbg(this.context, x - 75, y - 25, 130, 725, 12);
         Bg.initbg([100, 200]);
-        this.draw();
+        this.initMenu();
+        return this;
     }
     drawTriangleObj(): [number, number, number] {
         const len = 200;
