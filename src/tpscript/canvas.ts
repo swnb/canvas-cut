@@ -145,16 +145,6 @@ class Cut extends Draw {
 
             this.rect(midPoint[0], midPoint[1], 10, 10);
 
-            // deg += util.getDeg(
-            // originX,
-            // originY,
-            // startX,
-            // startY,
-            // ev.offsetX,
-            // ev.offsetY
-            // );
-            // this.redraw();
-
             const startPoint: Pos = [midPoint[0], midPoint[1] + 10];
 
             const movePoint: Pos = [ev.offsetX, ev.offsetY];
