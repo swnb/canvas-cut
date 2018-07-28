@@ -127,6 +127,8 @@ class Cut extends Draw {
         // 中心点
         const midPoint: Pos = [ele.x + ele.width / 2, ele.y + ele.height / 2];
 
+        const orginPolygonPoints = util.deepcoyeArray(ele.polygonPoints);
+
         let timeRecord = Date.now();
         return (ev: MouseEvent) => {
             console.log("start rotate");
@@ -164,7 +166,7 @@ class Cut extends Draw {
                 startPoint,
                 midPoint,
                 movePoint,
-                ele.polygonPoints
+                orginPolygonPoints
             );
             console.log(ele.polygonPoints);
             this.redraw();

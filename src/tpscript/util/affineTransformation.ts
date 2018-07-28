@@ -48,7 +48,7 @@ export const affineTransform = (
             const line = [pos[0] - midPoint[0], pos[1] - midPoint[1]];
             const x = cosDeg * line[0] - sinDeg * line[1];
             const y = sinDeg * line[0] + cosDeg * line[1];
-            return [x + midPoint[0], y + midPoint[1]];
+            return [x + midPoint[0], -y + midPoint[1]];
         }
     );
 };
