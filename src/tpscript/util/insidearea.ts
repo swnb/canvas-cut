@@ -38,7 +38,7 @@ export const isInsideArea = (
     height: number,
     pos: Pos[]
 ) => {
-    //在区域的内部
+    // 在区域的内部
     if (
         startPos[0] < point[0] &&
         point[0] <= startPos[0] + width &&
@@ -47,7 +47,7 @@ export const isInsideArea = (
     ) {
         return isInsidePolygon(point, pos);
     } else {
-        //不再区域内部的话
+        // 不再区域内部的话
         return false;
     }
 };
