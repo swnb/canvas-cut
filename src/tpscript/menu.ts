@@ -20,41 +20,41 @@ export class Menu extends Draw {
     }
     init(startPos: Pos) {
         this.context.fillStyle = 'white';
-        this.context.fillRect(this.width, this.height, 100, 500);
+        this.context.fillRect(this.width - 10, this.height, 120, 700);
         const parallelogram = getImg("parallelogram");
         this.drawImg(
             parallelogram,
             this.width,
             this.height,
-            this.r,
+            this.r * 5 / 4,
         );
         const triangle = getImg("triangle");
         this.drawImg(
             triangle,
             this.width,
-            this.height * 2,
-            this.r,
+            this.height * 4,
+            this.r * 5 / 4,
         );
         const echelon = getImg("echelon");
         this.drawImg(
             echelon,
             this.width,
-            this.height * 3,
-            this.r,
+            this.height * 7,
+            this.r * 5 / 4,
         );
         const irregular = getImg("irregular");
         this.drawImg(
             irregular,
             this.width,
-            this.height * 4,
-            this.r,
+            this.height * 10,
+            this.r * 5 / 4,
         );
         const ellipse = getImg("ellipse");
         this.drawImg(
             ellipse,
             this.width,
-            this.height * 5,
-            this.r,
+            this.height * 13,
+            this.r * 5 / 4,
         );
     }
     drawEchelonObj(startPos: Pos): [number, number, number] {
@@ -72,14 +72,14 @@ export class Menu extends Draw {
         this.drawImg(
             e2,
             this.width - 100,
-            this.height * 2,
+            this.height * 3,
             this.r,
         );
         const e3 = getImg("e3");
         this.drawImg(
             e3,
             this.width - 100,
-            this.height * 3,
+            this.height * 5,
             this.r,
         );
         return [this.width, this.height, this.r]
@@ -96,40 +96,95 @@ export class Menu extends Draw {
         this.drawImg(
             t2,
             this.width - 100,
-            this.height * 2,
+            this.height * 3,
             this.r,
         );
         const t3 = getImg("t3");
         this.drawImg(
             t3,
             this.width - 100,
-            this.height * 3,
+            this.height * 5,
             this.r,
         );
         const t4 = getImg("t4");
         this.drawImg(
             t4,
             this.width - 100,
-            this.height * 4,
+            this.height * 7,
             this.r,
         );
         const t5 = getImg("t5");
         this.drawImg(
             t5,
             this.width - 100,
-            this.height * 5,
+            this.height * 9,
             this.r,
         );
         const t6 = getImg("t6");
         this.drawImg(
             t6,
             this.width - 100,
-            this.height * 6,
+            this.height * 11,
             this.r,
         );
         return [this.width, this.height, this.r]
     }
-    // drawParallelogram(startPos: Pos):
+    drawParallelogramObj(startPos: Pos): [number, number, number] {
+        const p1 = getImg("p1");
+        this.drawImg(
+            p1,
+            this.width - 100,
+            this.height,
+            this.r,
+        );
+        const p2 = getImg("p2");
+        this.drawImg(
+            p2,
+            this.width - 100,
+            this.height * 3,
+            this.r,
+        );
+        const p3 = getImg("p3");
+        this.drawImg(
+            p3,
+            this.width - 100,
+            this.height * 5,
+            this.r,
+        );
+        const p4 = getImg("p4");
+        this.drawImg(
+            p4,
+            this.width - 100,
+            this.height * 7,
+            this.r,
+        );
+        const p5 = getImg("p5");
+        this.drawImg(
+            p5,
+            this.width - 100,
+            this.height * 9,
+            this.r,
+        );
+        return [this.width, this.height, this.r]
+    }
+    drawIrregularObj(startPos: Pos): [number, number, number] {
+        const I1 = getImg("I1");
+        this.drawImg(
+            I1,
+            this.width - 100,
+            this.height,
+            this.r,
+        );
+        const I2 = getImg("I2");
+        this.drawImg(
+            I2,
+            this.width - 100,
+            this.height * 3,
+            this.r,
+        );
+        return [this.width, this.height, this.r]
+    }
+
 
 
 }
