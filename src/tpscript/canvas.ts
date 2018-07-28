@@ -56,10 +56,10 @@ class Cut extends Draw {
 
         menu.init();
 
-        // menu.drawParallelogramObj();
+        menu.drawParallelogramObj();
         // menu.drawTriangleObj();
         // menu.drawEchelonObj();
-        menu.drawIrregularObj();
+        // menu.drawIrregularObj();
 
         return this;
     }
