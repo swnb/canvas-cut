@@ -76,7 +76,7 @@ class Cut extends Draw {
         return this;
     }
 
-    update() {}
+    update() { }
 
     draw() {
         this.allObj.forEach(ele => {
@@ -272,9 +272,9 @@ class Cut extends Draw {
 
                     const [width, height] = [
                         maxPointWithSmallestPoint[1][0] -
-                            maxPointWithSmallestPoint[0][0],
+                        maxPointWithSmallestPoint[0][0],
                         maxPointWithSmallestPoint[1][1] -
-                            maxPointWithSmallestPoint[0][1]
+                        maxPointWithSmallestPoint[0][1]
                     ];
 
                     // 得到的新的obj物体
