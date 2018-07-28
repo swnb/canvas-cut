@@ -2,7 +2,12 @@ import Draw from "./draw";
 
 import { Menu } from "./menu";
 
-import { Obj, createObj, SelfCreateObj, createObjBySelf } from "./object";
+import {
+    Obj,
+    createObj,
+    SelfCreateObj,
+    createObjBySelf
+} from "./objects/createobj";
 
 import { Circle } from "./objects/circle";
 
@@ -17,12 +22,18 @@ interface ObjType {
     typecode: number;
 }
 
+interface MenuType {
+    draw(): MenuType;
+}
+
 class Cut extends Draw {
     static create(context: CanvasRenderingContext2D): Cut {
         return new Cut(context);
     }
 
     private allObj: Array<Obj | SelfCreateObj | Circle> = [];
+
+    private menus: MenuType[] = [];
 
     public context: CanvasRenderingContext2D;
 
@@ -73,6 +84,8 @@ class Cut extends Draw {
             .draw();
 
         this.allObj.push(circle);
+
+        // this.menus.push(menu as MenuType);
         return this;
     }
 
@@ -82,7 +95,12 @@ class Cut extends Draw {
         this.allObj.forEach(ele => {
             ele.draw();
         });
+
+        this.menus.forEach((ele: MenuType) => {
+            ele.draw();
+        });
     }
+
     ontouch(x: number, y: number) {
         this.circle(x, y, 10);
 
