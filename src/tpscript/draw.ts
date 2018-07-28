@@ -33,22 +33,17 @@ export default abstract class Draw {
         stroke ? this.context.stroke() : this.context.fill();
         this.context.closePath();
     }
-    public oval(
-        x: number,
-        y: number,
-        width: number,
-        height: number,
-        r: number
-    ) {
-        console.log(arguments);
-        this.context.beginPath();
-        const radioX = width / r;
-        const radioY = height / r;
+    public oval(x: number, y: number, a: number, b: number) {
         this.context.save();
-        this.context.scale(radioX, radioY);
-        this.context.arc(x / radioX, y / radioY, r, 0, Math.PI * 2);
-        this.context.restore();
+        const r = a > b ? a : b;
+        const ratioX = a / r;
+        const ratioY = b / r;
+        this.context.scale(ratioX, ratioY);
+        this.context.beginPath();
+        this.context.arc(x / ratioX, y / ratioY, r, 0, 2 * Math.PI, false);
         this.context.closePath();
+        this.context.restore();
+        this.context.fill();
     }
     public polygon(pos: Array<Pos>) {
         this.context.beginPath();
