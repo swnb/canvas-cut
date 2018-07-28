@@ -52,7 +52,7 @@ class Cut extends Draw {
         this.allObj.push(obj);
 
         // 创建一个新的物体，这个物体生成菜单
-        const menu = new Menu(this.context, 1000, 50, 80)
+        const menu = new Menu(this.context, 1125, 50, 80)
 
         menu.drawParallelogramObj([100, 300])
         menu.init([200, 300])
