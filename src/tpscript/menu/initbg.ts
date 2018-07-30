@@ -1,5 +1,6 @@
 type Pos = [number, number];
 
+// 主菜单背景
 export const InitBg = (
     context: CanvasRenderingContext2D,
     [x, y]: Pos,
@@ -33,6 +34,7 @@ export const InitBg = (
     context.fill();
 };
 
+// 子菜单背景
 export const DrawObjbg = (
     context: CanvasRenderingContext2D,
     [x, y]: Pos,

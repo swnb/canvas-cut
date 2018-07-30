@@ -3,17 +3,24 @@ import Draw from "../draw";
 import { getImg } from "../imgbase64";
 import { InitBg, DrawObjbg } from "./initbg";
 
-type Pos = [number, number];
+// 引入子菜单的所有类型和所有的数据
+import { SubMenuDataStore, SubMenu, SubMenuDataType } from "./datastore";
+
+type Mode =
+    | "Triangle"
+    | "Parallelogram"
+    | "Echelon"
+    | "Irregular"
+    | "Ellipse"
+    | "none";
 
 export class Menu extends Draw {
-    public r: number = 0;
-
-    private ListOfObjs: { name: string; prefix: number }[] = [
-        { name: "parallelogram", prefix: 10 },
-        { name: "triangle", prefix: -10 },
-        { name: "echelon", prefix: 10 },
-        { name: "irregular", prefix: 10 },
-        { name: "ellipse", prefix: 40 }
+    private ListOfObjs: { name: Mode; prefix: number }[] = [
+        { name: "Parallelogram", prefix: 10 },
+        { name: "Triangle", prefix: -10 },
+        { name: "Echelon", prefix: 10 },
+        { name: "Irregular", prefix: 10 },
+        { name: "Ellipse", prefix: 40 }
     ];
 
     private ListOfnames: string[] = [
@@ -24,16 +31,41 @@ export class Menu extends Draw {
         "椭圆"
     ];
 
+    // 主菜单区域
+    private areas: {
+        mode: Mode;
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+    }[] = [];
+
+    // 子菜单区域的信息
+    // private subMenuArea: {
+    //     mode: string;
+    //     x: number;
+    //     y: number;
+    //     width: number;
+    //     height: number;
+    // }[] = [];
+
+    private subMenuArea: SubMenuDataType[] = [];
+
+    // 上一个模式和n当前的模式
+    public lastMode: Mode = "none";
+    public mode: Mode = "Echelon";
+
     constructor(context: CanvasRenderingContext2D, x: number, y: number) {
         super(context);
         [this.x, this.y] = [x, y];
     }
 
+    // 生成主菜单
     initMenu() {
         const divi = 135;
 
         this.ListOfObjs.forEach(
-            (obj: { name: string; prefix: number }, index: number) => {
+            (obj: { name: Mode; prefix: number }, index: number) => {
                 const ImgElement = getImg(obj.name);
                 this.drawImg(
                     ImgElement,
@@ -50,17 +82,107 @@ export class Menu extends Draw {
                     this.x,
                     this.y + index * divi + obj.prefix + ImgElement.height + 30
                 );
+
+                if (this.areas.length < this.ListOfObjs.length) {
+                    this.areas.push({
+                        mode: obj.name,
+                        x: this.x - ImgElement.width / 2,
+                        y: this.y + index * divi + obj.prefix,
+                        width: ImgElement.width,
+                        height: ImgElement.height
+                    });
+                }
             }
         );
     }
+
+    chageMode(mode: Mode) {
+        this.lastMode = this.mode;
+        this.mode = mode;
+        this.updateSubMenuList();
+    }
+
+    // 生成子菜单
+    initSubMenu() {
+        // "Triangle" | "Parallelogram" | "Echelon" | "Irregular" | "none"
+        switch (this.mode) {
+            case "none": {
+                break;
+            }
+            case "Triangle": {
+                this.drawTriangleObj();
+                break;
+            }
+            case "Parallelogram": {
+                this.drawParallelogramObj();
+                break;
+            }
+            case "Echelon": {
+                this.drawEchelonObj();
+                break;
+            }
+            case "Irregular": {
+                this.drawIrregularObj();
+                break;
+            }
+        }
+    }
+    updateSubMenuList() {
+        // 模式没有改变，那么就不更新
+        if (this.mode === this.lastMode) {
+            return;
+        }
+        switch (this.mode) {
+            case "Parallelogram":
+            case "Echelon":
+            case "Irregular":
+            case "Triangle": {
+                this.subMenuArea = SubMenuDataStore[this.mode];
+                break;
+            }
+            case "none":
+            default: {
+                this.subMenuArea = [];
+                break;
+            }
+        }
+    }
+
+    // 判断一个点是否在一个区域的内部
+    pointAtMenu([pointX, pointY]: [number, number]) {
+        const areaMenu = this.areas.find(
+            ({ mode, x, y, width, height }): boolean => {
+                return pointX <= x + width &&
+                    pointX >= x &&
+                    pointY >= y &&
+                    pointY <= y + height
+                    ? true
+                    : false;
+            }
+        );
+        if (areaMenu) {
+            this.chageMode(areaMenu.mode);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    pointAtSubMenu([x, y]: [number, number]) {}
+
     draw(): Menu {
         const x = this.x;
         const y = this.y;
         InitBg(this.context, [x - 75, y - 25], [130, 725], 12);
         this.initMenu();
+        this.initSubMenu();
         return this;
     }
-    drawTriangleObj(): [number, number, number] {
+
+    // 下面的这些函数都需要重构
+
+    // 三角形
+    drawTriangleObj() {
         const len = 200;
         const x = this.x;
         const y = this.y;
@@ -121,9 +243,13 @@ export class Menu extends Draw {
             t6.height
         );
         this.context.fillText("锐角三角形", this.x - len, this.y * 13.5);
-        return [this.x, this.y, this.r];
+
+        // 如果没有的话就添加它的位置点阵进入这些数据里面，也就是只生成一次
+        if (!SubMenuDataStore["Triangle"]) {
+            SubMenuDataStore["Triangle"].push();
+        }
     }
-    drawParallelogramObj(): [number, number, number] {
+    drawParallelogramObj() {
         const len = 200;
         const x = this.x;
         const y = this.y;
@@ -175,9 +301,8 @@ export class Menu extends Draw {
             p5.height
         );
         this.context.fillText("正方形", this.x - len, this.y * 12 - 10);
-        return [this.x, this.y, this.r];
     }
-    drawEchelonObj(): [number, number, number] {
+    drawEchelonObj() {
         const len = 200;
         const x = this.x;
         const y = this.y;
@@ -212,9 +337,8 @@ export class Menu extends Draw {
             e3.height
         );
         this.context.fillText("直角梯形", this.x - len, this.y * 12.5);
-        return [this.x, this.y, this.r];
     }
-    drawIrregularObj(): [number, number, number] {
+    drawIrregularObj() {
         const len = 200;
         const x = this.x;
         const y = this.y;
@@ -240,6 +364,5 @@ export class Menu extends Draw {
             I2.height
         );
         this.context.fillText("直角梯形", this.x - len, this.y + 615);
-        return [this.x, this.y, this.r];
     }
 }

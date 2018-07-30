@@ -23,6 +23,7 @@ interface ObjType {
 }
 
 interface MenuType {
+    pointAtMenu(pos: Pos): boolean;
     draw(): MenuType;
 }
 
@@ -33,7 +34,7 @@ class Cut extends Draw {
 
     private allObj: Array<Obj | SelfCreateObj | Circle> = [];
 
-    private menus: MenuType[] = [];
+    private menu: MenuType;
 
     public context: CanvasRenderingContext2D;
 
@@ -42,6 +43,8 @@ class Cut extends Draw {
         this.context = context;
         this.context.strokeStyle = "whitesmoke";
         this.context.fillStyle = "pink";
+
+        this.menu = new Menu(this.context, 1175, 50);
     }
 
     init(): Cut {
@@ -64,14 +67,8 @@ class Cut extends Draw {
         this.allObj.push(obj);
 
         // 创建一个新的物体，这个物体生成菜单
-        const menu = new Menu(this.context, 1175, 50);
 
-        menu.draw();
-
-        menu.drawParallelogramObj();
-        // menu.drawTriangleObj();
-        // menu.drawEchelonObj();
-        // menu.drawIrregularObj();
+        this.menu.draw();
 
         // 圆形的测试
         const circle = new Circle(this.context, startPos, 150, 50, 80);
@@ -85,7 +82,6 @@ class Cut extends Draw {
 
         this.allObj.push(circle);
 
-        this.menus.push(menu);
         return this;
     }
 
@@ -96,15 +92,14 @@ class Cut extends Draw {
             ele.draw();
         });
 
-        this.menus.forEach((ele: MenuType) => {
-            ele.draw();
-        });
+        this.menu.draw();
     }
 
     ontouch(x: number, y: number) {
         this.circle(x, y, 10);
 
-        // 查找菜单，点击事件判断
+        // 查找菜单，点击事件判断,存在终止判断，把逻辑交给其他人
+        if (this.menu.pointAtMenu([x, y])) return;
 
         // 从最后开始查找，相当于在页面前面从最前面开始找，找到了就是了
         const ele = [...this.allObj].reverse().find(
