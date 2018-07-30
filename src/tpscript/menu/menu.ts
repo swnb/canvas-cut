@@ -1,8 +1,7 @@
 import Draw from "../draw";
 
 import { getImg } from "../imgbase64";
-import { Initbg } from "./initbg";
-import { DrawObjbg } from "./drawobjbg";
+import { InitBg, DrawObjbg } from "./initbg";
 
 type Pos = [number, number];
 
@@ -57,8 +56,7 @@ export class Menu extends Draw {
     draw(): Menu {
         const x = this.x;
         const y = this.y;
-        const Bg = new Initbg(this.context, x - 75, y - 25, 130, 725, 12);
-        Bg.initbg([100, 200]);
+        InitBg(this.context, [x - 75, y - 25], [130, 725], 12);
         this.initMenu();
         return this;
     }
@@ -66,16 +64,7 @@ export class Menu extends Draw {
         const len = 200;
         const x = this.x;
         const y = this.y;
-        const Bg = new DrawObjbg(
-            this.context,
-            x - 275,
-            y - 25,
-            130,
-            650,
-            12,
-            150
-        );
-        Bg.drawobjbg([100, 200]);
+        DrawObjbg(this.context, [x - 275, y - 25], [130, 650], 12, 150);
         this.context.fillStyle = "#595959";
         this.context.font = "15px sans-serif";
         const t1 = getImg("t1");
@@ -138,16 +127,7 @@ export class Menu extends Draw {
         const len = 200;
         const x = this.x;
         const y = this.y;
-        const Bg = new DrawObjbg(
-            this.context,
-            x - 275,
-            y - 25,
-            130,
-            560,
-            12,
-            50
-        );
-        Bg.drawobjbg([100, 200]);
+        DrawObjbg(this.context, [x - 275, y - 25], [130, 560], 12, 50);
         this.context.fillStyle = "#595959";
         this.context.font = "15px sans-serif";
         const p1 = getImg("p1");
@@ -201,16 +181,8 @@ export class Menu extends Draw {
         const len = 200;
         const x = this.x;
         const y = this.y;
-        const Bg = new DrawObjbg(
-            this.context,
-            x - 275,
-            y + 200,
-            130,
-            370,
-            12,
-            100
-        );
-        Bg.drawobjbg([100, 200]);
+        DrawObjbg(this.context, [x - 275, y + 200], [130, 370], 12, 100);
+
         this.context.fillStyle = "#595959";
         this.context.font = "15px sans-serif";
         const e1 = getImg("e1");
@@ -246,16 +218,8 @@ export class Menu extends Draw {
         const len = 200;
         const x = this.x;
         const y = this.y;
-        const Bg = new DrawObjbg(
-            this.context,
-            x - 275,
-            y + 410,
-            130,
-            200,
-            12,
-            50
-        );
-        Bg.drawobjbg([100, 200]);
+        DrawObjbg(this.context, [x - 275, y + 410], [130, 200], 12, 50);
+
         this.context.fillStyle = "#595959";
         this.context.font = "15px sans-serif";
         const I1 = getImg("I1");

@@ -1,63 +1,71 @@
-import Draw from "../draw";
-
 type Pos = [number, number];
 
-export class Initbg extends Draw {
-    public r: number = 0;
+export const InitBg = (
+    context: CanvasRenderingContext2D,
+    [x, y]: Pos,
+    [width, height]: Pos,
+    radius: number
+) => {
+    context.fillStyle = "white";
+    context.beginPath();
+    context.moveTo(x + radius, y);
+    context.lineTo(x + radius + width, y);
+    context.arcTo(
+        x + radius * 2 + width,
+        y,
+        x + radius * 2 + width,
+        y + radius,
+        radius
+    );
+    context.lineTo(x + radius * 2 + width, y + radius + height);
+    context.arcTo(
+        x + radius * 2 + width,
+        y + radius * 2 + height,
+        x + radius + width,
+        y + radius * 2 + height,
+        radius
+    );
+    context.lineTo(x + radius, y + radius * 2 + height);
+    context.arcTo(x, y + radius * 2 + height, x, y + radius + height, radius);
+    context.lineTo(x, y + radius);
+    context.arcTo(x, y, x + radius, y, radius);
+    context.closePath();
+    context.fill();
+};
 
-    constructor(
-        context: CanvasRenderingContext2D,
-        x: number,
-        y: number,
-        width: number,
-        height: number,
-        r: number
-    ) {
-        super(context);
-
-        [this.x, this.y, this.width, this.height, this.r] = [
-            x,
-            y,
-            width,
-            height,
-            r
-        ];
-    }
-
-    initbg(startPos: Pos) {
-        this.context.fillStyle = "white";
-        this.context.beginPath();
-        this.context.moveTo(this.x + this.r, this.y);
-        this.context.lineTo(this.x + this.r + this.width, this.y);
-        this.context.arcTo(
-            this.x + this.r * 2 + this.width,
-            this.y,
-            this.x + this.r * 2 + this.width,
-            this.y + this.r,
-            this.r
-        );
-        this.context.lineTo(
-            this.x + this.r * 2 + this.width,
-            this.y + this.r + this.height
-        );
-        this.context.arcTo(
-            this.x + this.r * 2 + this.width,
-            this.y + this.r * 2 + this.height,
-            this.x + this.r + this.width,
-            this.y + this.r * 2 + this.height,
-            this.r
-        );
-        this.context.lineTo(this.x + this.r, this.y + this.r * 2 + this.height);
-        this.context.arcTo(
-            this.x,
-            this.y + this.r * 2 + this.height,
-            this.x,
-            this.y + this.r + this.height,
-            this.r
-        );
-        this.context.lineTo(this.x, this.y + this.r);
-        this.context.arcTo(this.x, this.y, this.x + this.r, this.y, this.r);
-        this.context.closePath();
-        this.context.fill();
-    }
-}
+export const DrawObjbg = (
+    context: CanvasRenderingContext2D,
+    [x, y]: Pos,
+    [width, height]: Pos,
+    radius: number,
+    h: number
+) => {
+    context.fillStyle = "white";
+    context.beginPath();
+    context.moveTo(x + radius, y);
+    context.lineTo(x + radius + width, y);
+    context.arcTo(
+        x + radius * 2 + width,
+        y,
+        x + radius * 2 + width,
+        y + radius,
+        radius
+    );
+    context.lineTo(x + radius * 2 + width, y + radius + h);
+    context.lineTo(x + radius * 2 + width + 40, y + radius + h + 20);
+    context.lineTo(x + radius * 2 + width, y + radius + h + 40);
+    context.lineTo(x + radius * 2 + width, y + radius + height);
+    context.arcTo(
+        x + radius * 2 + width,
+        y + radius * 2 + height,
+        x + radius + width,
+        y + radius * 2 + height,
+        radius
+    );
+    context.lineTo(x + radius, y + radius * 2 + height);
+    context.arcTo(x, y + radius * 2 + height, x, y + radius + height, radius);
+    context.lineTo(x, y + radius);
+    context.arcTo(x, y, x + radius, y, radius);
+    context.closePath();
+    context.fill();
+};
