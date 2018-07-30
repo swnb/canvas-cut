@@ -1,29 +1,23 @@
-const str = `
-this.context.fillText("等边三角形", this.x - len, this.y * 7.2 - 20);
-const t4 = getImg("t4");
+` DrawObjbg(this.context, [x - 275, y + 410], [130, 200], 12, 50);
+
+const prefillstyle = this.context.fillStyle;
+this.context.fillStyle = "#595959";
+this.context.font = "15px sans-serif";
+const I1 = getImg("I1");
 this.drawImg(
-    t4,
-    this.x - len - t4.width / 2,
-    this.y * 7.2,
-    t4.width,
-    t4.height
+    I1,
+    this.x - len - I1.width / 2,
+    this.y + 425,
+    I1.width,
+    I1.height
 );
-this.context.fillText("钝角三角形", this.x - len, this.y * 9.5 - 20);
-const t5 = getImg("t5");
+this.context.fillText("直角梯形", this.x - len, this.y + 515);
+const I2 = getImg("I2");
 this.drawImg(
-    t5,
-    this.x - len - t5.width / 2,
-    this.y * 9.5,
-    t5.width,
-    t5.height
+    I2,
+    this.x - len - I2.width / 2,
+    this.y + 535,
+    I2.width,
+    I2.height
 );
-this.context.fillText("直角三角形", this.x - len, this.y * 11.5 - 15);
-const t6 = getImg("t6");
-this.drawImg(
-    t6,
-    this.x - len - t6.width / 2,
-    this.y * 11.5,
-    t6.width,
-    t6.height
-);
-this.context.fillText("锐角三角形", this.x - len, this.y * 13.5);`;
+this.context.fillText("直角梯形", this.x - len, this.y + 615);`;

@@ -55,34 +55,34 @@ class Cut extends Draw {
         const startPos: Pos = [200, 200];
         this.rect(0, 0, 1280, 800, false);
 
-        this.context.fillStyle = "#0f70ad";
+        this.context.fillStyle = "#2e8889";
 
-        const type: ObjType = {
-            type: "Irregular",
-            typecode: 2
-        };
+        // const type: ObjType = {
+        //     type: "Irregular",
+        //     typecode: 2
+        // };
 
-        const obj = createObj(this.context, type, startPos, 200, 300).init();
+        // const obj = createObj(this.context, type, startPos, 200, 300).init();
 
-        obj.draw();
+        // obj.draw();
 
-        this.allObj.push(obj);
+        // this.allObj.push(obj);
 
         // 创建一个新的物体，这个物体生成菜单
 
         this.menu.draw();
 
         // 圆形的测试
-        const circle = new Circle(this.context, startPos, 150, 50, 80);
+        // const circle = new Circle(this.context, startPos, 150, 50, 80);
 
-        circle
-            .init({
-                type: "cirle",
-                typecode: 1
-            })
-            .draw();
+        // circle
+        // .init({
+        // type: "cirle",
+        // typecode: 1
+        // })
+        // .draw();
 
-        this.allObj.push(circle);
+        // this.allObj.push(circle);
 
         return this;
     }
@@ -90,7 +90,10 @@ class Cut extends Draw {
     update() {}
 
     createObj = (type: ObjType) => {
-        const startPos: Pos = [200, 200];
+        const startPos: Pos = [
+            Math.random() * 400 + 100,
+            Math.random() * 200 + 100
+        ];
         const obj = createObj(this.context, type, startPos, 200, 300).init();
         this.allObj.push(obj);
     };

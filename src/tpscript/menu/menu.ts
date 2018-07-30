@@ -400,6 +400,54 @@ export class Menu extends Draw {
         this.context.fillText("正方形", this.x - len, this.y * 12 - 10);
 
         this.context.fillStyle = prefillstyle;
+
+        // 如果没有的话就添加它的位置点阵进入这些数据里面，也就是只生成一次
+        if (!SubMenuDataStore["Parallelogram"]) {
+            console.log("it doesn't init");
+            SubMenuDataStore["Parallelogram"] = [];
+            SubMenuDataStore["Parallelogram"].push(
+                {
+                    type: "Parallelogram",
+                    typecode: 1,
+                    x: this.x - len - p1.width / 2,
+                    y: this.y,
+                    width: p1.width,
+                    height: p1.height
+                },
+                {
+                    type: "Parallelogram",
+                    typecode: 2,
+                    x: this.x - len - p2.width / 2,
+                    y: this.y * 3,
+                    width: p2.width,
+                    height: p2.height
+                },
+                {
+                    type: "Parallelogram",
+                    typecode: 3,
+                    x: this.x - len - p3.width / 2,
+                    y: this.y * 5,
+                    width: p3.width,
+                    height: p3.height
+                },
+                {
+                    type: "Parallelogram",
+                    typecode: 4,
+                    x: this.x - len - p4.width / 2,
+                    y: this.y * 8,
+                    width: p4.width,
+                    height: p4.height
+                },
+                {
+                    type: "Parallelogram",
+                    typecode: 5,
+                    x: this.x - len - p5.width / 2,
+                    y: this.y * 10,
+                    width: p5.width,
+                    height: p5.height
+                }
+            );
+        }
     }
     drawEchelonObj() {
         const len = 200;
@@ -439,6 +487,38 @@ export class Menu extends Draw {
         this.context.fillText("直角梯形", this.x - len, this.y * 12.5);
 
         this.context.fillStyle = prefillstyle;
+
+        // 如果没有的话就添加它的位置点阵进入这些数据里面，也就是只生成一次
+        if (!SubMenuDataStore["Echelon"]) {
+            console.log("it doesn't init");
+            SubMenuDataStore["Echelon"] = [];
+            SubMenuDataStore["Echelon"].push(
+                {
+                    type: "Echelon",
+                    typecode: 1,
+                    x: this.x - len - e1.width / 2,
+                    y: this.y * 5.5,
+                    width: e1.width,
+                    height: e1.height
+                },
+                {
+                    type: "Echelon",
+                    typecode: 2,
+                    x: this.x - len - e2.width / 2,
+                    y: this.y * 8,
+                    width: e2.width,
+                    height: e2.height
+                },
+                {
+                    type: "Echelon",
+                    typecode: 3,
+                    x: this.x - len - e3.width / 2,
+                    y: this.y * 10.5,
+                    width: e3.width,
+                    height: e3.height
+                }
+            );
+        }
     }
     drawIrregularObj() {
         const len = 200;
@@ -469,5 +549,28 @@ export class Menu extends Draw {
         this.context.fillText("直角梯形", this.x - len, this.y + 615);
 
         this.context.fillStyle = prefillstyle;
+
+        if (!SubMenuDataStore["Irregular"]) {
+            console.log("it doesn't init");
+            SubMenuDataStore["Irregular"] = [];
+            SubMenuDataStore["Irregular"].push(
+                {
+                    type: "Irregular",
+                    typecode: 1,
+                    x: this.x - len - I1.width / 2,
+                    y: this.y + 425,
+                    width: I1.width,
+                    height: I1.height
+                },
+                {
+                    type: "Irregular",
+                    typecode: 2,
+                    x: this.x - len - I2.width / 2,
+                    y: this.y + 535,
+                    width: I2.width,
+                    height: I2.height
+                }
+            );
+        }
     }
 }
