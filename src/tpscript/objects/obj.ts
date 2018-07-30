@@ -31,7 +31,7 @@ export class Obj extends ControObj {
         //初始化所有的数据解构
         switch (this.objType.type) {
             case "Parallelogram": {
-                this.context.fillStyle = "white";
+                // this.context.fillStyle = "white";
                 this.polygonPoints = Objs.Parallelogram(
                     this.x,
                     this.y,
@@ -43,7 +43,7 @@ export class Obj extends ControObj {
                 break;
             }
             case "Triangle": {
-                this.context.fillStyle = "blue";
+                // this.context.fillStyle = "blue";
                 this.polygonPoints = Objs.Triangle(
                     this.x,
                     this.y,
@@ -55,7 +55,7 @@ export class Obj extends ControObj {
                 break;
             }
             case "Echelon": {
-                this.context.fillStyle = "yellow";
+                // this.context.fillStyle = "yellow";
                 this.polygonPoints = Objs.Echelon(
                     this.x,
                     this.y,
@@ -67,7 +67,7 @@ export class Obj extends ControObj {
                 break;
             }
             case "Irregular": {
-                this.context.fillStyle = "green";
+                // this.context.fillStyle = "green";
                 this.polygonPoints = Objs.Irregular(
                     this.x,
                     this.y,

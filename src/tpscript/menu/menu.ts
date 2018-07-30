@@ -51,13 +51,22 @@ export class Menu extends Draw {
 
     private subMenuArea: SubMenuDataType[] = [];
 
+    private createObj: (type: { type: string; typecode: number }) => void;
+
     // 上一个模式和n当前的模式
     public lastMode: Mode = "none";
-    public mode: Mode = "Echelon";
+    public mode: Mode = "Triangle";
 
-    constructor(context: CanvasRenderingContext2D, x: number, y: number) {
+    constructor(
+        context: CanvasRenderingContext2D,
+        x: number,
+        y: number,
+        createObj: (type: { type: string; typecode: number }) => void
+    ) {
         super(context);
         [this.x, this.y] = [x, y];
+
+        this.createObj = createObj;
     }
 
     // 生成主菜单
@@ -75,6 +84,7 @@ export class Menu extends Draw {
                     ImgElement.height
                 );
                 this.context.font = "20px sans-serif";
+                const prefillstyle = this.context.fillStyle;
                 this.context.fillStyle = "#595959";
                 this.context.textAlign = "center";
                 this.context.fillText(
@@ -82,7 +92,9 @@ export class Menu extends Draw {
                     this.x,
                     this.y + index * divi + obj.prefix + ImgElement.height + 30
                 );
+                this.context.fillStyle = prefillstyle;
 
+                // 只生成一次就好了
                 if (this.areas.length < this.ListOfObjs.length) {
                     this.areas.push({
                         mode: obj.name,
@@ -127,6 +139,8 @@ export class Menu extends Draw {
             }
         }
     }
+
+    // 更新这些数据
     updateSubMenuList() {
         // 模式没有改变，那么就不更新
         if (this.mode === this.lastMode) {
@@ -151,7 +165,7 @@ export class Menu extends Draw {
     // 判断一个点是否在一个区域的内部
     pointAtMenu([pointX, pointY]: [number, number]) {
         const areaMenu = this.areas.find(
-            ({ mode, x, y, width, height }): boolean => {
+            ({ x, y, width, height }): boolean => {
                 return pointX <= x + width &&
                     pointX >= x &&
                     pointY >= y &&
@@ -168,7 +182,33 @@ export class Menu extends Draw {
         }
     }
 
-    pointAtSubMenu([x, y]: [number, number]) {}
+    pointAtSubMenu([pointX, pointY]: [number, number]) {
+        // 更新下数据再说
+        this.updateSubMenuList();
+
+        const areaMenu = this.subMenuArea.find(
+            ({ x, y, width, height }): boolean => {
+                return pointX <= x + width &&
+                    pointX >= x &&
+                    pointY >= y &&
+                    pointY <= y + height
+                    ? true
+                    : false;
+            }
+        );
+
+        if (areaMenu) {
+            //  需要商榷！！！！！！！！！！！！！！！！！！！！！！完全错误的设计模式
+            this.createObj({
+                type: areaMenu.type,
+                typecode: areaMenu.typecode
+            });
+
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     draw(): Menu {
         const x = this.x;
@@ -187,6 +227,8 @@ export class Menu extends Draw {
         const x = this.x;
         const y = this.y;
         DrawObjbg(this.context, [x - 275, y - 25], [130, 650], 12, 150);
+
+        const prefillstyle = this.context.fillStyle;
         this.context.fillStyle = "#595959";
         this.context.font = "15px sans-serif";
         const t1 = getImg("t1");
@@ -244,9 +286,62 @@ export class Menu extends Draw {
         );
         this.context.fillText("锐角三角形", this.x - len, this.y * 13.5);
 
+        this.context.fillStyle = prefillstyle;
+
         // 如果没有的话就添加它的位置点阵进入这些数据里面，也就是只生成一次
         if (!SubMenuDataStore["Triangle"]) {
-            SubMenuDataStore["Triangle"].push();
+            console.log("it doesn't init");
+            SubMenuDataStore["Triangle"] = [];
+            SubMenuDataStore["Triangle"].push(
+                {
+                    type: "Triangle",
+                    typecode: 1,
+                    x: this.x - len - t1.width / 2,
+                    y: this.y,
+                    width: t1.width,
+                    height: t1.height
+                },
+                {
+                    type: "Triangle",
+                    typecode: 2,
+                    x: this.x - len - t2.width / 2,
+                    y: this.y * 3,
+                    width: t2.width,
+                    height: t2.height
+                },
+                {
+                    type: "Triangle",
+                    typecode: 3,
+                    x: this.x - len - t3.width / 2,
+                    y: this.y * 4.8,
+                    width: t3.width,
+                    height: t3.height
+                },
+                {
+                    type: "Triangle",
+                    typecode: 4,
+                    x: this.x - len - t4.width / 2,
+                    y: this.y * 7.2,
+                    width: t4.width,
+                    height: t4.height
+                },
+                {
+                    type: "Triangle",
+                    typecode: 5,
+                    x: this.x - len - t5.width / 2,
+                    y: this.y * 9.5,
+                    width: t5.width,
+                    height: t5.height
+                },
+                {
+                    type: "Triangle",
+                    typecode: 6,
+                    x: this.x - len - t6.width / 2,
+                    y: this.y * 11.5,
+                    width: t6.width,
+                    height: t6.height
+                }
+            );
         }
     }
     drawParallelogramObj() {
@@ -254,6 +349,8 @@ export class Menu extends Draw {
         const x = this.x;
         const y = this.y;
         DrawObjbg(this.context, [x - 275, y - 25], [130, 560], 12, 50);
+
+        const prefillstyle = this.context.fillStyle;
         this.context.fillStyle = "#595959";
         this.context.font = "15px sans-serif";
         const p1 = getImg("p1");
@@ -301,6 +398,8 @@ export class Menu extends Draw {
             p5.height
         );
         this.context.fillText("正方形", this.x - len, this.y * 12 - 10);
+
+        this.context.fillStyle = prefillstyle;
     }
     drawEchelonObj() {
         const len = 200;
@@ -308,6 +407,7 @@ export class Menu extends Draw {
         const y = this.y;
         DrawObjbg(this.context, [x - 275, y + 200], [130, 370], 12, 100);
 
+        const prefillstyle = this.context.fillStyle;
         this.context.fillStyle = "#595959";
         this.context.font = "15px sans-serif";
         const e1 = getImg("e1");
@@ -337,6 +437,8 @@ export class Menu extends Draw {
             e3.height
         );
         this.context.fillText("直角梯形", this.x - len, this.y * 12.5);
+
+        this.context.fillStyle = prefillstyle;
     }
     drawIrregularObj() {
         const len = 200;
@@ -344,6 +446,7 @@ export class Menu extends Draw {
         const y = this.y;
         DrawObjbg(this.context, [x - 275, y + 410], [130, 200], 12, 50);
 
+        const prefillstyle = this.context.fillStyle;
         this.context.fillStyle = "#595959";
         this.context.font = "15px sans-serif";
         const I1 = getImg("I1");
@@ -364,5 +467,7 @@ export class Menu extends Draw {
             I2.height
         );
         this.context.fillText("直角梯形", this.x - len, this.y + 615);
+
+        this.context.fillStyle = prefillstyle;
     }
 }

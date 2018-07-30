@@ -7,6 +7,9 @@ export const InitBg = (
     [width, height]: Pos,
     radius: number
 ) => {
+    // 记录先前的fillstyle,之后还原
+    const preFillStyle = context.fillStyle;
+
     context.fillStyle = "white";
     context.beginPath();
     context.moveTo(x + radius, y);
@@ -32,6 +35,8 @@ export const InitBg = (
     context.arcTo(x, y, x + radius, y, radius);
     context.closePath();
     context.fill();
+
+    context.fillStyle = preFillStyle;
 };
 
 // 子菜单背景
@@ -42,6 +47,9 @@ export const DrawObjbg = (
     radius: number,
     h: number
 ) => {
+    // 记录先前的fillstyle,之后还原
+    const preFillStyle = context.fillStyle;
+
     context.fillStyle = "white";
     context.beginPath();
     context.moveTo(x + radius, y);
@@ -70,4 +78,6 @@ export const DrawObjbg = (
     context.arcTo(x, y, x + radius, y, radius);
     context.closePath();
     context.fill();
+
+    context.fillStyle = preFillStyle;
 };

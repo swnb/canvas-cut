@@ -1,6 +1,7 @@
 // 每一类的子菜单数据
 export interface SubMenuDataType {
-    typeocde: number;
+    type: string;
+    typecode: number;
     x: number;
     y: number;
     width: number;

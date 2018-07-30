@@ -24,6 +24,7 @@ interface ObjType {
 
 interface MenuType {
     pointAtMenu(pos: Pos): boolean;
+    pointAtSubMenu(pos: Pos): boolean;
     draw(): MenuType;
 }
 
@@ -44,16 +45,17 @@ class Cut extends Draw {
         this.context.strokeStyle = "whitesmoke";
         this.context.fillStyle = "pink";
 
-        this.menu = new Menu(this.context, 1175, 50);
+        this.menu = new Menu(this.context, 1175, 50, this.createObj);
     }
 
     init(): Cut {
         // 创建一个简单的图形
-        this.context.lineWidth = 4;
+        this.context.lineWidth = 6;
 
         const startPos: Pos = [200, 200];
         this.rect(0, 0, 1280, 800, false);
-        this.rect(478, 350, 100, 100);
+
+        this.context.fillStyle = "#0f70ad";
 
         const type: ObjType = {
             type: "Irregular",
@@ -87,6 +89,16 @@ class Cut extends Draw {
 
     update() {}
 
+    createObj = (type: ObjType) => {
+        const startPos: Pos = [200, 200];
+        const obj = createObj(this.context, type, startPos, 200, 300).init();
+        this.allObj.push(obj);
+    };
+
+    // onMessage(){
+    // this.createObj()
+    // }
+
     draw() {
         this.allObj.forEach(ele => {
             ele.draw();
@@ -100,6 +112,8 @@ class Cut extends Draw {
 
         // 查找菜单，点击事件判断,存在终止判断，把逻辑交给其他人
         if (this.menu.pointAtMenu([x, y])) return;
+
+        if (this.menu.pointAtSubMenu([x, y])) return;
 
         // 从最后开始查找，相当于在页面前面从最前面开始找，找到了就是了
         const ele = [...this.allObj].reverse().find(
@@ -220,11 +234,13 @@ class Cut extends Draw {
             this.clear();
             this.drawBg();
             this.draw();
+            this.context.beginPath();
             this.context.setLineDash([25, 15]);
             this.context.moveTo(x, y);
             this.context.lineTo(ev.offsetX, ev.offsetY);
             this.context.stroke();
             this.context.setLineDash([]);
+            this.context.closePath();
         };
     };
     listenerClipEnd(x: number, y: number, ex: number, ey: number) {
