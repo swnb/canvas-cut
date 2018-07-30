@@ -173,11 +173,11 @@ class Cut extends Draw {
             } else {
                 timeRecord = now;
             }
-
+            const [ex, ey] = util.getEventPos(ev);
             //  这个update一定要在前面实现，这个变化的数据不能继续扩张它的影响
-            ele.update(ev.offsetX - x + originX, ev.offsetY - y + originY);
-            ele.x = ev.offsetX - x + originX;
-            ele.y = ev.offsetY - y + originY;
+            ele.update(ex - x + originX, ey - y + originY);
+            ele.x = ex - x + originX;
+            ele.y = ey - y + originY;
 
             this.redraw();
         };
@@ -204,7 +204,7 @@ class Cut extends Draw {
 
             const startPoint: Pos = [midPoint[0], midPoint[1] + 10];
 
-            const movePoint: Pos = [ev.offsetX, ev.offsetY];
+            const movePoint: Pos = util.getEventPos(ev);
 
             this.rect(movePoint[0], movePoint[1], 10, 10);
             this.rect(startPoint[0], startPoint[1], 10, 10);
@@ -223,6 +223,7 @@ class Cut extends Draw {
         this.context.beginPath();
         this.context.moveTo(x, y);
         let timeRecord = Date.now();
+
         return (ev: MouseEvent) => {
             // 实现去抖动的功能
             const now = Date.now();
@@ -239,7 +240,9 @@ class Cut extends Draw {
             this.context.beginPath();
             this.context.setLineDash([25, 15]);
             this.context.moveTo(x, y);
-            this.context.lineTo(ev.offsetX, ev.offsetY);
+            // 事件的坐标
+            const [ex, ey] = util.getEventPos(event);
+            this.context.lineTo(ex, ey);
             const preStrokeStyle = this.context.strokeStyle;
             this.context.strokeStyle = "red";
             this.context.stroke();

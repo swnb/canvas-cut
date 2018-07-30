@@ -1,7 +1,9 @@
 <template>
   <div class="geometricCutting-root" >
     <div ref="geometricCutting-element" >
-      <canvas ref="canvas" class="geometricCutting-canvas" @mousedown="onmousedown"></canvas>
+      <canvas ref="canvas" class="geometricCutting-canvas" 
+        @mousedown="onmousedown"
+       @touchstart='ontouchstart'></canvas>
     </div>
   </div>
 </template>
@@ -34,8 +36,41 @@ export default {
         this.params[key] = val;
       });
     },
+    //touchstart, touchmove, touchend
+    // mousedown, mousemove, mouseup
+    ontouchstart(event) {
+      const [x, y] = [
+        event.touches[0].clientX - event.target.getBoundingClientRect().left,
+        event.touches[0].clientY - event.target.getBoundingClientRect().top
+      ];
+
+      const listener = this.drawcanvas.ontouch(x, y);
+      if (listener) {
+        // 开始移动
+        this.canvas.ontouchmove = listener;
+        this.canvas.ontouchend = function() {
+          this.ontouchmove = null;
+        };
+      } else {
+        this.canvas.ontouchmove = this.drawcanvas.listenerClip(x, y);
+        this.$refs.canvas.ontouchend = event => {
+          console.log(event);
+          this.canvas.ontouchmove = null;
+          const [ex, ey] = [
+            event.changedTouches[0].clientX -
+              event.target.getBoundingClientRect().left,
+            event.changedTouches[0].clientY -
+              event.target.getBoundingClientRect().top
+          ];
+          this.drawcanvas.listenerClipEnd(x, y, ex, ey);
+        };
+      }
+    },
+
     onmousedown(event) {
       const [x, y] = [event.offsetX, event.offsetY];
+
+      console.log(x, y);
 
       const listener = this.drawcanvas.ontouch(x, y);
       if (listener) {
@@ -45,6 +80,7 @@ export default {
           this.onmousemove = null;
         };
       } else {
+        console.log(x, y);
         this.canvas.onmousemove = this.drawcanvas.listenerClip(x, y);
         this.$refs.canvas.onmouseup = event => {
           this.canvas.onmousemove = null;

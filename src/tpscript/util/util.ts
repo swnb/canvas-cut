@@ -12,6 +12,8 @@ import { deepcoyeArray } from "./dcarray";
 
 import { affineTransform } from "./affineTransformation";
 
+import { getEventPos } from "./geteventdis";
+
 const isInsideCircle = (
     x: number,
     y: number,
@@ -40,5 +42,7 @@ export default {
     // 深拷贝array
     deepcoyeArray,
     // 仿射变换
-    affineTransform
+    affineTransform,
+    // 获取到元素坐标的问题
+    getEventPos
 };
