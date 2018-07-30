@@ -43,7 +43,7 @@ class Cut extends Draw {
         super(context);
         this.context = context;
         this.context.strokeStyle = "whitesmoke";
-        this.context.fillStyle = "pink";
+        this.context.fillStyle = "#84ccc9";
 
         this.menu = new Menu(this.context, 1175, 50, this.createObj);
     }
@@ -55,7 +55,7 @@ class Cut extends Draw {
         const startPos: Pos = [200, 200];
         this.rect(0, 0, 1280, 800, false);
 
-        this.context.fillStyle = "#2e8889";
+        this.context.fillStyle = "#F4A322";
 
         // const type: ObjType = {
         //     type: "Irregular",
@@ -220,7 +220,6 @@ class Cut extends Draw {
         };
     };
     listenerClip = (x: number, y: number) => {
-        this.context.strokeStyle = "#f36";
         this.context.beginPath();
         this.context.moveTo(x, y);
         let timeRecord = Date.now();
@@ -241,9 +240,12 @@ class Cut extends Draw {
             this.context.setLineDash([25, 15]);
             this.context.moveTo(x, y);
             this.context.lineTo(ev.offsetX, ev.offsetY);
+            const preStrokeStyle = this.context.strokeStyle;
+            this.context.strokeStyle = "red";
             this.context.stroke();
             this.context.setLineDash([]);
             this.context.closePath();
+            this.context.strokeStyle = preStrokeStyle;
         };
     };
     listenerClipEnd(x: number, y: number, ex: number, ey: number) {

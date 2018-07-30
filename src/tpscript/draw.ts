@@ -14,7 +14,7 @@ export default abstract class Draw {
         this.context = context;
     }
 
-    private fillStyle = "pink";
+    private fillStyle = "#84ccc9";
 
     public rect(
         x: number,
@@ -69,7 +69,7 @@ export default abstract class Draw {
         );
         this.context.closePath();
         this.context.fill();
-        this.context.strokeStyle = "#33CCFF";
+        this.context.strokeStyle = "#05a9c6";
         this.context.stroke();
     }
     public drawImg(
