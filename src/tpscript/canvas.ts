@@ -2,6 +2,9 @@ import Draw from "./draw";
 
 import { Menu } from "./menu/menu";
 
+// Buttons 是实际的
+import { Buttons } from "./buttons/button";
+
 import {
     Obj,
     createObj,
@@ -36,6 +39,7 @@ class Cut extends Draw {
     private allObj: Array<Obj | SelfCreateObj | Circle> = [];
 
     private menu: MenuType;
+    private buttons: Buttons;
 
     public context: CanvasRenderingContext2D;
 
@@ -45,45 +49,16 @@ class Cut extends Draw {
         this.context.strokeStyle = "whitesmoke";
         this.context.fillStyle = "#84ccc9";
 
-        this.menu = new Menu(this.context, 1175, 50, this.createObj);
+        this.menu = new Menu(this.context, 1175, 50, this.createObj).draw();
+        this.buttons = new Buttons(this.context, {
+            rmEverything: this.rmEvething
+        }).draw();
     }
 
     init(): Cut {
-        // 创建一个简单的图形
         this.context.lineWidth = 6;
-
-        const startPos: Pos = [200, 200];
-        this.rect(0, 0, 1280, 800, false);
-
         this.context.fillStyle = "#F4A322";
-
-        // const type: ObjType = {
-        //     type: "Irregular",
-        //     typecode: 2
-        // };
-
-        // const obj = createObj(this.context, type, startPos, 200, 300).init();
-
-        // obj.draw();
-
-        // this.allObj.push(obj);
-
-        // 创建一个新的物体，这个物体生成菜单
-
-        this.menu.draw();
-
-        // 圆形的测试
-        // const circle = new Circle(this.context, startPos, 150, 50, 80);
-
-        // circle
-        // .init({
-        // type: "cirle",
-        // typecode: 1
-        // })
-        // .draw();
-
-        // this.allObj.push(circle);
-
+        this.redraw();
         return this;
     }
 
@@ -108,9 +83,14 @@ class Cut extends Draw {
         });
 
         this.menu.draw();
+
+        this.buttons.draw();
     }
 
     ontouch(x: number, y: number) {
+        // 如果确认了点击的事件，那么就把逻辑交给别人
+        if (this.buttons.ifClick(x, y)) return;
+
         // 查找菜单，点击事件判断,存在终止判断，把逻辑交给其他人
         if (this.menu.pointAtMenu([x, y])) return;
 
@@ -166,7 +146,9 @@ class Cut extends Draw {
         );
 
         //不存在直接返回
-        if (!ele) return false;
+        if (!ele) {
+            return false;
+        }
 
         // 判断旋转还是移动
         switch (ele.mode) {
@@ -370,8 +352,9 @@ class Cut extends Draw {
         this.redraw();
     }
     // 清除所有的对象
-    rmEvething = () => {
+    rmEvething = (): boolean => {
         this.allObj = [];
+        return true;
     };
 }
 

@@ -55,7 +55,7 @@ export class Menu extends Draw {
 
     // 上一个模式和n当前的模式
     public lastMode: Mode = "none";
-    public mode: Mode = "Triangle";
+    public mode: Mode = "none";
 
     constructor(
         context: CanvasRenderingContext2D,
