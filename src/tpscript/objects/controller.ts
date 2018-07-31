@@ -16,8 +16,10 @@ export abstract class ControObj extends Draw {
     public directPos: [number, number, number] = [0, 0, 0];
     public rotatePos: [number, number, number] = [0, 0, 0];
 
+    public selected: boolean = false;
+
     // 修正参数
-    private prefix = 30;
+    private prefix = 50;
     private iconWidth = 50;
 
     constructor(
@@ -61,7 +63,10 @@ export abstract class ControObj extends Draw {
     }
     // 生成，并且返回点阵的信息
     drawIcon() {
-        this.rotatePos = this.drawRotateObj();
-        this.directPos = this.drawMoveObj();
+        console.log(this.selected);
+        if (this.selected) {
+            this.rotatePos = this.drawRotateObj();
+            this.directPos = this.drawMoveObj();
+        }
     }
 }

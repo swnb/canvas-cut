@@ -16,8 +16,6 @@ export class Obj extends ControObj {
     // 点阵的信息，用于对于，只能生成一次
     public polygonPoints: Array<Pos> = [];
 
-    public selected: boolean = true;
-
     constructor(
         context: CanvasRenderingContext2D,
         objType: ObjType,
@@ -98,17 +96,6 @@ export class Obj extends ControObj {
 
         // 画多边形
         this.polygonFill(this.polygonPoints);
-
-        // if (this.selected) {
-        //     const prefillStyle = this.context.fillStyle;
-
-        //     this.context.fillStyle = "whitesmoke";
-        //     this.polygonPoints.forEach((pos: Pos) => {
-        //         this.circle(pos[0], pos[1], 10);
-        //     });
-        //     this.context.fillStyle = prefillStyle;
-        // }
-
         this.context.closePath();
         this.context.stroke();
         return this;

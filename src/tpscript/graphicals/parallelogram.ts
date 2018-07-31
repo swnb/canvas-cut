@@ -29,11 +29,11 @@ export const Parallelogram: GetPos = (
         // 窄一点的平行四边形
         case 3: {
             return [
-                [x + width / 2, y],
+                [x + width / 4, y],
                 [x + (width * 3) / 4, y],
                 [x + width / 4, y + height],
-                [x, y + height]
-            ]
+                [x - width / 4, y + height]
+            ];
         }
         // 长方形
         case 4: {
@@ -51,7 +51,7 @@ export const Parallelogram: GetPos = (
                 [x + width, y],
                 [x + width, y + width],
                 [x, y + width]
-            ]
+            ];
         }
 
         default:

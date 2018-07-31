@@ -111,8 +111,6 @@ class Cut extends Draw {
     }
 
     ontouch(x: number, y: number) {
-        this.circle(x, y, 10);
-
         // 查找菜单，点击事件判断,存在终止判断，把逻辑交给其他人
         if (this.menu.pointAtMenu([x, y])) return;
 
@@ -121,9 +119,29 @@ class Cut extends Draw {
         // 从最后开始查找，相当于在页面前面从最前面开始找，找到了就是了
         const ele = [...this.allObj].reverse().find(
             (obj: Obj | SelfCreateObj | Circle): boolean => {
-                const rotatePos: [number, number, number] = obj.rotatePos;
-                const directPos: [number, number, number] = obj.directPos;
-                // 判断一个点是否在这个区域内部
+                if (obj.selected) {
+                    const rotatePos: [number, number, number] = obj.rotatePos;
+                    const directPos: [number, number, number] = obj.directPos;
+
+                    // 判断一个点是否在这个区域内部
+                    if (
+                        util.isInsideArea(
+                            [x, y],
+                            [obj.x, obj.y],
+                            obj.width,
+                            obj.height,
+                            obj.polygonPoints
+                        ) ||
+                        util.isInsideCircle(x, y, directPos)
+                    ) {
+                        obj.mode = "move";
+                        return true;
+                    } else if (util.isInsideCircle(x, y, rotatePos)) {
+                        obj.mode = "rotate";
+                        return true;
+                    }
+                }
+                // 如果对象不是被已经被选中的对象
                 if (
                     util.isInsideArea(
                         [x, y],
@@ -131,15 +149,19 @@ class Cut extends Draw {
                         obj.width,
                         obj.height,
                         obj.polygonPoints
-                    ) ||
-                    util.isInsideCircle(x, y, directPos)
+                    )
                 ) {
+                    // 清除所有的obj对象备选状态，对当前的选中对象设置选中的状态
+                    this.allObj.forEach(obj => {
+                        obj.selected = false;
+                    });
+                    obj.selected = true;
                     obj.mode = "move";
+                    // 更新所有的状态并且重新生成新的状态
+                    this.redraw();
                     return true;
-                } else if (util.isInsideCircle(x, y, rotatePos)) {
-                    obj.mode = "rotate";
-                    return true;
-                } else return false;
+                }
+                return false;
             }
         );
 
@@ -333,6 +355,7 @@ class Cut extends Draw {
                     return newObj;
                 });
 
+                // 连个就生成新的元素点阵，并且更新，其他情况返回原本的值
                 if (ele.length === 2) {
                     previous.push(...ele);
                     return previous;
@@ -346,6 +369,10 @@ class Cut extends Draw {
 
         this.redraw();
     }
+    // 清除所有的对象
+    rmEvething = () => {
+        this.allObj = [];
+    };
 }
 
 export default (context: CanvasRenderingContext2D) =>
