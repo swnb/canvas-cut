@@ -1,9 +1,6 @@
 import { Obj, ObjType } from "./obj";
-export { Obj, ObjType } from "./obj";
-
 import { SelfCreateObj } from "./selfcreate";
 import { Circle } from "./circle";
-export { SelfCreateObj } from "./selfcreate";
 
 type Pos = [number, number];
 
@@ -31,3 +28,6 @@ export function createObj(
 
     return new Obj(context, objType, startP, width, height).init();
 }
+
+// 导出所有的引入
+export { SelfCreateObj, Circle, Obj, ObjType };

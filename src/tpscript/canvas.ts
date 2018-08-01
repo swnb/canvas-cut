@@ -56,6 +56,18 @@ class Cut extends Draw {
     }
 
     init(): Cut {
+        // const log = console.log;
+        // window.console.log = (poses: Array<Pos>) => {
+        //     if (!Array.isArray(poses)) {
+        //         return log(poses);
+        //     }
+        //     log(poses);
+        //     poses.forEach(pos => {
+        //         this.context.arc(pos[0], pos[1], 10, 0, Math.PI * 2);
+        //         this.context.fill();
+        //     });
+        // };
+
         this.context.lineWidth = 6;
         this.context.fillStyle = "#F4A322";
         this.redraw();

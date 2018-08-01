@@ -22,7 +22,6 @@ export const getIntersection = (
         const y =
             parseFloat((ak * x).toFixed(3)) +
             (la1[0] * la2[1] - la2[0] * la1[1]) / (la1[0] - la2[0]);
-
         if (
             pointAtLine([x, y], la1, la2, 12) &&
             pointAtLine([x, y], lb1, lb2, 12)
@@ -57,7 +56,7 @@ export const getIntersection = (
     }
 };
 
-const pointAtLine = (
+export const pointAtLine = (
     point: Pos,
     startPoint: Pos,
     endPoint: Pos,
@@ -67,10 +66,12 @@ const pointAtLine = (
         Math.pow(point[0] - startPoint[0], 2) +
             Math.pow(point[1] - startPoint[1], 2)
     );
+
     const endToPoint = Math.sqrt(
         Math.pow(point[0] - endPoint[0], 2) +
             Math.pow(point[1] - endPoint[1], 2)
     );
+
     const startToEnd = Math.sqrt(
         Math.pow(startPoint[0] - endPoint[0], 2) +
             Math.pow(startPoint[1] - endPoint[1], 2)

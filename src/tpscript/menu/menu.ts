@@ -5,6 +5,7 @@ import { InitBg, DrawObjbg } from "./initbg";
 
 // 引入子菜单的所有类型和所有的数据
 import { SubMenuDataStore, SubMenuDataType } from "./datastore";
+import { clearTimeout } from "timers";
 
 type Mode =
     | "Triangle"
@@ -52,6 +53,8 @@ export class Menu extends Draw {
     private subMenuArea: SubMenuDataType[] = [];
 
     private createObj: (type: { type: string; typecode: number }) => void;
+
+    // private closeTimeId: NodeJS.Timer = setTimeout(() => {}, 10000000);
 
     // 上一个模式和n当前的模式
     public lastMode: Mode = "none";
@@ -108,10 +111,18 @@ export class Menu extends Draw {
         );
     }
 
-    chageMode(mode: Mode) {
+    changeMode(mode: Mode) {
+        // 消除之前的计数器，这部分的编译是有问题的
+        // clearTimeout(this.closeTimeId);
+
         this.lastMode = this.mode;
         this.mode = mode;
         this.updateSubMenuList();
+
+        // 定时间让菜单消失
+        // this.closeTimeId = setTimeout(() => {
+        // this.changeMode("none");
+        // }, 3000);
     }
 
     // 生成子菜单
@@ -119,6 +130,7 @@ export class Menu extends Draw {
         // "Triangle" | "Parallelogram" | "Echelon" | "Irregular" | "none"
         switch (this.mode) {
             case "none": {
+                console.log("none");
                 break;
             }
             case "Triangle": {
@@ -180,7 +192,7 @@ export class Menu extends Draw {
             }
         );
         if (areaMenu) {
-            this.chageMode(areaMenu.mode);
+            this.changeMode(areaMenu.mode);
             return true;
         } else {
             return false;

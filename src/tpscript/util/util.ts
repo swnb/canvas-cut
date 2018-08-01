@@ -14,6 +14,8 @@ import { affineTransform } from "./affineTransformation";
 
 import { getEventPos } from "./geteventdis";
 
+import { getInsCircle } from "./getIntersectionCircle";
+
 const isInsideCircle = (
     x: number,
     y: number,
@@ -44,5 +46,7 @@ export default {
     // 仿射变换
     affineTransform,
     // 获取到元素坐标的问题
-    getEventPos
+    getEventPos,
+    // 获取线和圆之间的截点
+    getInsCircle
 };
