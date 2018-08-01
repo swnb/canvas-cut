@@ -3,7 +3,13 @@ import { ControObj } from "./controller";
 type Pos = [number, number];
 
 export class SelfCreateObj extends ControObj {
+    public objType = {
+        type: "selfCreateObj",
+        typecode: 1
+    };
+
     public polygonPoints: Pos[] = [];
+
     constructor(
         context: CanvasRenderingContext2D,
         startP: Pos,

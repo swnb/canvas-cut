@@ -9,12 +9,14 @@ interface ObjType {
 
 export class Circle extends ControObj {
     public objType: ObjType = {
-        type: "cirle",
+        type: "Ellipse",
         typecode: 1
     };
 
+    public selected: boolean = false;
+
     // 点阵信息
-    public polygonPoints: Array<Pos> = [];
+    public polygonPoints: [Pos, Pos] = [[0, 0], [0, 0]];
 
     public middlePoint: [number, number] = [0, 0];
     public r: number = 0;
@@ -24,15 +26,16 @@ export class Circle extends ControObj {
         startPos: Pos,
         width: number,
         height: number,
-        r: number
+        r: number,
+        objType: ObjType
     ) {
         super(context, startPos, width, height);
 
+        this.objType = objType;
         this.r = r;
     }
 
-    init(objType: ObjType) {
-        this.objType = objType;
+    init() {
         this.middlePoint = [this.x + this.width / 2, this.y + this.height / 2];
         this.x -= 50;
         this.y -= 50;
@@ -55,32 +58,44 @@ export class Circle extends ControObj {
             (point: Pos): Pos => {
                 return [point[0] + xdivi, point[1] + ydivi];
             }
-        );
+        ) as [Pos, Pos];
 
         return this;
     }
 
     draw() {
-        // 画出图标
-        this.drawIcon();
+        // 画出图标,圆形还是不画了吧，没啥用吧
+        // this.drawIcon();
 
         switch (this.objType.typecode) {
-            case 1: {
-                this.circle(this.middlePoint[0], this.middlePoint[1], this.r);
+            case 1:
+                {
+                    this.circle(
+                        this.middlePoint[0],
+                        this.middlePoint[1],
+                        this.r
+                    );
+                }
                 break;
-            }
-            case 2: {
-                this.oval(
-                    this.middlePoint[0],
-                    this.middlePoint[1],
-                    this.width,
-                    this.height
-                );
+            case 2:
+                {
+                    this.oval(
+                        this.middlePoint[0],
+                        this.middlePoint[1],
+                        this.width - 80,
+                        this.height - 250
+                    );
+                }
                 break;
-            }
-            default: {
-                this.circle(this.middlePoint[0], this.middlePoint[1], this.r);
-            }
+            default:
+                {
+                    this.circle(
+                        this.middlePoint[0],
+                        this.middlePoint[1],
+                        this.r
+                    );
+                }
+                break;
         }
         return this;
     }

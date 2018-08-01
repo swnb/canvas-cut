@@ -2,6 +2,7 @@ import { Obj, ObjType } from "./obj";
 export { Obj, ObjType } from "./obj";
 
 import { SelfCreateObj } from "./selfcreate";
+import { Circle } from "./circle";
 export { SelfCreateObj } from "./selfcreate";
 
 type Pos = [number, number];
@@ -23,5 +24,10 @@ export function createObj(
     width: number,
     height: number
 ) {
-    return new Obj(context, objType, startP, width, height);
+    // 如果是圆形的话，截获它
+    if (objType.type === "Ellipse") {
+        return new Circle(context, startP, width, height, 100, objType).init();
+    }
+
+    return new Obj(context, objType, startP, width, height).init();
 }

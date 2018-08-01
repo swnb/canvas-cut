@@ -61,6 +61,8 @@ export default abstract class Draw {
     }
     public polygonFill(pos: Array<Pos>) {
         this.context.beginPath();
+        const preStrokeStyle = this.context.strokeStyle;
+        this.context.strokeStyle = "#05a9c6";
         pos.forEach(
             ([posx, posy], index) =>
                 index == 0
@@ -69,8 +71,8 @@ export default abstract class Draw {
         );
         this.context.closePath();
         this.context.fill();
-        this.context.strokeStyle = "#05a9c6";
         this.context.stroke();
+        this.context.strokeStyle = preStrokeStyle;
     }
     public drawImg(
         Image: HTMLImageElement,

@@ -4,7 +4,7 @@ import { getImg } from "../imgbase64";
 import { InitBg, DrawObjbg } from "./initbg";
 
 // 引入子菜单的所有类型和所有的数据
-import { SubMenuDataStore, SubMenu, SubMenuDataType } from "./datastore";
+import { SubMenuDataStore, SubMenuDataType } from "./datastore";
 
 type Mode =
     | "Triangle"
@@ -55,7 +55,7 @@ export class Menu extends Draw {
 
     // 上一个模式和n当前的模式
     public lastMode: Mode = "none";
-    public mode: Mode = "none";
+    public mode: Mode = "Ellipse";
 
     constructor(
         context: CanvasRenderingContext2D,
@@ -137,6 +137,10 @@ export class Menu extends Draw {
                 this.drawIrregularObj();
                 break;
             }
+            case "Ellipse": {
+                this.drawEllipseObj();
+                break;
+            }
         }
     }
 
@@ -150,7 +154,8 @@ export class Menu extends Draw {
             case "Parallelogram":
             case "Echelon":
             case "Irregular":
-            case "Triangle": {
+            case "Triangle":
+            case "Ellipse": {
                 this.subMenuArea = SubMenuDataStore[this.mode];
                 break;
             }
@@ -203,7 +208,7 @@ export class Menu extends Draw {
                 type: areaMenu.type,
                 typecode: areaMenu.typecode
             });
-
+            // 伤心啊，全是这种代码，if语句真的是恶毒，真不想写这种代码，但是又没什么好的办法，真的难受
             return true;
         } else {
             return false;
@@ -569,6 +574,59 @@ export class Menu extends Draw {
                     y: this.y + 535,
                     width: I2.width,
                     height: I2.height
+                }
+            );
+        }
+    }
+    drawEllipseObj() {
+        const len = 200;
+        const x = this.x;
+        const y = this.y;
+        DrawObjbg(this.context, [x - 275, y + 510], [130, 200], 12, 50);
+
+        const prefillstyle = this.context.fillStyle;
+        this.context.fillStyle = "#595959";
+        this.context.font = "15px sans-serif";
+        const C1 = getImg("C1");
+        this.drawImg(
+            C1,
+            this.x - len - C1.width / 2,
+            this.y + 525,
+            C1.width,
+            C1.height
+        );
+        this.context.fillText("圆形", this.x - len, this.y + 625);
+        const C2 = getImg("C2");
+        this.drawImg(
+            C2,
+            this.x - len - C2.width / 2,
+            this.y + 630,
+            C2.width,
+            C2.height
+        );
+        this.context.fillText("椭圆", this.x - len, this.y + 725);
+
+        this.context.fillStyle = prefillstyle;
+
+        if (!SubMenuDataStore["Ellipse"]) {
+            console.log("Ellipse init");
+            SubMenuDataStore["Ellipse"] = [];
+            SubMenuDataStore["Ellipse"].push(
+                {
+                    type: "Ellipse",
+                    typecode: 1,
+                    x: this.x - len - C1.width / 2,
+                    y: this.y + 525,
+                    width: C1.width,
+                    height: C1.height
+                },
+                {
+                    type: "Ellipse",
+                    typecode: 2,
+                    x: this.x - len - C2.width / 2,
+                    y: this.y + 630,
+                    width: C2.width,
+                    height: C2.height
                 }
             );
         }

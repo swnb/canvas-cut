@@ -64,17 +64,17 @@ class Cut extends Draw {
 
     update() {}
 
+    // 上帝7日造人，swnb7天造物
     createObj = (type: ObjType) => {
         const startPos: Pos = [
             Math.random() * 400 + 100,
             Math.random() * 200 + 100
         ];
-        const obj = createObj(this.context, type, startPos, 200, 300).init();
+        const obj = createObj(this.context, type, startPos, 200, 300);
         this.allObj.push(obj);
     };
 
     // onMessage(){
-    // this.createObj()
     // }
 
     draw() {
@@ -99,6 +99,23 @@ class Cut extends Draw {
         // 从最后开始查找，相当于在页面前面从最前面开始找，找到了就是了
         const ele = [...this.allObj].reverse().find(
             (obj: Obj | SelfCreateObj | Circle): boolean => {
+                // 新增加的模式，对于圆形有特殊的表达
+                if (obj.objType.type === "Ellipse") {
+                    // 判断是否在圆形内部
+                    const isInCircle = util.isInsideCircle(x, y, [
+                        ...obj.polygonPoints[1],
+                        (<Circle>obj).r
+                    ] as [number, number, number]);
+
+                    if (isInCircle) {
+                        console.log("inside circle");
+                        this.setSelect(obj);
+                        obj.mode = "move";
+                        return true;
+                    } else return false;
+                }
+
+                // 元素是否被选中，选中就要进行多种判断
                 if (obj.selected) {
                     const rotatePos: [number, number, number] = obj.rotatePos;
                     const directPos: [number, number, number] = obj.directPos;
@@ -132,10 +149,7 @@ class Cut extends Draw {
                     )
                 ) {
                     // 清除所有的obj对象备选状态，对当前的选中对象设置选中的状态
-                    this.allObj.forEach(obj => {
-                        obj.selected = false;
-                    });
-                    obj.selected = true;
+                    this.setSelect(obj);
                     obj.mode = "move";
                     // 更新所有的状态并且重新生成新的状态
                     this.redraw();
@@ -260,12 +274,15 @@ class Cut extends Draw {
         this.drawBg();
         this.draw();
         this.context.beginPath();
+        const preStrokeStyle = this.context.strokeStyle;
         this.context.lineWidth = 3;
         this.context.strokeStyle = "red";
         this.context.moveTo(x, y);
         this.context.lineTo(ex, ey);
         this.context.stroke();
         this.context.closePath();
+        this.context.strokeStyle = preStrokeStyle;
+
         this.getInsertPoints([x, y], [ex, ey]);
     }
     // 判断是否存在一个线段和它相交
@@ -351,9 +368,21 @@ class Cut extends Draw {
 
         this.redraw();
     }
+
+    setSelect(obj: Obj | SelfCreateObj | Circle) {
+        this.allObj.forEach(obj => {
+            obj.selected = false;
+        });
+        obj.selected = true;
+    }
     // 清除所有的对象
     rmEvething = (): boolean => {
-        this.allObj = [];
+        //  没啥选中的就删除最后一个，选中就选中这个元素
+        if (this.allObj.every(obj => !obj.selected)) {
+            this.allObj.pop();
+        } else {
+            this.allObj = this.allObj.filter(obj => !obj.selected);
+        }
         return true;
     };
 }

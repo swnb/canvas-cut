@@ -63,7 +63,6 @@ export abstract class ControObj extends Draw {
     }
     // 生成，并且返回点阵的信息
     drawIcon() {
-        console.log(this.selected);
         if (this.selected) {
             this.rotatePos = this.drawRotateObj();
             this.directPos = this.drawMoveObj();
