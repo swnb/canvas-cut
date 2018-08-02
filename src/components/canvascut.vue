@@ -70,8 +70,6 @@ export default {
     onmousedown(event) {
       const [x, y] = [event.offsetX, event.offsetY];
 
-      console.log(x, y);
-
       const listener = this.drawcanvas.ontouch(x, y);
       if (listener) {
         // 开始移动

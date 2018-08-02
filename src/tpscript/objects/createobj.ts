@@ -1,6 +1,7 @@
 import { Obj, ObjType } from "./obj";
 import { SelfCreateObj } from "./selfcreate";
 import { Circle } from "./circle";
+import { Sector } from "./sector";
 
 type Pos = [number, number];
 
@@ -29,5 +30,29 @@ export function createObj(
     return new Obj(context, objType, startP, width, height).init();
 }
 
+export function createSector(
+    context: CanvasRenderingContext2D,
+    startPos: Pos,
+    middlePoint: Pos,
+    firstInsertPoint: Pos,
+    secondInsertPoint: Pos,
+    width: number,
+    height: number,
+    r: number,
+    objType: ObjType
+) {
+    return new Sector(
+        context,
+        startPos,
+        middlePoint,
+        firstInsertPoint,
+        secondInsertPoint,
+        width,
+        height,
+        r,
+        objType
+    );
+}
+
 // 导出所有的引入
-export { SelfCreateObj, Circle, Obj, ObjType };
+export { SelfCreateObj, Circle, Sector, Obj, ObjType };

@@ -8,9 +8,11 @@ import { Buttons } from "./buttons/button";
 import {
     Obj,
     Circle,
+    Sector,
     createObj,
     SelfCreateObj,
-    createObjBySelf
+    createObjBySelf,
+    createSector
 } from "./objects/createobj";
 
 import util from "./util/util";
@@ -202,6 +204,7 @@ class Cut extends Draw {
             } else {
                 timeRecord = now;
             }
+
             const [ex, ey] = util.getEventPos(ev);
             //  这个update一定要在前面实现，这个变化的数据不能继续扩张它的影响
             ele.update(ex - x + originX, ey - y + originY);
@@ -223,7 +226,6 @@ class Cut extends Draw {
             // 实现去抖动的功能
             const now = Date.now();
             const divi = now - timeRecord;
-
             if (divi < 2) {
                 return;
             } else {
@@ -336,15 +338,25 @@ class Cut extends Draw {
 
                         const startPoint: Pos = [OriginObj.x, OriginObj.y];
 
-                        const obj = new Circle(
+                        const objType: ObjType = {
+                            type: "Sector",
+                            typecode: 1
+                        };
+
+                        const sector = createSector(
                             this.context,
                             startPoint,
+                            midPoint,
+                            pointOne,
+                            pointTwo,
                             2 * (<Circle>OriginObj).r,
                             2 * (<Circle>OriginObj).r,
                             (<Circle>OriginObj).r,
-                            OriginObj.objType
+                            objType
                         );
 
+                        console.log("sector.init()");
+                        sector.draw();
                         previous.push(OriginObj);
                         return previous;
                     }

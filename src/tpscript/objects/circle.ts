@@ -64,7 +64,8 @@ export class Circle extends ControObj {
     }
 
     draw() {
-        // 画出图标,圆形还是不画了吧，没啥用吧
+        // 画出图标,圆形还是不画了吧，没啥用吧？以后再去考虑这方面的问题吧？
+
         // this.drawIcon();
 
         switch (this.objType.typecode) {
