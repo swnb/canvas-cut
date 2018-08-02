@@ -29,9 +29,12 @@ export default (
             // 错误结果直接返回
             if (!resultWithInsert.res) return [];
 
+            // 得到了两个数据点，都是图形的交点
             const [pointOne, pointTwo]: [Pos, Pos] = resultWithInsert.point;
-        }
 
+            // 不得已而为止，最后的结果就是这个样子
+            return [[pointOne, pointTwo, midPoint]];
+        }
         // 本来十分优雅的代码，现在搞成这个样子
 
         // 聚合 将生成一个一个的数据点阵转换成线，考虑用映射该信这段代码
@@ -66,6 +69,8 @@ export default (
 
                     if (result.res) {
                         return result.point;
+                    } else {
+                        return undefined;
                     }
                 })
                 // 这是一个图形的聚合，实际上得到的代码是一种通讯介质，用管道的形式将它压缩，输出

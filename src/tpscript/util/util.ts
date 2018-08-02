@@ -16,6 +16,8 @@ import { getEventPos } from "./geteventdis";
 
 import { getInsCircle } from "./getIntersectionCircle";
 
+import { getWdithHeight } from "./getWH";
+
 const isInsideCircle = (
     x: number,
     y: number,
@@ -48,5 +50,7 @@ export default {
     // 获取到元素坐标的问题
     getEventPos,
     // 获取线和圆之间的截点
-    getInsCircle
+    getInsCircle,
+    // 获取到点阵的信息 width height
+    getWdithHeight
 };

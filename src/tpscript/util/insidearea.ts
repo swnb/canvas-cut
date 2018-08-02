@@ -1,5 +1,6 @@
 type Pos = [number, number];
 
+// 对于数据点阵来进行运算和深度的加速
 const isInsidePolygon = (point: Pos, poses: Pos[]): boolean => {
     return poses
         .reduce(

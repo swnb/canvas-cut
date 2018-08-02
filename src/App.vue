@@ -1,17 +1,17 @@
 <template>
   <div id="app">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <canvas-cut msg="Welcome to canvascut,made by TypeScript App"/>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import HelloWorld from "./components/HelloWorld.vue";
+import CanvasCut from "./components/canvascut.vue";
 
 export default Vue.extend({
   name: "app",
   components: {
-    HelloWorld
+    CanvasCut
   }
 });
 </script>

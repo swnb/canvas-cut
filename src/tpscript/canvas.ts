@@ -7,12 +7,11 @@ import { Buttons } from "./buttons/button";
 
 import {
     Obj,
+    Circle,
     createObj,
     SelfCreateObj,
     createObjBySelf
 } from "./objects/createobj";
-
-import { Circle } from "./objects/circle";
 
 import util from "./util/util";
 
@@ -224,6 +223,7 @@ class Cut extends Draw {
             // 实现去抖动的功能
             const now = Date.now();
             const divi = now - timeRecord;
+
             if (divi < 2) {
                 return;
             } else {
@@ -254,10 +254,11 @@ class Cut extends Draw {
         this.context.moveTo(x, y);
         let timeRecord = Date.now();
 
-        return (ev: MouseEvent) => {
+        return (event: MouseEvent) => {
             // 实现去抖动的功能
             const now = Date.now();
             const divi = now - timeRecord;
+
             if (divi < 100) {
                 return;
             } else {
@@ -297,18 +298,66 @@ class Cut extends Draw {
 
         this.getInsertPoints([x, y], [ex, ey]);
     }
-    // 判断是否存在一个线段和它相交
+    // 一个线段和物体相交的整个过程
     getInsertPoints(lineA1: Pos, LineA2: Pos) {
         // 将this.obj的所有物体进行整合，整合之后得到所有的物体的一个集合
         // 这里的问题其实在于是否要全部更新所有存在的对象，我的想法是全部更新，之后考虑部分更新到部分
         this.allObj = slice(this.allObj, lineA1, LineA2).reduce(
             (
-                previous: Array<Obj | SelfCreateObj>,
+                previous: Array<Obj | SelfCreateObj | Circle>,
                 element: Array<Pos[]>,
                 index: number
-            ): Array<Obj | SelfCreateObj> => {
+            ): Array<Obj | SelfCreateObj | Circle> => {
+                const OriginObj = this.allObj[index];
+
+                // 正常情况下切割的物体只会出现element的长度为2
+
+                // 分析可能的出现情况，只针对被切割开得物体进行划分
+                switch (element.length) {
+                    case 2: {
+                        // 直接进行之后的下面的切割工作
+                        console.log("slice element");
+                        break;
+                    }
+                    // 这是没有被切割的物体，那么直接返回之前存在的元素
+                    case 0: {
+                        previous.push(OriginObj);
+                        return previous;
+                    }
+                    //  第三种新增加的元素,圆形的切割问题
+                    case 1: {
+                        // 看看数据本身再说
+                        console.log(element);
+                        const [pointOne, pointTwo, midPoint]: [
+                            Pos,
+                            Pos,
+                            Pos
+                        ] = element[0] as [Pos, Pos, Pos];
+
+                        const startPoint: Pos = [OriginObj.x, OriginObj.y];
+
+                        const obj = new Circle(
+                            this.context,
+                            startPoint,
+                            2 * (<Circle>OriginObj).r,
+                            2 * (<Circle>OriginObj).r,
+                            (<Circle>OriginObj).r,
+                            OriginObj.objType
+                        );
+
+                        previous.push(OriginObj);
+                        return previous;
+                    }
+                    default: {
+                        console.log(
+                            "something wrong is happend,the length of slice element is ",
+                            element.length
+                        );
+                    }
+                }
+
                 const ele = element.map(ele => {
-                    // 方向向量
+                    // 方向向量,考虑下这个设计是否合理,最后两个点是它的向量的一个结合点
                     const direct1 = ele.pop() as [number, number];
                     const direct2 = ele.pop() as [number, number];
 
@@ -321,59 +370,32 @@ class Cut extends Draw {
                     // 位置点阵的信息
                     const points = util.deepcoyeArray(ele);
 
-                    const maxPointWithSmallestPoint: [Pos, Pos] = points.reduce(
-                        (previous: [Pos, Pos], ele): [Pos, Pos] => {
-                            if (ele[0] < previous[0][0]) {
-                                previous[0][0] = ele[0];
-                            }
-                            if (ele[1] < previous[0][1]) {
-                                previous[0][1] = ele[1];
-                            }
-                            if (ele[0] > previous[1][0]) {
-                                previous[1][0] = ele[0];
-                            }
-                            if (ele[1] > previous[1][1]) {
-                                previous[1][1] = ele[1];
-                            }
-                            return previous;
-                        },
-                        [points[0], points[1]] as [Pos, Pos]
+                    // 拿到位置信息
+                    const [startPoint, [width, height]] = util.getWdithHeight(
+                        points
                     );
 
-                    const startPoints: Pos = maxPointWithSmallestPoint[0];
-
-                    const [width, height] = [
-                        maxPointWithSmallestPoint[1][0] -
-                            maxPointWithSmallestPoint[0][0],
-                        maxPointWithSmallestPoint[1][1] -
-                            maxPointWithSmallestPoint[0][1]
-                    ];
-
-                    // 得到的新的obj物体
+                    // 得到的新的obj物体，并且先画一次
                     const newObj = createObjBySelf(
                         this.context,
-                        startPoints,
+                        startPoint,
                         width,
                         height,
                         util.deepcoyeArray(ele)
                     ).draw();
 
-                    // 让每一个物体都能取重新画，但是不能让这些物体自己调度自己
+                    // 让每一个物体都能取重新画，但是调度的任务留给自己，含义是统一管理，避免改动导致bug，所以统一所有的调度任务只能在一个类里面完成
                     newObj.redraw = this.redraw.bind(this);
 
+                    // 设置定时画的功能
                     util.slowMove(newObj, direct, util.deepcoyeArray(ele));
 
                     return newObj;
                 });
 
-                // 连个就生成新的元素点阵，并且更新，其他情况返回原本的值
-                if (ele.length === 2) {
-                    previous.push(...ele);
-                    return previous;
-                } else {
-                    previous.push(this.allObj[index]);
-                    return previous;
-                }
+                // 返回正常情况下被切割的两个元素
+                previous.push(...ele);
+                return previous;
             },
             []
         );
@@ -387,9 +409,10 @@ class Cut extends Draw {
         });
         obj.selected = true;
     }
-    // 清除所有的对象
+
+    // 清除对象
     rmEvething = (): boolean => {
-        //  没啥选中的就删除最后一个，选中就选中这个元素
+        //  没啥选中的就删除最后一个，选中就清除这个元素自己
         if (this.allObj.every(obj => !obj.selected)) {
             this.allObj.pop();
         } else {
