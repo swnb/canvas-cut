@@ -1,15 +1,13 @@
 import { Obj, SelfCreateObj, Circle, Sector } from "./objects/createobj";
 
+import { AllObj } from "./canvas";
+
 import util from "./util/util";
 
 type Pos = [number, number];
 
-export default (
-    allObj: (Obj | SelfCreateObj | Circle | Sector)[],
-    lineA1: Pos,
-    LineA2: Pos
-): Array<Pos[][]> =>
-    allObj.map((obj: Obj | SelfCreateObj | Circle | Sector) => {
+export default (allObj: AllObj[], lineA1: Pos, LineA2: Pos): Array<Pos[][]> =>
+    allObj.map((obj: AllObj) => {
         // 一个管道的截取操作，这部分要分割圆形，这一部分的代码需要重新更换一下就可以了
         if (obj.objType.type === "Ellipse") {
             const [_, [middleX, middleY]] = obj.polygonPoints as [Pos, Pos];
@@ -32,12 +30,12 @@ export default (
             // 得到了两个数据点，都是图形的交点
             const [pointOne, pointTwo]: [Pos, Pos] = resultWithInsert.point;
 
-            // 不得已而为止，最后的结果就是这个样子
+            // 不得已而为之，最后的结果就是这个样子
             return [[pointOne, pointTwo, midPoint]];
         }
 
-        // 本来十分优雅的代码，现在搞成这个样子
-        if (obj.objType.type === "Sector") {
+        // 这部分是对于混血的截取，暂时把这些东西写成一般的形式
+        if (obj.objType.type === "Hybrid") {
             return [];
         }
 

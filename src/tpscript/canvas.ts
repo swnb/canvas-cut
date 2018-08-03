@@ -6,13 +6,10 @@ import { Menu } from "./menu/menu";
 import { Buttons } from "./buttons/button";
 
 import {
-    Obj,
     Circle,
     createObj,
-    SelfCreateObj,
     createObjBySelf,
-    createDiviSector,
-    Sector
+    createDiviSector
 } from "./objects/createobj";
 
 import util from "./util/util";
@@ -32,12 +29,38 @@ interface MenuType {
     draw(): MenuType;
 }
 
+export interface AllObj {
+    // 类型
+    objType: ObjType;
+    // 被选中
+    selected: boolean;
+    mode: "move" | "rotate" | "clip" | "static";
+    // 位置信息
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    // 控制器点阵
+    rotatePos: [number, number, number];
+    directPos: [number, number, number];
+    // 点阵
+    polygonPoints: Pos[];
+    // 画方式
+    draw(): object;
+
+    // 更新数据
+    update(x: number, y: number): object;
+
+    // 从新画
+    redraw(): void;
+}
+
 class Cut extends Draw {
     static create(context: CanvasRenderingContext2D): Cut {
         return new Cut(context);
     }
 
-    private allObj: Array<Obj | SelfCreateObj | Circle | Sector> = [];
+    private allObj: Array<AllObj> = [];
 
     private menu: MenuType;
     private buttons: Buttons;
@@ -112,7 +135,7 @@ class Cut extends Draw {
 
         // 从最后开始查找，相当于在页面前面从最前面开始找，找到了就是了
         const ele = [...this.allObj].reverse().find(
-            (obj: Obj | SelfCreateObj | Circle | Sector): boolean => {
+            (obj: AllObj): boolean => {
                 // 新增加的模式，对于圆形有特殊的表达
                 if (obj.objType.type === "Ellipse") {
                     // 判断是否在圆形内部
@@ -189,11 +212,7 @@ class Cut extends Draw {
         }
     }
     // 利用闭包实现一些特殊的功能，去抖动
-    listenerMove = (
-        ele: Obj | SelfCreateObj | Circle | Sector,
-        x: number,
-        y: number
-    ) => {
+    listenerMove = (ele: AllObj, x: number, y: number) => {
         const [originX, originY] = [ele.x, ele.y];
         let timeRecord = Date.now();
         return (ev: MouseEvent) => {
@@ -215,7 +234,7 @@ class Cut extends Draw {
             this.redraw();
         };
     };
-    listenerRotate = (ele: Obj | SelfCreateObj | Sector) => {
+    listenerRotate = (ele: AllObj) => {
         // 中心点
         const midPoint: Pos = [ele.x + ele.width / 2, ele.y + ele.height / 2];
 
@@ -308,10 +327,10 @@ class Cut extends Draw {
         // 这里的问题其实在于是否要全部更新所有存在的对象，我的想法是全部更新，之后考虑部分更新到部分
         this.allObj = slice(this.allObj, lineA1, LineA2).reduce(
             (
-                previous: Array<Obj | SelfCreateObj | Circle | Sector>,
+                previous: Array<AllObj>,
                 element: Array<Pos[]>,
                 index: number
-            ): Array<Obj | SelfCreateObj | Circle | Sector> => {
+            ): Array<AllObj> => {
                 const OriginObj = this.allObj[index];
                 // 正常情况下切割的物体只会出现element的长度为2
                 // 分析可能的出现情况，只针对被切割开得物体进行划分
@@ -426,7 +445,7 @@ class Cut extends Draw {
         this.redraw();
     }
 
-    setSelect(obj: Obj | SelfCreateObj | Circle | Sector) {
+    setSelect(obj: AllObj) {
         this.allObj.forEach(obj => {
             obj.selected = false;
         });

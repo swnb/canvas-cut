@@ -95,6 +95,8 @@ export class Sector extends ControObj {
         this.polygonPoints = this.polygonPoints.map(
             (point: Pos): Pos => [point[0] + xdivi, point[1] + ydivi]
         ) as [Pos, Pos, Pos, Pos];
+
+        return this;
     }
 
     updatePoints() {
@@ -128,6 +130,7 @@ export class Sector extends ControObj {
                 break;
             }
         }
+        return this;
     }
 
     drawSector() {
