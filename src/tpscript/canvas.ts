@@ -301,6 +301,7 @@ class Cut extends Draw {
             this.context.stroke();
             this.context.setLineDash([]);
             this.context.closePath();
+
             this.context.strokeStyle = preStrokeStyle;
         };
     };

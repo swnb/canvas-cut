@@ -83,6 +83,7 @@ export class Sector extends ControObj {
         this.sectionDirect = util.getDirection(
             this.firstInsertPoint,
             this.secondInsertPoint,
+            // 将这个bezier曲线的点给装进去
             [this.bezier]
         );
 
@@ -90,7 +91,6 @@ export class Sector extends ControObj {
     }
 
     update(x: number, y: number) {
-        console.log("updated at this time");
         const [xdivi, ydivi] = [x - this.x, y - this.y];
         this.polygonPoints = this.polygonPoints.map(
             (point: Pos): Pos => [point[0] + xdivi, point[1] + ydivi]
@@ -130,7 +130,36 @@ export class Sector extends ControObj {
                 break;
             }
         }
+
         return this;
+    }
+
+    // 生成自己的曲线点阵的信息,将一般线的信息做成数组正常截获交点，将线条和圆弧进行截取，拿到信息，处理它
+    // 这是一个大的突破，将逻辑交给自己，让自己处理逻辑，逻辑转移，这个在neo里面会更加常见，因为逻辑本身要交给自己是一件异常的事情
+    // 只有neo和这个类自己可以这么做，其他的类是不可以这么做的
+    getLinePoints(lineA1: Pos, lineA2: Pos) {
+        const linePoints = [
+            this.firstInsertPoint,
+            this.secondInsertPoint,
+            this.bezier
+        ];
+
+        // 如何处理这些数据点阵
+
+        // 这里面只有三种情况
+
+        // 首先跟一条线相交
+
+        // 跟其中的圆弧相交，
+
+        // 跟前面两者都相交，根据这个特性再去做扩展，
+        // 这样的扩展是可以考虑的，之后出现的情况基本就可以这么做
+
+        // 1将线的映射做出来，{type:'line',points:[]}
+        let line: { type: "line"; points: [Pos, Pos] };
+        // 第一个表示第一个点，第二个表示第二个点，第三个表示第曲线的曲折点，这样架构是不错的，
+        let sec: { type: "sector"; points: [Pos, Pos, Pos] };
+        // 2将
     }
 
     drawSector() {
@@ -141,7 +170,9 @@ export class Sector extends ControObj {
             this.context.strokeStyle,
             this.context.lineWidth
         ];
+
         this.context.strokeStyle = "#05a9c6";
+
         this.context.lineWidth = 6;
 
         this.context.beginPath();
@@ -279,6 +310,22 @@ export const createDiviSector = (
         r,
         objType
     ).init();
+
+    // setTimeout(() => {
+    //     sectorSmall.circle(
+    //         insideInsertPoint[0][0],
+    //         insideInsertPoint[0][1],
+    //         10
+    //     );
+
+    //     setTimeout(() => {
+    //         sectorSmall.circle(
+    //             insideInsertPoint[1][0],
+    //             insideInsertPoint[1][1],
+    //             10
+    //         );
+    //     }, 1300);
+    // }, 1300);
 
     // 另外一个大的扇形
     const sectorLarge = new Sector(
