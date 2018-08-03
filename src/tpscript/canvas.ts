@@ -8,11 +8,11 @@ import { Buttons } from "./buttons/button";
 import {
     Obj,
     Circle,
-    Sector,
     createObj,
     SelfCreateObj,
     createObjBySelf,
-    createSector
+    createDiviSector,
+    Sector
 } from "./objects/createobj";
 
 import util from "./util/util";
@@ -37,7 +37,7 @@ class Cut extends Draw {
         return new Cut(context);
     }
 
-    private allObj: Array<Obj | SelfCreateObj | Circle> = [];
+    private allObj: Array<Obj | SelfCreateObj | Circle | Sector> = [];
 
     private menu: MenuType;
     private buttons: Buttons;
@@ -51,6 +51,7 @@ class Cut extends Draw {
         this.context.fillStyle = "#84ccc9";
 
         this.menu = new Menu(this.context, 1175, 50, this.createObj).draw();
+
         this.buttons = new Buttons(this.context, {
             rmEverything: this.rmEvething
         }).draw();
@@ -111,7 +112,7 @@ class Cut extends Draw {
 
         // 从最后开始查找，相当于在页面前面从最前面开始找，找到了就是了
         const ele = [...this.allObj].reverse().find(
-            (obj: Obj | SelfCreateObj | Circle): boolean => {
+            (obj: Obj | SelfCreateObj | Circle | Sector): boolean => {
                 // 新增加的模式，对于圆形有特殊的表达
                 if (obj.objType.type === "Ellipse") {
                     // 判断是否在圆形内部
@@ -189,7 +190,7 @@ class Cut extends Draw {
     }
     // 利用闭包实现一些特殊的功能，去抖动
     listenerMove = (
-        ele: Obj | SelfCreateObj | Circle,
+        ele: Obj | SelfCreateObj | Circle | Sector,
         x: number,
         y: number
     ) => {
@@ -214,7 +215,7 @@ class Cut extends Draw {
             this.redraw();
         };
     };
-    listenerRotate = (ele: Obj | SelfCreateObj) => {
+    listenerRotate = (ele: Obj | SelfCreateObj | Sector) => {
         // 中心点
         const midPoint: Pos = [ele.x + ele.width / 2, ele.y + ele.height / 2];
 
@@ -284,6 +285,7 @@ class Cut extends Draw {
             this.context.strokeStyle = preStrokeStyle;
         };
     };
+    // 监听事件的结束
     listenerClipEnd(x: number, y: number, ex: number, ey: number) {
         this.clear();
         this.drawBg();
@@ -306,14 +308,12 @@ class Cut extends Draw {
         // 这里的问题其实在于是否要全部更新所有存在的对象，我的想法是全部更新，之后考虑部分更新到部分
         this.allObj = slice(this.allObj, lineA1, LineA2).reduce(
             (
-                previous: Array<Obj | SelfCreateObj | Circle>,
+                previous: Array<Obj | SelfCreateObj | Circle | Sector>,
                 element: Array<Pos[]>,
                 index: number
-            ): Array<Obj | SelfCreateObj | Circle> => {
+            ): Array<Obj | SelfCreateObj | Circle | Sector> => {
                 const OriginObj = this.allObj[index];
-
                 // 正常情况下切割的物体只会出现element的长度为2
-
                 // 分析可能的出现情况，只针对被切割开得物体进行划分
                 switch (element.length) {
                     case 2: {
@@ -342,7 +342,7 @@ class Cut extends Draw {
                             typecode: 1
                         };
 
-                        const sector = createSector(
+                        const sectors = createDiviSector(
                             this.context,
                             startPoint,
                             midPoint,
@@ -353,10 +353,22 @@ class Cut extends Draw {
                             (<Circle>OriginObj).r,
                             objType
                         );
-                        
+
                         console.log("sector.init()");
-                        sector.draw();
-                        previous.push(OriginObj);
+
+                        sectors.forEach(ele => {
+                            ele.draw();
+                            // 绑定redraw()的方法
+                            ele.redraw = this.redraw.bind(this);
+                            util.slowMove(
+                                ele,
+                                ele.sectionDirect,
+                                util.deepcoyeArray(ele.polygonPoints)
+                            );
+                        });
+
+                        previous.push(sectors[0], sectors[1]);
+
                         return previous;
                     }
                     default: {
@@ -414,7 +426,7 @@ class Cut extends Draw {
         this.redraw();
     }
 
-    setSelect(obj: Obj | SelfCreateObj | Circle) {
+    setSelect(obj: Obj | SelfCreateObj | Circle | Sector) {
         this.allObj.forEach(obj => {
             obj.selected = false;
         });

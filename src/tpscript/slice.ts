@@ -1,15 +1,15 @@
-import { Obj, SelfCreateObj, Circle } from "./objects/createobj";
+import { Obj, SelfCreateObj, Circle, Sector } from "./objects/createobj";
 
 import util from "./util/util";
 
 type Pos = [number, number];
 
 export default (
-    allObj: (Obj | SelfCreateObj)[],
+    allObj: (Obj | SelfCreateObj | Circle | Sector)[],
     lineA1: Pos,
     LineA2: Pos
 ): Array<Pos[][]> =>
-    allObj.map((obj: Obj | SelfCreateObj | Circle) => {
+    allObj.map((obj: Obj | SelfCreateObj | Circle | Sector) => {
         // 一个管道的截取操作，这部分要分割圆形，这一部分的代码需要重新更换一下就可以了
         if (obj.objType.type === "Ellipse") {
             const [_, [middleX, middleY]] = obj.polygonPoints as [Pos, Pos];
@@ -35,7 +35,11 @@ export default (
             // 不得已而为止，最后的结果就是这个样子
             return [[pointOne, pointTwo, midPoint]];
         }
+
         // 本来十分优雅的代码，现在搞成这个样子
+        if (obj.objType.type === "Sector") {
+            return [];
+        }
 
         // 聚合 将生成一个一个的数据点阵转换成线，考虑用映射该信这段代码
         return (

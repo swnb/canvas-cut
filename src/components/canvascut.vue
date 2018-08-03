@@ -54,7 +54,7 @@ export default {
       } else {
         this.canvas.ontouchmove = this.drawcanvas.listenerClip(x, y);
         this.$refs.canvas.ontouchend = event => {
-          console.log(event);
+          // console.log(event);
           this.canvas.ontouchmove = null;
           const [ex, ey] = [
             event.changedTouches[0].clientX -
@@ -78,7 +78,7 @@ export default {
           this.onmousemove = null;
         };
       } else {
-        console.log(x, y);
+        // console.log(x, y);
         this.canvas.onmousemove = this.drawcanvas.listenerClip(x, y);
         this.$refs.canvas.onmouseup = event => {
           this.canvas.onmousemove = null;
