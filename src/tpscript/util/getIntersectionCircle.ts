@@ -34,7 +34,7 @@ function getPoint(
         second: [0, 0]
     };
 
-    // 任何一个点是NaN那么都要返回一个false
+    // 任何一个点是NaN那么都要返回一个false，终止计算
     if (isNaN(x1) || isNaN(y1) || isNaN(x2) || isNaN(y2)) {
         return p;
     }
@@ -55,29 +55,35 @@ export const getInsCircle = (
     line1: Pos,
     line2: Pos,
     midPoint: Pos,
-    r: number
+    r: number,
+    rays: boolean = false
 ): { res: boolean; point: [Pos, Pos] } => {
     // 得到可能的值，等下对值进行验证，得到的验证是否正确
-    const maybe = getPoint(midPoint, r, line1, line2);
+    const maybeRes = getPoint(midPoint, r, line1, line2);
 
-    // 得到了输出到结果，并且对结果进行验证
+    // 得到了输出到结果，下面对于输出的结果进行验证
+
+    // 如果这是射线，那么就没啥事了，直接给结果
+    if (maybeRes.res && rays) {
+        return { res: true, point: [maybeRes.first, maybeRes.second] };
+    }
+
+    // 这不是射线而是线段，那么就要判断点是否在这个线段上面
     if (
-        maybe.res &&
-        pointAtLine(maybe.first, line1, line2, 6) &&
-        pointAtLine(maybe.second, line1, line2, 6)
+        maybeRes.res &&
+        pointAtLine(maybeRes.first, line1, line2, 6) &&
+        pointAtLine(maybeRes.second, line1, line2, 6)
     ) {
         console.log(
             `line is inside the circle ${pointAtLine(
-                maybe.first,
+                maybeRes.first,
                 line1,
                 line2,
                 6
-            )}
-
-            ${pointAtLine(maybe.second, line1, line2, 6)}`
+            )} ${pointAtLine(maybeRes.second, line1, line2, 6)}`
         );
 
-        return { res: true, point: [maybe.first, maybe.second] };
+        return { res: true, point: [maybeRes.first, maybeRes.second] };
     } else {
         console.log("line is not inside the circle");
 

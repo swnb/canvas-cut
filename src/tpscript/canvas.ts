@@ -329,7 +329,6 @@ class Cut extends Draw {
                     //  第三种新增加的元素,圆形的切割问题
                     case 1: {
                         // 看看数据本身再说
-                        console.log(element);
                         const [pointOne, pointTwo, midPoint]: [
                             Pos,
                             Pos,
@@ -354,7 +353,7 @@ class Cut extends Draw {
                             (<Circle>OriginObj).r,
                             objType
                         );
-
+                        
                         console.log("sector.init()");
                         sector.draw();
                         previous.push(OriginObj);

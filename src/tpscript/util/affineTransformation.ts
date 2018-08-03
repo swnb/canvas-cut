@@ -1,4 +1,4 @@
-import { getAbsAB, fixValue } from "./helper";
+import { getAbsAB } from "./helper";
 
 type Pos = [number, number];
 

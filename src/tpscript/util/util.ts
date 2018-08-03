@@ -18,6 +18,8 @@ import { getInsCircle } from "./getIntersectionCircle";
 
 import { getWdithHeight } from "./getWH";
 
+import { getBezierPoint } from "./getMidPointAtCircle";
+
 const isInsideCircle = (
     x: number,
     y: number,
@@ -52,5 +54,7 @@ export default {
     // 获取线和圆之间的截点
     getInsCircle,
     // 获取到点阵的信息 width height
-    getWdithHeight
+    getWdithHeight,
+    // 拿到杯赛尔曲线的交点
+    getBezierPoint
 };

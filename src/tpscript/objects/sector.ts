@@ -1,8 +1,25 @@
 import Draw from "../draw";
 
 import { ObjType } from "./createobj";
+import util from "../util/util";
 
 type Pos = [number, number];
+
+const sortLeftRight = (poses: [Pos, Pos], reference: Pos): [Pos, Pos] => {
+    const [one, two] = poses;
+    const oner =
+        Math.pow(one[0] - reference[0], 2) + Math.pow(one[1] - reference[1], 2);
+
+    const twor =
+        Math.pow(two[0] - reference[0], 2) + Math.pow(two[1] - reference[1], 2);
+
+    if (oner > twor) {
+        return poses;
+    } else {
+        // 反方向操作
+        return poses.reverse() as [Pos, Pos];
+    }
+};
 
 export class Sector extends Draw {
     // 物体的类型状态标识
@@ -72,37 +89,56 @@ export class Sector extends Draw {
     }
     drawTest() {
         // 不画控制图标
-
         const preFillStyle = this.context.fillStyle;
 
         this.context.fillStyle = "whitesmoke";
 
         console.log("start to draw");
-        console.log(
-            this.firstInsertPoint[0],
-            this.firstInsertPoint[1],
-            this.secondInsertPoint[0],
-            this.secondInsertPoint[1],
-            this.r
-        );
 
         this.context.beginPath();
 
-        this.context.moveTo(this.middlePoint[0], this.middlePoint[1]);
-        this.context.lineTo(this.firstInsertPoint[0], this.firstInsertPoint[1]);
+        // this.context.moveTo(this.middlePoint[0], this.middlePoint[1]);
+        this.context.moveTo(this.firstInsertPoint[0], this.firstInsertPoint[1]);
+
         // 画出图像
+        const res = util.getBezierPoint(
+            this.middlePoint,
+            this.firstInsertPoint,
+            this.secondInsertPoint
+        );
+
+        if (!res.res) {
+            return console.log(
+                "some wrong is happend,and you should have a look at what is happening"
+            );
+        }
+
+        const [left, right]: [Pos, Pos] = sortLeftRight(
+            res.point,
+            this.firstInsertPoint
+        );
+        setTimeout(() => {
+            this.circle(left[0], left[1], 10);
+            setTimeout(() => {
+                this.circle(right[0], right[1], 10);
+            }, 1000);
+        }, 100);
+
+        // 这里面最大的争议就是杯赛尔曲线的曲折点，这里我给一个公式 c = (r^2 -a^2+b^2)/(2r-2b) a+b =r  => r^2/a-r
 
         this.context.arcTo(
-            this.firstInsertPoint[0] + 100,
-            this.firstInsertPoint[1] + 100,
+            right[0],
+            right[1],
             this.secondInsertPoint[0],
             this.secondInsertPoint[1],
             this.r
         );
+
         this.context.lineTo(
             this.secondInsertPoint[0],
             this.secondInsertPoint[1]
         );
+
         this.context.closePath();
         this.context.stroke();
         this.context.fill();
