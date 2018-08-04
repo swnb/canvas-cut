@@ -33,14 +33,14 @@ export function createObj(
     return new Obj(context, objType, startP, width, height).init();
 }
 
-export const createNeo = (
-    context: CanvasRenderingContext2D,
-    startP: Pos,
-    width: number,
-    height: number
-) => {
-    return new Neo(context, startP, width, height);
-};
+// export const createNeo = (
+//     context: CanvasRenderingContext2D,
+//     startP: Pos,
+//     width: number,
+//     height: number
+// ) => {
+//     return new Neo(context, startP, width, height);
+// };
 
 // 导出所有的引入
 export { SelfCreateObj, Circle, Sector, createDiviSector, Obj, ObjType };

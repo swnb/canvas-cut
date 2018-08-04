@@ -1,21 +1,26 @@
-import Draw from "../draw";
-
 import { ObjType } from "./createobj";
 import util from "../util/util";
 import { ControObj } from "./controller";
 
 type Pos = [number, number];
 
+// 直线
+interface Straight {
+    type: "line";
+    points: [Pos, Pos];
+}
+
+// 曲线
+interface Curve {
+    type: "curve";
+    points: [Pos, Pos, Pos]; // 第3个是bezier曲线
+}
+
+// 线的类型
+type Lines = (Straight | Curve)[];
+
+// sector与其它物体不同的是，它将点转化成线段
 export class Sector extends ControObj {
-    // 物体的类型状态标识
-    public objType: ObjType = {
-        type: "Sector",
-        typecode: 1
-    };
-
-    // 选中的状态
-    public selected: boolean = false;
-
     // 圆心，核心的数据
     private middlePoint: Pos;
     // 两个交点，这连个交点和圆心组成了这个半圆形状
@@ -25,7 +30,16 @@ export class Sector extends ControObj {
     // 核心，杯赛尔曲线的交点，如何求出交点的值，这个是个核心，也是这个代码的灵魂所在
     private bezier: Pos;
 
-    public r: number = 0;
+    private r: number = 0;
+
+    // 选中的状态
+    public selected: boolean = false;
+
+    // 物体的类型状态标识
+    public objType: ObjType = {
+        type: "Sector",
+        typecode: 1
+    };
 
     // 点阵的信息
     public polygonPoints: [Pos, Pos, Pos, Pos] = [
@@ -35,9 +49,13 @@ export class Sector extends ControObj {
         [0, 0]
     ];
 
+    // 线的信息
+    public linePoints: Lines = [];
+
     // 方向信息
     public sectionDirect: Pos = [10, 10];
 
+    // 构造函数
     constructor(
         context: CanvasRenderingContext2D,
         startPos: Pos,
@@ -109,11 +127,10 @@ export class Sector extends ControObj {
     }
 
     draw() {
-        // 更新点阵的信息
+        // 画图标志
         this.updatePoints();
 
-        // 画图标志
-        this.drawIcon();
+        // this.drawIcon();
 
         // 画这些对象
         switch (this.objType.typecode) {
@@ -134,6 +151,70 @@ export class Sector extends ControObj {
         return this;
     }
 
+    pointToLIne() {
+        switch (this.objType.typecode) {
+            case 1: {
+                const first: Straight = {
+                    type: "line",
+                    // 从第二个点到第一个点
+                    points: [this.polygonPoints[2], this.polygonPoints[1]]
+                };
+                const second: Curve = {
+                    type: "curve",
+                    points: [
+                        this.polygonPoints[1],
+                        this.polygonPoints[2],
+                        this.bezier
+                    ]
+                };
+                this.linePoints = [first, second];
+            }
+
+            case 2: {
+                const first: Straight = {
+                    type: "line",
+                    // 从第二个点到第一个点
+                    points: [this.secondInsertPoint, this.firstInsertPoint]
+                };
+
+                // 外交点
+                const outsideInsertPoint = util.getBezierPoint(
+                    this.middlePoint,
+                    this.firstInsertPoint,
+                    this.bezier
+                ).point[1];
+
+                // 两个besizer曲线
+                const second: Curve = {
+                    type: "curve",
+                    points: [
+                        this.firstInsertPoint,
+                        outsideInsertPoint[0],
+                        this.bezier
+                    ]
+                };
+
+                // 外交点
+                const outsideInsertPoint1 = util.getBezierPoint(
+                    this.middlePoint,
+                    this.bezier,
+                    this.secondInsertPoint
+                ).point[1];
+
+                //  第三个bezier交点
+                const third: Curve = {
+                    type: "curve",
+                    points: [
+                        this.bezier,
+                        outsideInsertPoint1[0],
+                        this.secondInsertPoint
+                    ]
+                };
+                this.linePoints = [first, second, third];
+            }
+        }
+    }
+
     // 生成自己的曲线点阵的信息,将一般线的信息做成数组正常截获交点，将线条和圆弧进行截取，拿到信息，处理它
     // 这是一个大的突破，将逻辑交给自己，让自己处理逻辑，逻辑转移，这个在neo里面会更加常见，因为逻辑本身要交给自己是一件异常的事情
     // 只有neo和这个类自己可以这么做，其他的类是不可以这么做的
@@ -150,16 +231,10 @@ export class Sector extends ControObj {
 
         // 首先跟一条线相交
 
-        // 跟其中的圆弧相交，
+        // 跟其中的圆弧相交
 
         // 跟前面两者都相交，根据这个特性再去做扩展，
         // 这样的扩展是可以考虑的，之后出现的情况基本就可以这么做
-
-        // 1将线的映射做出来，{type:'line',points:[]}
-        let line: { type: "line"; points: [Pos, Pos] };
-        // 第一个表示第一个点，第二个表示第二个点，第三个表示第曲线的曲折点，这样架构是不错的，
-        let sec: { type: "sector"; points: [Pos, Pos, Pos] };
-        // 2将
     }
 
     drawSector() {
@@ -212,7 +287,9 @@ export class Sector extends ControObj {
             this.context.strokeStyle,
             this.context.lineWidth
         ];
+
         this.context.strokeStyle = "#05a9c6";
+
         this.context.lineWidth = 6;
 
         this.context.beginPath();
@@ -220,7 +297,6 @@ export class Sector extends ControObj {
         this.context.moveTo(this.firstInsertPoint[0], this.firstInsertPoint[1]);
 
         // 这里的bezier点不是一般的bezier点，它本身不做处理，由它得到两个新的bezier曲线的曲折点
-
         const outsideInsertPoint = util.getBezierPoint(
             this.middlePoint,
             this.firstInsertPoint,
