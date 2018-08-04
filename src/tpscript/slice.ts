@@ -6,7 +6,7 @@ import util from "./util/util";
 
 type Pos = [number, number];
 
-export default (allObj: AllObj[], lineA1: Pos, LineA2: Pos): Array<Pos[][]> =>
+export default (allObj: AllObj[], lineA1: Pos, linA2: Pos): Array<Pos[][]> =>
     allObj.map((obj: AllObj) => {
         // 一个管道的截取操作，这部分要分割圆形，这一部分的代码需要重新更换一下就可以了
         if (obj.objType.type === "Ellipse") {
@@ -19,7 +19,7 @@ export default (allObj: AllObj[], lineA1: Pos, LineA2: Pos): Array<Pos[][]> =>
 
             const resultWithInsert = util.getInsCircle(
                 lineA1,
-                LineA2,
+                linA2,
                 midPoint,
                 r
             );
@@ -72,7 +72,7 @@ export default (allObj: AllObj[], lineA1: Pos, LineA2: Pos): Array<Pos[][]> =>
                 .map((ele: [Pos, Pos]) => {
                     const result = util.getIntersection(
                         lineA1,
-                        LineA2,
+                        linA2,
                         ele[0],
                         ele[1]
                     );

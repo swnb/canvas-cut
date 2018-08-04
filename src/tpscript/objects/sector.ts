@@ -152,6 +152,10 @@ export class Sector extends ControObj {
     }
 
     pointToLIne() {
+        // 如果你看到这段代码，我想要吐吐苦水，我这个项目是最难的页面没有之一，但是对于我工作的这家公司来说
+        // 这些东西都是举无轻重
+        // 我的作品从来都不是重点
+        //  没有人理解我
         switch (this.objType.typecode) {
             case 1: {
                 const first: Straight = {
@@ -184,7 +188,7 @@ export class Sector extends ControObj {
                     this.bezier
                 ).point[1];
 
-                // 两个besizer曲线
+                // 第一个besizer曲线
                 const second: Curve = {
                     type: "curve",
                     points: [
@@ -201,7 +205,7 @@ export class Sector extends ControObj {
                     this.secondInsertPoint
                 ).point[1];
 
-                //  第三个bezier交点
+                //  第二个杯赛尔曲线
                 const third: Curve = {
                     type: "curve",
                     points: [
@@ -210,7 +214,10 @@ export class Sector extends ControObj {
                         this.secondInsertPoint
                     ]
                 };
+
                 this.linePoints = [first, second, third];
+
+                // 这里就是全部的代码
             }
         }
     }
@@ -219,17 +226,22 @@ export class Sector extends ControObj {
     // 这是一个大的突破，将逻辑交给自己，让自己处理逻辑，逻辑转移，这个在neo里面会更加常见，因为逻辑本身要交给自己是一件异常的事情
     // 只有neo和这个类自己可以这么做，其他的类是不可以这么做的
     getLinePoints(lineA1: Pos, lineA2: Pos) {
-        const linePoints = [
-            this.firstInsertPoint,
-            this.secondInsertPoint,
-            this.bezier
-        ];
+        const linePoint = this.linePoints;
 
-        // 如何处理这些数据点阵
+        // 如何处理这些数据点阵?
 
-        // 这里面只有三种情况
+        // 拿到交点，这里对于不同的类型来说，交点是不一样的
 
-        // 首先跟一条线相交
+        // 首先跟一条线相交,拿到这个交点
+        const res = util.getIntersection(
+            lineA1,
+            lineA2,
+            this.linePoints[0].points[0],
+            this.linePoints[0].points[1]
+        );
+
+        // 如果跟这个线都不相交，那就不是交点，就是交点
+        if (!res.res) return false;
 
         // 跟其中的圆弧相交
 

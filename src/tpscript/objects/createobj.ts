@@ -3,8 +3,9 @@ import { SelfCreateObj } from "./selfcreate";
 import { Circle } from "./circle";
 import { Sector, createDiviSector } from "./sector";
 
-import { Neo } from "./neo";
-import { createConnection } from "net";
+// import { Neo } from "./neo";
+
+import { Faker } from "./faker";
 
 type Pos = [number, number];
 
@@ -25,6 +26,8 @@ export function createObj(
     width: number,
     height: number
 ) {
+    new Faker(context, [0, 0], 100, 100);
+
     // 如果是圆形的话，截获它
     if (objType.type === "Ellipse") {
         return new Circle(context, startP, width, height, 100, objType).init();
