@@ -6,7 +6,8 @@ interface Drawer {
     redraw(): void;
 }
 
-export const slowMove = (drawer: Drawer, direct: Pos, points: Array<Pos>) => {
+// 慢慢移动
+export const slowMove = (drawer: Drawer, direct: Pos) => {
     setTimeout(() => {
         let count = 0;
         const limit = 20;
