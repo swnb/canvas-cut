@@ -9,7 +9,8 @@ import {
     Circle,
     createObj,
     createObjBySelf,
-    createDiviSector
+    createDiviSector,
+    createNeo
 } from "./objects/createobj";
 
 import util from "./util/util";
@@ -81,17 +82,11 @@ class Cut extends Draw {
     }
 
     init(): Cut {
-        // const log = console.log;
-        // window.console.log = (poses: Array<Pos>) => {
-        //     if (!Array.isArray(poses)) {
-        //         return log(poses);
-        //     }
-        //     log(poses);
-        //     poses.forEach(pos => {
-        //         this.context.arc(pos[0], pos[1], 10, 0, Math.PI * 2);
-        //         this.context.fill();
-        //     });
-        // };
+        const neo = createNeo(this.context, [100, 100], 100, 100);
+
+        neo.redraw = this.redraw.bind(this);
+
+        this.allObj.push(neo);
 
         this.context.lineWidth = 6;
         this.context.fillStyle = "#F4A322";
@@ -380,11 +375,7 @@ class Cut extends Draw {
                             ele.draw();
                             // 绑定redraw()的方法
                             ele.redraw = this.redraw.bind(this);
-                            util.slowMove(
-                                ele,
-                                ele.sectionDirect,
-                                util.deepcoyeArray(ele.polygonPoints)
-                            );
+                            util.slowMove(ele, ele.sectionDirect);
                         });
 
                         previous.push(sectors[0], sectors[1]);
@@ -431,7 +422,7 @@ class Cut extends Draw {
                     newObj.redraw = this.redraw.bind(this);
 
                     // 设置定时画的功能
-                    util.slowMove(newObj, direct, util.deepcoyeArray(ele));
+                    util.slowMove(newObj, direct);
 
                     return newObj;
                 });

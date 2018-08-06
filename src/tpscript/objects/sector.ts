@@ -155,7 +155,9 @@ export class Sector extends ControObj {
         // 如果你看到这段代码，我想要吐吐苦水，我这个项目是最难的页面没有之一，但是对于我工作的这家公司来说
         // 这些东西都是举无轻重
         // 我的作品从来都不是重点
-        //  没有人理解我
+        // 没有人理解我
+        // 下面是点的转换，点转换成为线段
+
         switch (this.objType.typecode) {
             case 1: {
                 const first: Straight = {
@@ -216,8 +218,66 @@ export class Sector extends ControObj {
                 };
 
                 this.linePoints = [first, second, third];
-
                 // 这里就是全部的代码
+            }
+        }
+    }
+
+    pointSector(pointOne: Pos, pointTwo: Pos) {
+        const isOne = util.isPointInsideSector(
+            pointOne,
+            // 随便拿一个交点
+            this.linePoints[1].points[0],
+            this.sectionDirect
+        );
+        const isTwo = util.isPointInsideSector(
+            pointTwo,
+            // 随便拿一个交点
+            this.linePoints[1].points[0],
+            this.sectionDirect
+        );
+
+        if (pointOne && pointTwo) {
+            return true;
+        }
+        return isOne ? pointOne : pointTwo;
+    }
+
+    isPointSliceLine(lineA1: Pos, lineA2: Pos) {
+        switch (this.objType.typecode) {
+            case 1: {
+                console.log("this is next");
+                const linePoint = this.linePoints;
+                // 首先跟一条线相交,拿到这个交点
+                const res = util.getIntersection(
+                    lineA1,
+                    lineA2,
+                    this.linePoints[0].points[0],
+                    this.linePoints[0].points[1]
+                );
+                if (!res.res) {
+                    //取得它与圆心的交点，在去考虑其他问题
+
+                    const resultWithInsert = util.getInsCircle(
+                        lineA1,
+                        lineA2,
+                        this.middlePoint,
+                        this.r
+                    );
+                    // 根本不满足条件，因为全部根本没有交点
+                    if (!resultWithInsert.res) return [];
+
+                    // 两个交点
+                    const [pointOne, pointTwo]: [
+                        Pos,
+                        Pos
+                    ] = resultWithInsert.point;
+
+                    this.pointSector(pointOne, pointTwo);
+                }
+            }
+            case 2: {
+                console.log("this is large sector to slice");
             }
         }
     }
@@ -226,25 +286,10 @@ export class Sector extends ControObj {
     // 这是一个大的突破，将逻辑交给自己，让自己处理逻辑，逻辑转移，这个在neo里面会更加常见，因为逻辑本身要交给自己是一件异常的事情
     // 只有neo和这个类自己可以这么做，其他的类是不可以这么做的
     getLinePoints(lineA1: Pos, lineA2: Pos) {
-        const linePoint = this.linePoints;
-
         // 如何处理这些数据点阵?
-
         // 拿到交点，这里对于不同的类型来说，交点是不一样的
-
-        // 首先跟一条线相交,拿到这个交点
-        const res = util.getIntersection(
-            lineA1,
-            lineA2,
-            this.linePoints[0].points[0],
-            this.linePoints[0].points[1]
-        );
-
         // 如果跟这个线都不相交，那就不是交点，就是交点
-        if (!res.res) return false;
-
         // 跟其中的圆弧相交
-
         // 跟前面两者都相交，根据这个特性再去做扩展，
         // 这样的扩展是可以考虑的，之后出现的情况基本就可以这么做
     }

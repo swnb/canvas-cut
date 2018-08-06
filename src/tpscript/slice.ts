@@ -1,12 +1,13 @@
-import { Obj, SelfCreateObj, Circle, Sector } from "./objects/createobj";
+import { Circle, Neo } from "./objects/createobj";
 
 import { AllObj } from "./canvas";
 
 import util from "./util/util";
+import { sliceUpdate } from "./sliceUpdate";
 
 type Pos = [number, number];
 
-export default (allObj: AllObj[], lineA1: Pos, linA2: Pos): Array<Pos[][]> =>
+export default (allObj: AllObj[], lineA1: Pos, lineA2: Pos): Array<Pos[][]> =>
     allObj.map((obj: AllObj) => {
         // 一个管道的截取操作，这部分要分割圆形，这一部分的代码需要重新更换一下就可以了
         if (obj.objType.type === "Ellipse") {
@@ -19,7 +20,7 @@ export default (allObj: AllObj[], lineA1: Pos, linA2: Pos): Array<Pos[][]> =>
 
             const resultWithInsert = util.getInsCircle(
                 lineA1,
-                linA2,
+                lineA2,
                 midPoint,
                 r
             );
@@ -36,14 +37,18 @@ export default (allObj: AllObj[], lineA1: Pos, linA2: Pos): Array<Pos[][]> =>
 
         // 王的诞生
         if (obj.objType.type === "Sector") {
-            // 生成 总结一起的混血王者 ->neo
+            // 生成 终结一起的混血王者 ->neo
             return [];
         }
+
         // 王的转换
         if (obj.objType.type === "Hybrid") {
             // 这是混血的诞生，这是奇迹，这是神迹，也是最完美的模型，我把它叫做neo
             // return obj.nextModule();
             // neo 它生下来就是全能的，swnb将赋予它所有能力，他能调度自己，和处理自己的状况，进行伪装，这是其他物体不能做到的，只有一种办法可以毁灭它，那就是重构
+
+            console.log(sliceUpdate(lineA1, lineA2, (<Neo>obj).lines));
+
             return [];
         }
 
@@ -72,7 +77,7 @@ export default (allObj: AllObj[], lineA1: Pos, linA2: Pos): Array<Pos[][]> =>
                 .map((ele: [Pos, Pos]) => {
                     const result = util.getIntersection(
                         lineA1,
-                        linA2,
+                        lineA2,
                         ele[0],
                         ele[1]
                     );

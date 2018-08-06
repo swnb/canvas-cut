@@ -1,6 +1,6 @@
 type Pos = [number, number];
 //  判断一个点在圆弧上
-export const isPointInsideCircle = (
+export const isPointInsideSector = (
     p: Pos,
     firstOrSecondPoint: Pos,
     direction: [number, number]

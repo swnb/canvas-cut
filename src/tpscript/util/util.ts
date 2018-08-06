@@ -20,7 +20,7 @@ import { getWdithHeight } from "./getWH";
 
 import { getBezierPoint } from "./getMidPointAtCircle";
 
-import { isPointInsideCircle } from "./isPointInsideCircle";
+import { isPointInsideSector } from "./isPointInsideSector";
 
 const isInsideCircle = (
     x: number,
@@ -60,5 +60,5 @@ export default {
     // 拿到杯赛尔曲线的交点
     getBezierPoint,
     // 判断点是否在圆弧内部
-    isPointInsideCircle
+    isPointInsideSector
 };

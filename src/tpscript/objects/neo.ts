@@ -1,11 +1,28 @@
 import { ControObj } from "./controller";
 import { ObjType } from "./obj";
 
-import util from "../util/util";
+// import util from "../util/util";
 
 // 点阵
 type Pos = [number, number];
 
+// 直线
+interface Straight {
+    type: "line";
+    points: [Pos, Pos];
+}
+
+// 曲线
+interface Curve {
+    type: "curve";
+    r: number;
+    points: [Pos, Pos, Pos, Pos]; // 第3个是bezier曲线  第四个是圆心的点
+}
+
+// 线的类型
+type Lines = (Straight | Curve)[];
+
+// Neo 最强的王者
 export class Neo extends ControObj {
     // 物体的类型状态标识
     public objType: ObjType = {
@@ -13,58 +30,100 @@ export class Neo extends ControObj {
         typecode: 0
     };
 
+    public polygonPoints = [];
+
     // 选中的状态
     public selected: boolean = false;
 
-    // 圆心，核心的数据和两个交点，这连个交点和圆心组成了这个半圆形状
-    private sector: {
-        circlePoint: Pos;
-        r: number;
-        firstPoint: Pos;
-        secondPoint: Pos;
-        // 核心，杯赛尔曲线的交点，如何求出交点的值，这个是个核心，也是这个代码的灵魂所在
-        bezier: Pos;
-    };
+    // 一般性质的描述
+    public r: number;
+    // 圆形的中心
+    public circlePoint: Pos;
 
-    // 点阵的信息
-    public polygonPoints: [Pos, Pos, Pos, Pos] = [
-        [0, 0],
-        [0, 0],
-        [0, 0],
-        [0, 0]
-    ];
+    // 对于neo来说，只有线的概念，没有点的概念
+    public lines: Lines = [];
 
     constructor(
         context: CanvasRenderingContext2D,
         startP: Pos,
         width: number,
         height: number,
-        circlePoint: Pos,
         r: number,
-        firstPoint: Pos,
-        secondPoint: Pos
+        circlePoint: Pos,
+        lines: Lines
     ) {
         super(context, startP, width, height);
+        this.r = r;
+        this.circlePoint = circlePoint;
 
-        this.sector = {
-            circlePoint,
-            r,
-            firstPoint,
-            secondPoint,
-            bezier: [0, 0]
-        };
+        this.lines = lines;
     }
 
     init() {
-        // 获取bezier曲线的交点
-        const beziers = util.getBezierPoint(
-            this.sector.circlePoint,
-            this.sector.firstPoint,
-            this.sector.secondPoint
-        );
-        // 处理besier曲线
         return this;
     }
 
-    getLinPoint() {}
+    update(x: number, y: number) {
+        const [xdivi, ydivi] = [x - this.x, y - this.y];
+        // this.lines = this.lines.map();
+
+        return this;
+    }
+
+    draw() {
+        this.context.beginPath();
+
+        // 浅拷贝数组，不改变原本的属性值
+        const lines = [...this.lines];
+
+        const head = lines.shift() as Curve | Straight;
+
+        if (head.type === "line") {
+            // 这是一条线段线段
+            this.context.moveTo(head.points[0][0], head.points[0][1]);
+            this.context.lineTo(head.points[1][0], head.points[1][1]);
+        } else if (head.type === "curve") {
+            // 这是一条曲线线段
+            this.context.moveTo(head.points[0][0], head.points[0][1]);
+            // bezier曲线
+            this.context.arcTo(
+                head.points[2][0],
+                head.points[2][1],
+                head.points[1][0],
+                head.points[1][1],
+                this.r
+            );
+            this.context.lineTo(head.points[1][0], head.points[1][1]);
+        }
+
+        // 遍历剩下的数组，找到可以生成的点阵信息
+        lines.forEach((line: Curve | Straight) => {
+            switch (line.type) {
+                case "line": {
+                    //连接到后面一个节点
+                    // this.circle(line.points[1][0], line.points[1][1], 10);
+                    this.context.lineTo(line.points[1][0], line.points[1][1]);
+                    break;
+                }
+                case "curve": {
+                    this.context.arcTo(
+                        line.points[2][0],
+                        line.points[2][1],
+                        line.points[1][0],
+                        line.points[1][1],
+                        this.r
+                    );
+                    this.context.lineTo(line.points[1][0], line.points[1][1]);
+                    break;
+                }
+            }
+        });
+
+        // 填充颜色，实现背景色的填充
+        this.context.closePath();
+        this.context.fill();
+        this.context.stroke();
+
+        return this;
+    }
 }
