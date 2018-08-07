@@ -8,7 +8,7 @@ import { isInsideArea } from "./insidearea";
 
 import { slowMove } from "./moveslow";
 
-import { deepcoyeArray } from "./dcarray";
+import { deepcoyeArray, deepcopyLines } from "./dcarray";
 
 import { affineTransform } from "./affineTransformation";
 
@@ -49,6 +49,8 @@ export default {
     slowMove,
     // 深拷贝array
     deepcoyeArray,
+    // 深度拷贝线条
+    deepcopyLines,
     // 仿射变换
     affineTransform,
     // 获取到元素坐标的问题

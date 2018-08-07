@@ -46,8 +46,7 @@ export default (allObj: AllObj[], lineA1: Pos, lineA2: Pos): Array<Pos[][]> =>
 
         // 王的转换
         if (obj.objType.type === "Hybrid") {
-            // 这是混血的诞生，这是奇迹，这是神迹，也是最完美的模型，我把它叫做neo
-            // return obj.nextModule();
+            // 这是奇迹，这是神迹，也是最完美的模型，我把它叫做neo
             // neo 它生下来就是全能的，swnb将赋予它所有能力，他能调度自己，和处理自己的状况，进行伪装，这是其他物体不能做到的，只有一种办法可以毁灭它，那就是重构
 
             const emit = Center.setNewEvent("neo");

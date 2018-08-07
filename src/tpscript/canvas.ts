@@ -51,10 +51,8 @@ export interface AllObj {
     polygonPoints: Pos[];
     // 画方式
     draw(): object;
-
     // 更新数据
     update(x: number, y: number): object;
-
     // 从新画
     redraw(): void;
 }
@@ -303,19 +301,28 @@ class Cut extends Draw {
             this.clear();
             this.drawBg();
             this.draw();
+
             this.context.beginPath();
             this.context.setLineDash([25, 15]);
             this.context.moveTo(x, y);
             // 事件的坐标
             const [ex, ey] = util.getEventPos(event);
             this.context.lineTo(ex, ey);
-            const preStrokeStyle = this.context.strokeStyle;
+
+            const [preStrokeStyle, preLineWidth] = [
+                this.context.strokeStyle,
+                this.context.lineWidth
+            ];
+            this.context.lineWidth = 3;
             this.context.strokeStyle = "red";
             this.context.stroke();
             this.context.setLineDash([]);
             this.context.closePath();
 
-            this.context.strokeStyle = preStrokeStyle;
+            [this.context.strokeStyle, this.context.lineWidth] = [
+                preStrokeStyle,
+                preLineWidth
+            ];
         };
     };
     // 监听事件的结束

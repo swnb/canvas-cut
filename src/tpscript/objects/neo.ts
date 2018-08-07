@@ -2,7 +2,7 @@ import { ControObj } from "./controller";
 import { ObjType } from "./obj";
 import { setTimeout } from "timers";
 
-// import util from "../util/util";
+import util from "../util/util";
 
 // 点阵
 type Pos = [number, number];
@@ -57,7 +57,8 @@ export class Neo extends ControObj {
         this.r = r;
         this.circlePoint = circlePoint;
 
-        this.lines = lines;
+        this.lines = util.deepcopyLines(lines);
+
         this.sortLine();
     }
 
@@ -77,7 +78,6 @@ export class Neo extends ControObj {
         this.lines = this.lines.map((line, index: number, array) => {
             // 这里是尾部
             if (index === array.length - 1) {
-                console.log("已经到达了末尾了,不再对线条进行转换");
                 return line;
             }
 
@@ -86,9 +86,6 @@ export class Neo extends ControObj {
                 Math.abs(line.points[1][0] - next.points[0][0]) > 3 ||
                 Math.abs(line.points[1][1] - next.points[0][1]) > 3
             ) {
-                console.log(
-                    "当前的尾部和首部不是连接起来的，下一条线端要转换头部和尾部"
-                );
                 [next.points[0], next.points[1]] = [
                     next.points[1],
                     next.points[0]
