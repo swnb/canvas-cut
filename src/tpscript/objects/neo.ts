@@ -1,5 +1,6 @@
 import { ControObj } from "./controller";
 import { ObjType } from "./obj";
+import { setTimeout } from "timers";
 
 // import util from "../util/util";
 
@@ -55,8 +56,9 @@ export class Neo extends ControObj {
         super(context, startP, width, height);
         this.r = r;
         this.circlePoint = circlePoint;
-        console.log(lines);
+
         this.lines = lines;
+        this.sortLine();
     }
 
     init() {
@@ -70,9 +72,34 @@ export class Neo extends ControObj {
         return this;
     }
 
-    draw() {
-        console.log("start draw");
+    // 考虑对线段做序列化
+    sortLine() {
+        this.lines = this.lines.map((line, index: number, array) => {
+            // 这里是尾部
+            if (index === array.length - 1) {
+                console.log("已经到达了末尾了,不再对线条进行转换");
+                return line;
+            }
 
+            const next = array[index + 1];
+            if (
+                Math.abs(line.points[1][0] - next.points[0][0]) > 3 ||
+                Math.abs(line.points[1][1] - next.points[0][1]) > 3
+            ) {
+                console.log(
+                    "当前的尾部和首部不是连接起来的，下一条线端要转换头部和尾部"
+                );
+                [next.points[0], next.points[1]] = [
+                    next.points[1],
+                    next.points[0]
+                ];
+            }
+            // 交换首尾
+            return line;
+        });
+    }
+
+    draw() {
         this.context.beginPath();
 
         // 浅拷贝数组，不改变原本的属性值
@@ -100,10 +127,9 @@ export class Neo extends ControObj {
 
         // 遍历剩下的数组，找到可以生成的点阵信息
         lines.forEach((line: Curve | Straight) => {
+            //连接到后面一个节点
             switch (line.type) {
                 case "line": {
-                    //连接到后面一个节点
-                    // this.circle(line.points[1][0], line.points[1][1], 10);
                     this.context.lineTo(line.points[1][0], line.points[1][1]);
                     break;
                 }
@@ -121,7 +147,7 @@ export class Neo extends ControObj {
             }
         });
 
-        // 填充颜色，实现背景色的填充
+        // 填充颜色
         this.context.closePath();
         this.context.fill();
         this.context.stroke();

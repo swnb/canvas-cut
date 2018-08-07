@@ -41,7 +41,6 @@ export const sliceUpdate = (
                         line.points[0],
                         line.points[1]
                     );
-                    console.log(res);
                     // 如果是没有交点的，返回undefined
                     if (!res.res) {
                         return undefined;

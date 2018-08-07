@@ -98,6 +98,9 @@ class Cut extends Draw {
         // 注册一个通讯的实例
         Center.setNewRegister("neo", this.onMessage);
 
+        window.console.info = (x: number, y: number, z: number) => {
+            this.circle(x, y, z);
+        };
         return this;
     }
 
