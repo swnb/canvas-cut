@@ -7,6 +7,7 @@ import { Buttons } from "./buttons/button";
 
 import {
     Circle,
+    Neo,
     createObj,
     createObjBySelf,
     createDiviSector,
@@ -16,6 +17,8 @@ import {
 import util from "./util/util";
 
 import slice from "./slice";
+
+import { Center } from "./communication/commu";
 
 type Pos = [number, number];
 
@@ -91,6 +94,10 @@ class Cut extends Draw {
         this.context.lineWidth = 6;
         this.context.fillStyle = "#F4A322";
         this.redraw();
+
+        // 注册一个通讯的实例
+        Center.setNewRegister("neo", this.onMessage);
+
         return this;
     }
 
@@ -106,8 +113,16 @@ class Cut extends Draw {
         this.allObj.push(obj);
     };
 
-    // onMessage(){
-    // }
+    onMessage = (neo: Neo) => {
+        console.log(neo);
+        setTimeout(() => {
+            neo.redraw = this.redraw.bind(this);
+            this.allObj.push(neo);
+            this.context.lineWidth = 6;
+            this.context.fillStyle = "#F4A322";
+            this.redraw();
+        }, 0);
+    };
 
     draw() {
         this.allObj.forEach(ele => {
@@ -380,6 +395,11 @@ class Cut extends Draw {
 
                         previous.push(sectors[0], sectors[1]);
 
+                        return previous;
+                    }
+                    case 4: {
+                        // 死亡也就是遗忘
+                        console.log("流淌的鲜血，湮灭的灵魂");
                         return previous;
                     }
                     default: {

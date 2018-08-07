@@ -41,6 +41,7 @@ export const sliceUpdate = (
                         line.points[0],
                         line.points[1]
                     );
+                    console.log(res);
                     // 如果是没有交点的，返回undefined
                     if (!res.res) {
                         return undefined;
@@ -111,14 +112,15 @@ export const sliceUpdate = (
                             points: [pointTwo]
                         };
                     } else {
-                        console.log("警告，严重的错误");
+                        console.log("没产生实际上和圆形的交点");
+                        return undefined;
                     }
                 }
             }
         }
     );
 
-    console.log(insertPoints);
+    // console.log(insertPoints);
 
     //大概出现3种情况
     const insertPointsR = insertPoints.filter(ele => ele);
@@ -213,7 +215,7 @@ const SS = (
     };
 
     // 把线条裁剪下来
-    const cutline1 = originLines.slice(first.index, second.index + 1);
+    const cutline1 = [...originLines].slice(first.index, second.index + 1);
     cutline1.shift();
     cutline1.unshift(cutFirstLine2);
     cutline1.pop();

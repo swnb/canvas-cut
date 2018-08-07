@@ -55,7 +55,7 @@ export class Neo extends ControObj {
         super(context, startP, width, height);
         this.r = r;
         this.circlePoint = circlePoint;
-
+        console.log(lines);
         this.lines = lines;
     }
 
@@ -71,6 +71,8 @@ export class Neo extends ControObj {
     }
 
     draw() {
+        console.log("start draw");
+
         this.context.beginPath();
 
         // 浅拷贝数组，不改变原本的属性值

@@ -1,9 +1,12 @@
-import { Circle, Neo } from "./objects/createobj";
+import { Circle, Neo, createNeo } from "./objects/createobj";
 
 import { AllObj } from "./canvas";
 
 import util from "./util/util";
+
 import { sliceUpdate } from "./sliceUpdate";
+
+import { Center } from "./communication/commu";
 
 type Pos = [number, number];
 
@@ -47,9 +50,27 @@ export default (allObj: AllObj[], lineA1: Pos, lineA2: Pos): Array<Pos[][]> =>
             // return obj.nextModule();
             // neo 它生下来就是全能的，swnb将赋予它所有能力，他能调度自己，和处理自己的状况，进行伪装，这是其他物体不能做到的，只有一种办法可以毁灭它，那就是重构
 
-            console.log(sliceUpdate(lineA1, lineA2, (<Neo>obj).lines));
+            const emit = Center.setNewEvent("neo");
 
-            return [];
+            const neos = sliceUpdate(lineA1, lineA2, (<Neo>obj).lines);
+
+            const Neos = neos.map(lines =>
+                createNeo(
+                    (<Neo>obj).context,
+                    [0, 0],
+                    (<Neo>obj).width,
+                    (<Neo>obj).height,
+                    (<Neo>obj).r,
+                    (<Neo>obj).circlePoint,
+                    lines
+                )
+            );
+
+            emit(Neos[0]);
+
+            emit(Neos[1]);
+
+            return Array(4);
         }
 
         // 聚合 将生成一个一个的数据点阵转换成线，考虑用映射该信这段代码

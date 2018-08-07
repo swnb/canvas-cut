@@ -1,16 +1,63 @@
-export class Com {
-    // 单例模式
-    private static instance: Com;
-    static create() {
-        Com.instance = new Com();
-        return Com.instance;
-    }
-    static getInstance() {
-        return Com.instance ? Com.instance : Com.create();
-    }
+type Subscribe = (arg: object | number | string | any) => void;
 
-    regist(fn: (...arg: any[]) => any) {}
-    emit() {}
+type Subscribes = Subscribe[];
+
+interface InterfaceRegister {
+    [propsname: string]: Subscribes;
 }
 
-// 老子写不下去了，前端真的难
+class Commutation {
+    // 单例模式
+    public static instance: Commutation;
+
+    public static getInstance: () => Commutation = () => {
+        if (Commutation.instance) {
+            return Commutation.instance;
+        } else {
+            return (Commutation.instance = Commutation.create());
+        }
+    };
+
+    private static create() {
+        return new Commutation();
+    }
+
+    private register: InterfaceRegister;
+
+    constructor() {
+        // 生成注册的列表的内存对象，对于所有注册的事件都在这个列表里面
+        this.register = {};
+    }
+    /**
+     * setNewEvent return the dispatch function
+     */
+    public setNewEvent(eventType: string) {
+        return (somedata: any) => {
+            const subscribe = this.getRegisterLists(eventType);
+            // 发布事件
+            if (subscribe.length > 0) {
+                this.register[eventType].forEach(cbfn => {
+                    cbfn(somedata);
+                });
+            }
+        };
+    }
+    /**
+     * setNewRegister return nothing
+     */
+    public setNewRegister(eventType: string, cbfn: Subscribe) {
+        this.getRegisterLists(eventType).push(cbfn);
+    }
+
+    private getRegisterLists(eventType: string) {
+        if (this.register[eventType]) {
+            return this.register[eventType];
+        } else {
+            return (this.register[eventType] = []);
+        }
+    }
+}
+
+const Center = Commutation.getInstance();
+
+export { Center };

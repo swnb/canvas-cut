@@ -52,49 +52,48 @@ export const createNeo = (
     context: CanvasRenderingContext2D,
     startP: Pos,
     width: number,
-    height: number
+    height: number,
+    r?: number,
+    circlePoint?: Pos,
+    lines?: Lines
 ) => {
-    const r = 100;
+    r ? void 0 : (r = 100);
 
-    const lines: Lines = [
-        {
-            type: "curve",
-            r: r,
-            points: [
-                [250, 250],
-                [250 + 140, 250],
-                [250 + 70, 250 - 70],
-                [250 + 70, 250 + 70]
-            ] as [Pos, Pos, Pos, Pos]
-        },
-        {
-            type: "line",
-            points: [[250 + 140, 250], [250 + 140, 250 + 100]] as [Pos, Pos]
-        },
-        {
-            type: "curve",
-            r: r,
-            points: [
-                [250 + 140, 250 + 100],
-                [250 - 10, 250 + 100],
-                [250 + 70, 250 + 100 + 70],
-                [250 + 70, 250 + 70]
-            ] as [Pos, Pos, Pos, Pos]
-        }
-        // {
-        //     type: "line",
-        //     points: [[250 - 10, 250 + 100], [250, 250]]
-        // }
-    ];
-    return new Neo(
-        context,
-        startP,
-        width,
-        height,
-        r,
-        [250 + 70, 250 + 70],
-        lines
-    );
+    if (!lines) {
+        lines = [
+            {
+                type: "curve",
+                r: r,
+                points: [
+                    [250, 250],
+                    [250 + 140, 250],
+                    [250 + 70, 250 - 70],
+                    [250 + 70, 250 + 70]
+                ] as [Pos, Pos, Pos, Pos]
+            },
+            {
+                type: "line",
+                points: [[250 + 140, 250], [250 + 140, 250 + 100]] as [Pos, Pos]
+            },
+            {
+                type: "curve",
+                r: r,
+                points: [
+                    [250 + 140, 250 + 100],
+                    [250 - 10, 250 + 100],
+                    [250 + 70, 250 + 100 + 70],
+                    [250 + 70, 250 + 70]
+                ] as [Pos, Pos, Pos, Pos]
+            },
+            {
+                type: "line",
+                points: [[250 - 10, 250 + 100], [250, 250]]
+            }
+        ];
+    }
+    circlePoint ? void 0 : (circlePoint = [250 + 70, 250 + 70]);
+
+    return new Neo(context, startP, width, height, r, circlePoint, lines);
 };
 
 // 导出所有的引入
