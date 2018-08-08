@@ -2,6 +2,7 @@ import { ControObj } from "./controller";
 import { ObjType } from "./obj";
 
 import util from "../util/util";
+import { S_IFREG } from "constants";
 
 // 点阵
 type Pos = [number, number];
