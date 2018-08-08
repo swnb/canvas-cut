@@ -273,9 +273,6 @@ class Cut extends Draw {
 
             const movePoint: Pos = util.getEventPos(ev);
 
-            // this.rect(movePoint[0], movePoint[1], 10, 10);
-            // this.rect(startPoint[0], startPoint[1], 10, 10);
-
             ele.polygonPoints = util.affineTransform(
                 startPoint,
                 midPoint,
