@@ -2,6 +2,7 @@ import { ControObj } from "./controller";
 import { ObjType } from "./obj";
 
 import util from "../util/util";
+import { S_IFREG } from "constants";
 
 // 点阵
 type Pos = [number, number];
@@ -65,7 +66,7 @@ export class Neo extends ControObj {
         // 拿到方向
         this.direct = this.getDirect();
 
-        this.sortLine();
+        [this.width, this.height, this.x, this.y] = this.getWidthHeight();
     }
 
     getDirect(): Pos {
@@ -75,6 +76,41 @@ export class Neo extends ControObj {
             [...closeLine.points[1]] as [number, number],
             [[...this.lines[0].points[1]] as [number, number]]
         );
+    }
+
+    getWidthHeight(): [number, number, number, number] {
+        // 分析点阵数据得到实际的最大值和最小值
+
+        const firstPoint = this.lines[0].points;
+
+        let [minX, maxX, minY, maxY] = [
+            firstPoint[0][0],
+            firstPoint[0][0],
+            firstPoint[0][1],
+            firstPoint[0][1]
+        ];
+
+        this.lines.forEach((line: Straight | Curve) => {
+            const point = line.points[0];
+            if (minX > point[0]) {
+                minX = point[0];
+            }
+            if (maxX < point[0]) {
+                maxX = point[0];
+            }
+            if (minY > point[1]) {
+                minY = point[1];
+            }
+            if (maxY < point[1]) {
+                maxY = point[1];
+            }
+        });
+
+        const width = maxX - minX;
+
+        const height = maxY - minY;
+
+        return [width, height, minX, minY];
     }
 
     init() {
@@ -192,9 +228,7 @@ export class Neo extends ControObj {
         return this;
     }
 
-    line2Point() {
-        
-    }
+    line2Point() {}
 
     // set polygonPoints() {}
 }
