@@ -40,8 +40,8 @@ export const getIntersection = (
 
     const ab = (la1[0] * la2[1] - la2[0] * la1[1]) / (la1[0] - la2[0]);
     const bb = (lb1[0] * lb2[1] - lb2[0] * lb1[1]) / (lb1[0] - lb2[0]);
-    console.log("a直线方程: y=" + ak + "x + " + ab);
-    console.log("b直线方程: y=" + bk + "x + " + bb);
+    // console.log("a直线方程: y=" + ak + "x + " + ab);
+    // console.log("b直线方程: y=" + bk + "x + " + bb);
 
     // 求解方程
     const x = (bb - ab) / (ak - bk);

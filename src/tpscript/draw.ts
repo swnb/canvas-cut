@@ -1,5 +1,4 @@
 // 位置点阵
-
 type Pos = [number, number];
 
 export default abstract class Draw {

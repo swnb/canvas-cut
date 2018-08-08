@@ -30,6 +30,7 @@ export const sliceUpdate = (
     lineA2: Pos,
     lines: Lines
 ): Lines[] => {
+    console.log(JSON.stringify(lines));
     const insertPoints = lines.map(
         (line): InsertPoint | undefined => {
             switch (line.type) {
@@ -122,8 +123,6 @@ export const sliceUpdate = (
             }
         }
     );
-
-    // console.log(insertPoints);
 
     //大概出现3种情况
     const insertPointsR = insertPoints.filter(ele => ele);

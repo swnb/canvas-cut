@@ -83,12 +83,6 @@ class Cut extends Draw {
     }
 
     init(): Cut {
-        const neo = createNeo(this.context, [100, 100], 100, 100);
-
-        neo.redraw = this.redraw.bind(this);
-
-        this.allObj.push(neo);
-
         this.context.lineWidth = 6;
         this.context.fillStyle = "#F4A322";
         this.redraw();
@@ -96,9 +90,6 @@ class Cut extends Draw {
         // 注册一个通讯的实例
         Center.setNewRegister("neo", this.onMessage);
 
-        window.console.info = (x: number, y: number, z: number) => {
-            this.circle(x, y, z);
-        };
         return this;
     }
 

@@ -1,4 +1,4 @@
-import { Circle, Neo, createNeo } from "../objects/createobj";
+import { Circle, Neo, createNeo, Sector } from "../objects/createobj";
 
 import { AllObj } from "../canvas";
 
@@ -18,8 +18,6 @@ export default (allObj: AllObj[], lineA1: Pos, lineA2: Pos): Array<Pos[][]> =>
             // 圆形的r
             const r = (<Circle>obj).r;
             const midPoint: Pos = [middleX, middleY];
-
-            console.log("this is middle points ", middleX, " ", middleY);
 
             const resultWithInsert = util.getInsCircle(
                 lineA1,
@@ -41,6 +39,39 @@ export default (allObj: AllObj[], lineA1: Pos, lineA2: Pos): Array<Pos[][]> =>
         // 王的诞生
         if (obj.objType.type === "Sector") {
             // 生成 终结一起的混血王者 ->neo
+            const neos = sliceUpdate(
+                lineA1,
+                lineA2,
+                (<Sector>obj).pointToLIne()
+            );
+            const emit = Center.setNewEvent("neo");
+
+            const Neos = neos.map(lines =>
+                createNeo(
+                    (<Neo>obj).context,
+                    [0, 0],
+                    (<Neo>obj).width,
+                    (<Neo>obj).height,
+                    (<Neo>obj).r,
+                    (<Neo>obj).circlePoint,
+                    lines
+                )
+            );
+
+            switch (Neos.length) {
+                //正常的输出
+                case 2: {
+                    emit(Neos[0]);
+                    emit(Neos[1]);
+                    // 毁灭之前的元素
+                    return Array(4);
+                }
+                case 10: {
+                    // 保留原本的值不变
+                    return [];
+                }
+            }
+
             return [];
         }
 

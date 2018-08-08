@@ -74,18 +74,18 @@ export const getInsCircle = (
         pointAtLine(maybeRes.first, line1, line2, 6) &&
         pointAtLine(maybeRes.second, line1, line2, 6)
     ) {
-        console.log(
-            `line is inside the circle ${pointAtLine(
-                maybeRes.first,
-                line1,
-                line2,
-                6
-            )} ${pointAtLine(maybeRes.second, line1, line2, 6)}`
-        );
+        // console.log(
+        //     `line is inside the circle ${pointAtLine(
+        //         maybeRes.first,
+        //         line1,
+        //         line2,
+        //         6
+        //     )} ${pointAtLine(maybeRes.second, line1, line2, 6)}`
+        // );
 
         return { res: true, point: [maybeRes.first, maybeRes.second] };
     } else {
-        console.log("line is not inside the circle");
+        // console.log("line is not inside the circle");
 
         return { res: false, point: [[0, 0], [0, 0]] };
     }

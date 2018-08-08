@@ -1,9 +1,6 @@
-
 // 这里也许根本就不需要一个这样的转换去做这样的工作,我们需要的是什么,是移动的规则,
 
-
 // 将每个点阵的所有数据都进行加处理是否是正确的?
-
 
 // 位置点阵的信息
 type Pos = [number, number];
@@ -30,11 +27,9 @@ interface Curve {
 // 线的类型
 type Lines = (Straight | Curve)[];
 
-
-type Points = Array<Pos|>;
+type Points = Array<Pos>;
 
 export const line2Point = (lines: Lines): Points => {
-
     // lines.forEach()
 
     return [];
