@@ -67,7 +67,31 @@ export class Neo extends ControObj {
 
     update(x: number, y: number) {
         const [xdivi, ydivi] = [x - this.x, y - this.y];
-        // this.lines = this.lines.map();
+
+        this.lines = this.lines.map(
+            (line: Straight | Curve): Straight | Curve => {
+                switch (line.type) {
+                    case "curve": {
+                        line.points = line.points.map(
+                            (p): [number, number] => [
+                                p[0] + xdivi,
+                                p[1] + ydivi
+                            ]
+                        ) as [Pos, Pos, Pos, Pos];
+                        return line;
+                    }
+                    case "line": {
+                        line.points = line.points.map(
+                            (p): [number, number] => [
+                                p[0] + xdivi,
+                                p[1] + ydivi
+                            ]
+                        ) as [Pos, Pos];
+                        return line;
+                    }
+                }
+            }
+        );
 
         return this;
     }

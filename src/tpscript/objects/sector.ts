@@ -444,22 +444,6 @@ export const createDiviSector = (
         objType
     ).init();
 
-    // setTimeout(() => {
-    //     sectorSmall.circle(
-    //         insideInsertPoint[0][0],
-    //         insideInsertPoint[0][1],
-    //         10
-    //     );
-
-    //     setTimeout(() => {
-    //         sectorSmall.circle(
-    //             insideInsertPoint[1][0],
-    //             insideInsertPoint[1][1],
-    //             10
-    //         );
-    //     }, 1300);
-    // }, 1300);
-
     // 另外一个大的扇形
     const sectorLarge = new Sector(
         context,

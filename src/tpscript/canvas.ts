@@ -16,7 +16,7 @@ import {
 
 import util from "./util/util";
 
-import slice from "./slice";
+import slice from "./slice/slice";
 
 import { Center } from "./communication/commu";
 

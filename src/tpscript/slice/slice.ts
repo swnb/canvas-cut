@@ -1,12 +1,12 @@
-import { Circle, Neo, createNeo } from "./objects/createobj";
+import { Circle, Neo, createNeo } from "../objects/createobj";
 
-import { AllObj } from "./canvas";
+import { AllObj } from "../canvas";
 
-import util from "./util/util";
+import util from "../util/util";
 
 import { sliceUpdate } from "./sliceUpdate";
 
-import { Center } from "./communication/commu";
+import { Center } from "../communication/commu";
 
 type Pos = [number, number];
 

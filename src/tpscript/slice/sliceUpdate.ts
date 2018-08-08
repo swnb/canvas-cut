@@ -1,4 +1,4 @@
-import util from "./util/util";
+import util from "../util/util";
 
 // 位置点阵的信息
 type Pos = [number, number];
