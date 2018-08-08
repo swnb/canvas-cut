@@ -123,26 +123,10 @@ export class Neo extends ControObj {
     update(xdivi: number, ydivi: number) {
         this.lines = this.lines.map(
             (line: Straight | Curve): Straight | Curve => {
-                switch (line.type) {
-                    case "curve": {
-                        line.points = line.points.map(
-                            (p): [number, number] => [
-                                p[0] + xdivi,
-                                p[1] + ydivi
-                            ]
-                        ) as [Pos, Pos, Pos, Pos];
-                        return line;
-                    }
-                    case "line": {
-                        line.points = line.points.map(
-                            (p): [number, number] => [
-                                p[0] + xdivi,
-                                p[1] + ydivi
-                            ]
-                        ) as [Pos, Pos];
-                        return line;
-                    }
-                }
+                line.points = line.points.map(
+                    (p): [number, number] => [p[0] + xdivi, p[1] + ydivi]
+                ) as [Pos, Pos, Pos, Pos] | [Pos, Pos];
+                return line;
             }
         );
 
@@ -177,6 +161,9 @@ export class Neo extends ControObj {
         this.drawIcon();
 
         this.context.beginPath();
+
+        const preStrokeStyle = this.context.strokeStyle;
+        this.context.strokeStyle = "#05a9c6";
 
         // 浅拷贝数组，不改变原本的属性值
         const lines = [...this.lines];
@@ -228,6 +215,36 @@ export class Neo extends ControObj {
         this.context.fill();
         this.context.stroke();
 
+        // 生成的原本属性
+        this.context.strokeStyle = preStrokeStyle;
         return this;
+    }
+
+    updateRotate(startPoint: Pos, midPoint: Pos, movePoint: Pos, lines: Lines) {
+        // 完全的更新点阵的信息
+        this.lines = lines.map(
+            (line: Curve | Straight): Straight | Curve => {
+                const newPoints = util.affineTransform(
+                    startPoint,
+                    midPoint,
+                    movePoint,
+                    line.points
+                ) as [Pos, Pos] | [Pos, Pos, Pos, Pos];
+                switch (line.type) {
+                    case "curve":
+                        return {
+                            type: "curve",
+                            r: line.r,
+                            points: newPoints as [Pos, Pos, Pos, Pos]
+                        };
+                    case "line": {
+                        return {
+                            type: "line",
+                            points: newPoints as [Pos, Pos]
+                        };
+                    }
+                }
+            }
+        );
     }
 }

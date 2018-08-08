@@ -255,6 +255,10 @@ class Cut extends Draw {
 
         const orginPolygonPoints = util.deepcoyeArray(ele.polygonPoints);
 
+        if (ele.objType.type === "Hybrid") {
+            var originLines = (<Neo>ele).lines;
+        }
+
         let timeRecord = Date.now();
         return (ev: MouseEvent) => {
             console.log("start rotate");
@@ -273,14 +277,27 @@ class Cut extends Draw {
 
             const movePoint: Pos = util.getEventPos(ev);
 
-            ele.polygonPoints = util.affineTransform(
-                startPoint,
-                midPoint,
-                movePoint,
-                orginPolygonPoints
-            );
+            switch (ele.objType.type) {
+                case "Hybrid": {
+                    (<Neo>ele).updateRotate(
+                        startPoint,
+                        midPoint,
+                        movePoint,
+                        originLines
+                    );
+                    break;
+                }
+                default: {
+                    ele.polygonPoints = util.affineTransform(
+                        startPoint,
+                        midPoint,
+                        movePoint,
+                        orginPolygonPoints
+                    );
+                    break;
+                }
+            }
 
-            console.log(ele.polygonPoints);
             this.redraw();
         };
     };

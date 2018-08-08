@@ -15,17 +15,11 @@ export const affineTransform = (
         startPoint[1] - midPoint[1]
     ];
 
-    console.log("this is a start line", startLine);
-
     // 偏移的向量,注意这里的y是反方向
     const moveLine: Pos = [
         movePoint[0] - midPoint[0],
         movePoint[1] - midPoint[1]
     ];
-
-    console.log(movePoint, midPoint);
-
-    console.log("this is a end line", moveLine);
 
     // 点乘
     const ab = startLine[0] * moveLine[0] + startLine[1] * moveLine[1];
@@ -40,8 +34,6 @@ export const affineTransform = (
     const cosDeg = ab / abs;
     // 生成的sin
     const sinDeg = aXb / abs;
-
-    console.log(cosDeg, sinDeg);
 
     return poses.map(
         (pos: Pos): Pos => {
