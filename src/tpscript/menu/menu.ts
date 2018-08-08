@@ -5,7 +5,6 @@ import { InitBg, DrawObjbg } from "./initbg";
 
 // 引入子菜单的所有类型和所有的数据
 import { SubMenuDataStore, SubMenuDataType } from "./datastore";
-import { clearTimeout } from "timers";
 
 type Mode =
     | "Triangle"
@@ -58,7 +57,7 @@ export class Menu extends Draw {
 
     // 上一个模式和n当前的模式
     public lastMode: Mode = "none";
-    public mode: Mode = "Ellipse";
+    public mode: Mode = "none";
 
     constructor(
         context: CanvasRenderingContext2D,
