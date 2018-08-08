@@ -1,6 +1,5 @@
 import { ControObj } from "./controller";
 import { ObjType } from "./obj";
-import { setTimeout } from "timers";
 
 import util from "../util/util";
 

@@ -104,7 +104,7 @@ class Cut extends Draw {
 
     update() {}
 
-    // 上帝7日造人，swnb7天造物
+    // 创造是谁赋予的权利?也许是蓝天和白云
     createObj = (type: ObjType) => {
         const startPos: Pos = [
             Math.random() * 400 + 100,
@@ -115,12 +115,9 @@ class Cut extends Draw {
     };
 
     onMessage = (neo: Neo) => {
-        console.log(neo);
+        neo.redraw = this.redraw.bind(this);
         setTimeout(() => {
-            neo.redraw = this.redraw.bind(this);
             this.allObj.push(neo);
-            this.context.lineWidth = 6;
-            this.context.fillStyle = "#F4A322";
             this.redraw();
         }, 0);
     };

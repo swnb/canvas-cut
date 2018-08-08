@@ -65,11 +65,19 @@ export default (allObj: AllObj[], lineA1: Pos, lineA2: Pos): Array<Pos[][]> =>
                 )
             );
 
-            emit(Neos[0]);
-
-            emit(Neos[1]);
-
-            return Array(4);
+            switch (Neos.length) {
+                //正常的输出
+                case 2: {
+                    emit(Neos[1]);
+                    emit(Neos[0]);
+                    // 湮灭之前的灵魂
+                    return Array(4);
+                }
+                case 10: {
+                    // 保留原本的值不变
+                    return [];
+                }
+            }
         }
 
         // 聚合 将生成一个一个的数据点阵转换成线，考虑用映射该信这段代码

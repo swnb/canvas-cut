@@ -134,6 +134,7 @@ export const sliceUpdate = (
             "切出来的长度不是2也不是1，这个情况要上报 长度是 ",
             insertPoints.filter(ele => ele).length
         );
+        return Array(10);
     }
 
     switch (insertPointsR.length) {
