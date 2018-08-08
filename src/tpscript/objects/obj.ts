@@ -82,8 +82,7 @@ export class Obj extends ControObj {
         return this;
     }
 
-    update(x: number, y: number) {
-        const [xdivi, ydivi] = [x - this.x, y - this.y];
+    update(xdivi: number, ydivi: number) {
         this.polygonPoints = this.polygonPoints.map(
             (point: Pos): Pos => [point[0] + xdivi, point[1] + ydivi]
         );

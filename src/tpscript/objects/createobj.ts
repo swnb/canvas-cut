@@ -57,6 +57,7 @@ export const createNeo = (
     circlePoint?: Pos,
     lines?: Lines
 ) => {
+
     r ? void 0 : (r = 100);
 
     if (!lines) {

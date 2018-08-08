@@ -44,9 +44,7 @@ export class Circle extends ControObj {
         return this;
     }
 
-    update(x: number, y: number) {
-        const [xdivi, ydivi] = [x - this.x, y - this.y];
-
+    update(xdivi: number, ydivi: number) {
         // 更新中心点
         this.middlePoint = [
             this.middlePoint[0] + xdivi,

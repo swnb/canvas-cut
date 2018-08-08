@@ -20,8 +20,7 @@ export class SelfCreateObj extends ControObj {
         super(context, startP, width, height);
         this.polygonPoints = polygonPoints;
     }
-    update(x: number, y: number) {
-        const [xdivi, ydivi] = [x - this.x, y - this.y];
+    update(xdivi: number, ydivi: number) {
         this.polygonPoints = this.polygonPoints.map(
             (point: Pos): Pos => [point[0] + xdivi, point[1] + ydivi]
         );

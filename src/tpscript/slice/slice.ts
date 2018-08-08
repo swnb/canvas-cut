@@ -68,9 +68,9 @@ export default (allObj: AllObj[], lineA1: Pos, lineA2: Pos): Array<Pos[][]> =>
             switch (Neos.length) {
                 //正常的输出
                 case 2: {
-                    emit(Neos[1]);
                     emit(Neos[0]);
-                    // 湮灭之前的灵魂
+                    emit(Neos[1]);
+                    // 毁灭之前的元素
                     return Array(4);
                 }
                 case 10: {

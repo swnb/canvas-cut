@@ -115,10 +115,12 @@ class Cut extends Draw {
     };
 
     onMessage = (neo: Neo) => {
+        // 创建neo
         neo.redraw = this.redraw.bind(this);
         setTimeout(() => {
             this.allObj.push(neo);
             this.redraw();
+            util.slowMove(neo, neo.direct);
         }, 0);
     };
 
@@ -235,7 +237,12 @@ class Cut extends Draw {
 
             const [ex, ey] = util.getEventPos(ev);
             //  这个update一定要在前面实现，这个变化的数据不能继续扩张它的影响
-            ele.update(ex - x + originX, ey - y + originY);
+
+            const divix = ex - x + originX - ele.x;
+            const diviy = ey - y + originY - ele.y;
+
+            ele.update(divix, diviy);
+
             ele.x = ex - x + originX;
             ele.y = ey - y + originY;
 
@@ -266,8 +273,8 @@ class Cut extends Draw {
 
             const movePoint: Pos = util.getEventPos(ev);
 
-            this.rect(movePoint[0], movePoint[1], 10, 10);
-            this.rect(startPoint[0], startPoint[1], 10, 10);
+            // this.rect(movePoint[0], movePoint[1], 10, 10);
+            // this.rect(startPoint[0], startPoint[1], 10, 10);
 
             ele.polygonPoints = util.affineTransform(
                 startPoint,
@@ -275,6 +282,7 @@ class Cut extends Draw {
                 movePoint,
                 orginPolygonPoints
             );
+
             console.log(ele.polygonPoints);
             this.redraw();
         };
@@ -342,7 +350,8 @@ class Cut extends Draw {
     // 一个线段和物体相交的整个过程
     getInsertPoints(lineA1: Pos, LineA2: Pos) {
         // 将this.obj的所有物体进行整合，整合之后得到所有的物体的一个集合
-        // 这里的问题其实在于是否要全部更新所有存在的对象，我的想法是全部更新，之后考虑部分更新到部分
+
+        // 不顾是什么情况下面都全部更新,不要考虑其他的情况增加自己的麻烦
         this.allObj = slice(this.allObj, lineA1, LineA2).reduce(
             (
                 previous: Array<AllObj>,

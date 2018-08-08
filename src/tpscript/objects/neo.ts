@@ -43,6 +43,8 @@ export class Neo extends ControObj {
     // 对于neo来说，只有线的概念，没有点的概念
     public lines: Lines = [];
 
+    public direct: Pos;
+
     constructor(
         context: CanvasRenderingContext2D,
         startP: Pos,
@@ -53,21 +55,33 @@ export class Neo extends ControObj {
         lines: Lines
     ) {
         super(context, startP, width, height);
+
         this.r = r;
+
         this.circlePoint = circlePoint;
 
         this.lines = util.deepcopyLines(lines);
 
+        // 拿到方向
+        this.direct = this.getDirect();
+
         this.sortLine();
+    }
+
+    getDirect(): Pos {
+        const closeLine = this.lines[this.lines.length - 1];
+        return util.getDirection(
+            [...closeLine.points[0]] as [number, number],
+            [...closeLine.points[1]] as [number, number],
+            [[...this.lines[0].points[1]] as [number, number]]
+        );
     }
 
     init() {
         return this;
     }
 
-    update(x: number, y: number) {
-        const [xdivi, ydivi] = [x - this.x, y - this.y];
-
+    update(xdivi: number, ydivi: number) {
         this.lines = this.lines.map(
             (line: Straight | Curve): Straight | Curve => {
                 switch (line.type) {
@@ -120,6 +134,9 @@ export class Neo extends ControObj {
     }
 
     draw() {
+        // 画图标
+        this.drawIcon();
+
         this.context.beginPath();
 
         // 浅拷贝数组，不改变原本的属性值
@@ -174,4 +191,10 @@ export class Neo extends ControObj {
 
         return this;
     }
+
+    line2Point() {
+        
+    }
+
+    // set polygonPoints() {}
 }
