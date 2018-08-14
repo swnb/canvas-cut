@@ -1,33 +1,36 @@
-interface ImgSrcMap{
-    [propname:string]:string
+import { imgs } from "./data";
+
+interface ImgMap {
+	[propname: string]: HTMLImageElement;
 }
 
-interface ImgMap{
-    [propname:string]:HTMLImageElement
-}
+const _imgMap: ImgMap = Object.create(null);
 
-const imgSrcMap:ImgSrcMap={
-    tmp:"/usr/tmp"
-}
+// 这个函数只执行一次
+export const load = (cb: () => void): (() => ImgMap | boolean) => {
+	let lock = true; // 上锁
 
-const imgMap:ImgMap=Object.create(null)
+	let imgLength = Object.keys(imgs).length;
 
-// 创建代理层
-const imgMapProxy=new Proxy(imgMap,{
-    get:(target:ImgMap,props:string)=>target[props],
-    set:(target:ImgMap,prop:string,value:HTMLImageElement)=>{
-        imgMap[prop]=value
-        
-    }
-})
+	const imgMap: ImgMap = new Proxy(_imgMap, {
+		get: (target: ImgMap, props: string) => target[props],
+		set: (target: ImgMap, prop: string, value: HTMLImageElement) => {
+			target[prop] = value;
+			if (--imgLength === 0) {
+				lock = false; // 解锁
+				cb();
+			}
+			return true;
+		}
+	});
 
+	for (const tag in imgs) {
+		const Img = new Image();
+		Img.src = imgs[tag];
+		Img.onload = () => {
+			imgMap[tag] = Img;
+		};
+	}
 
-const loadImg=(cb:()=>void)=>{
-    for (const key in imgSrcMap){
-        const Img=new Image()
-        Img.src=imgSrcMap[key]
-        Img.onload=()=>imgMap[key]=Img
-    }
-
-    cb()
-}
+	return () => (lock ? false : imgMap);
+};
