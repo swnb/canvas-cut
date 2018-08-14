@@ -155,6 +155,10 @@ export class Menu extends Draw {
         }
     }
 
+    closeSubMenu(){
+        this.changeMode("none")
+    }
+
     // 更新这些数据
     updateSubMenuList() {
         // 模式没有改变，那么就不更新

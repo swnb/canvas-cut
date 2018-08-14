@@ -30,6 +30,7 @@ interface ObjType {
 interface MenuType {
     pointAtMenu(pos: Pos): boolean;
     pointAtSubMenu(pos: Pos): boolean;
+    closeSubMenu():void
     draw(): MenuType;
 }
 
@@ -126,13 +127,17 @@ class Cut extends Draw {
     }
 
     ontouch(x: number, y: number) {
-        // 如果确认了点击的事件，那么就把逻辑交给别人
-        if (this.buttons.ifClick(x, y)) return;
-
+        
         // 查找菜单，点击事件判断,存在终止判断，把逻辑交给其他人
         if (this.menu.pointAtMenu([x, y])) return;
-
+        
         if (this.menu.pointAtSubMenu([x, y])) return;
+        
+        // 如果不是菜单的事件,那么关闭菜单
+        this.menu.closeSubMenu()
+
+        // 按钮的点击事件
+        if (this.buttons.ifClick(x, y)) return;
 
         // 从最后开始查找，相当于在页面前面从最前面开始找，找到了就是了
         const ele = [...this.allObj].reverse().find(
