@@ -35,13 +35,13 @@ export class LoadingPage {
 		// * *
 		//  *
 
-		this.startPos = [];
+		// this.startPos = [];
 
 		this.draw();
 	}
 
 	rotate() {
-		util.affineTransform(this.startPos, this.midPos);
+		// util.affineTransform(this.startPos, this.midPos);
 		this.polygenPoint = this.polygenPoint.map(
 			(pos: Pos): Pos => {
 				return [0, 0];
