@@ -6,12 +6,12 @@ import { Menu } from "./menu/menu";
 import { Buttons } from "./buttons/button";
 
 import {
-    Circle,
-    Neo,
-    createObj,
-    createObjBySelf,
-    createDiviSector,
-    createNeo
+	Circle,
+	Neo,
+	createObj,
+	createObjBySelf,
+	createDiviSector,
+	createNeo
 } from "./objects/createobj";
 
 import util from "./util/util";
@@ -23,484 +23,476 @@ import { Center } from "./communication/commu";
 type Pos = [number, number];
 
 interface ObjType {
-    type: string;
-    typecode: number;
+	type: string;
+	typecode: number;
 }
 
 interface MenuType {
-    pointAtMenu(pos: Pos): boolean;
-    pointAtSubMenu(pos: Pos): boolean;
-    closeSubMenu():void
-    draw(): MenuType;
+	pointAtMenu(pos: Pos): boolean;
+	pointAtSubMenu(pos: Pos): boolean;
+	closeSubMenu(): void;
+	draw(): MenuType;
 }
 
 export interface AllObj {
-    // 类型
-    objType: ObjType;
-    // 被选中
-    selected: boolean;
-    mode: "move" | "rotate" | "clip" | "static";
-    // 位置信息
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    // 控制器点阵
-    rotatePos: [number, number, number];
-    directPos: [number, number, number];
-    // 点阵
-    polygonPoints: Pos[];
-    // 画方式
-    draw(): object;
-    // 更新数据
-    update(x: number, y: number): object;
-    // 从新画
-    redraw(): void;
+	// 类型
+	objType: ObjType;
+	// 被选中
+	selected: boolean;
+	mode: "move" | "rotate" | "clip" | "static";
+	// 位置信息
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+	// 控制器点阵
+	rotatePos: [number, number, number];
+	directPos: [number, number, number];
+	// 点阵
+	polygonPoints: Pos[];
+	// 画方式
+	draw(): object;
+	// 更新数据
+	update(x: number, y: number): object;
+	// 从新画
+	redraw(): void;
 }
 
 class Cut extends Draw {
-    static create(context: CanvasRenderingContext2D): Cut {
-        return new Cut(context);
-    }
+	static create(context: CanvasRenderingContext2D): Cut {
+		return new Cut(context);
+	}
 
-    private allObj: Array<AllObj> = [];
+	private allObj: Array<AllObj> = [];
 
-    private menu: MenuType;
-    private buttons: Buttons;
+	private menu: MenuType;
+	private buttons: Buttons;
 
-    public context: CanvasRenderingContext2D;
+	public context: CanvasRenderingContext2D;
 
-    constructor(context: CanvasRenderingContext2D) {
-        super(context);
-        this.context = context;
-        this.context.strokeStyle = "whitesmoke";
-        this.context.fillStyle = "#84ccc9";
+	constructor(context: CanvasRenderingContext2D) {
+		super(context);
+		this.context = context;
+		this.context.strokeStyle = "whitesmoke";
+		this.context.fillStyle = "#84ccc9";
 
-        this.menu = new Menu(this.context, 1175, 50, this.createObj).draw();
+		this.menu = new Menu(this.context, 1175, 50, this.createObj).draw();
 
-        this.buttons = new Buttons(this.context, {
-            rmEverything: this.rmEvething
-        }).draw();
-    }
+		this.buttons = new Buttons(this.context, {
+			rmEverything: this.rmEvething
+		}).draw();
+	}
 
-    init(): Cut {
-        this.context.lineWidth = 6;
-        this.context.fillStyle = "#F4A322";
-        this.redraw();
+	init(): Cut {
+		this.context.lineWidth = 6;
+		this.context.fillStyle = "#F4A322";
+		this.redraw();
 
-        // 注册一个通讯的实例
-        Center.setNewRegister("neo", this.onMessage);
+		// 注册一个通讯的实例
+		Center.setNewRegister("neo", this.onMessage);
 
-        return this;
-    }
+		return this;
+	}
 
-    update() {}
+	update() {}
 
-    // 创造是谁赋予的权利?也许是蓝天和白云
-    createObj = (type: ObjType) => {
-        const startPos: Pos = [
-            Math.random() * 400 + 100,
-            Math.random() * 200 + 100
-        ];
-        const obj = createObj(this.context, type, startPos, 200, 300);
-        this.allObj.push(obj);
-    };
+	// 创造是谁赋予的权利?也许是蓝天和白云
+	createObj = (type: ObjType) => {
+		const startPos: Pos = [
+			Math.random() * 400 + 100,
+			Math.random() * 200 + 100
+		];
+		const obj = createObj(this.context, type, startPos, 200, 300);
+		this.allObj.push(obj);
+	};
 
-    onMessage = (neo: Neo) => {
-        // 创建neo
-        neo.redraw = this.redraw.bind(this);
-        setTimeout(() => {
-            this.allObj.push(neo);
-            this.redraw();
-            util.slowMove(neo, neo.direct);
-        }, 0);
-    };
+	onMessage = (neo: Neo) => {
+		// 创建neo
+		neo.redraw = this.redraw.bind(this);
+		setTimeout(() => {
+			this.allObj.push(neo);
+			this.redraw();
+			util.slowMove(neo, neo.direct);
+		}, 0);
+	};
 
-    draw() {
-        this.allObj.forEach(ele => {
-            ele.draw();
-        });
+	draw() {
+		this.allObj.forEach(ele => {
+			ele.draw();
+		});
 
-        this.menu.draw();
+		this.menu.draw();
 
-        this.buttons.draw();
-    }
+		this.buttons.draw();
+	}
 
-    ontouch(x: number, y: number) {
-        
-        // 查找菜单，点击事件判断,存在终止判断，把逻辑交给其他人
-        if (this.menu.pointAtMenu([x, y])) return;
-        
-        if (this.menu.pointAtSubMenu([x, y])) return;
-        
-        // 如果不是菜单的事件,那么关闭菜单
-        this.menu.closeSubMenu()
+	ontouch(x: number, y: number) {
+		// 查找菜单，点击事件判断,存在终止判断，把逻辑交给其他人
+		if (this.menu.pointAtMenu([x, y])) return;
 
-        // 按钮的点击事件
-        if (this.buttons.ifClick(x, y)) return;
+		if (this.menu.pointAtSubMenu([x, y])) return;
 
-        // 从最后开始查找，相当于在页面前面从最前面开始找，找到了就是了
-        const ele = [...this.allObj].reverse().find(
-            (obj: AllObj): boolean => {
-                // 新增加的模式，对于圆形有特殊的表达
-                if (obj.objType.type === "Ellipse") {
-                    // 判断是否在圆形内部
-                    const isInCircle = util.isInsideCircle(x, y, [
-                        ...obj.polygonPoints[1],
-                        (<Circle>obj).r
-                    ] as [number, number, number]);
+		// 如果不是菜单的事件,那么关闭菜单
+		this.menu.closeSubMenu();
 
-                    if (isInCircle) {
-                        console.log("inside circle");
-                        this.setSelect(obj);
-                        obj.mode = "move";
-                        return true;
-                    } else return false;
-                }
+		// 按钮的点击事件
+		if (this.buttons.ifClick(x, y)) return;
 
-                // 元素是否被选中，选中就要进行多种判断
-                if (obj.selected) {
-                    const rotatePos: [number, number, number] = obj.rotatePos;
-                    const directPos: [number, number, number] = obj.directPos;
+		// 从最后开始查找，相当于在页面前面从最前面开始找，找到了就是了
+		const ele = [...this.allObj].reverse().find(
+			(obj: AllObj): boolean => {
+				// 新增加的模式，对于圆形有特殊的表达
+				if (obj.objType.type === "Ellipse") {
+					// 判断是否在圆形内部
+					const isInCircle = util.isInsideCircle(x, y, [
+						...obj.polygonPoints[1],
+						(<Circle>obj).r
+					] as [number, number, number]);
 
-                    // 判断一个点是否在这个区域内部
-                    if (
-                        util.isInsideArea(
-                            [x, y],
-                            [obj.x, obj.y],
-                            obj.width,
-                            obj.height,
-                            obj.polygonPoints
-                        ) ||
-                        util.isInsideCircle(x, y, directPos)
-                    ) {
-                        obj.mode = "move";
-                        return true;
-                    } else if (util.isInsideCircle(x, y, rotatePos)) {
-                        obj.mode = "rotate";
-                        return true;
-                    }
-                }
-                // 如果对象不是被已经被选中的对象
-                if (
-                    util.isInsideArea(
-                        [x, y],
-                        [obj.x, obj.y],
-                        obj.width,
-                        obj.height,
-                        obj.polygonPoints
-                    )
-                ) {
-                    // 清除所有的obj对象备选状态，对当前的选中对象设置选中的状态
-                    this.setSelect(obj);
-                    obj.mode = "move";
-                    // 更新所有的状态并且重新生成新的状态
-                    this.redraw();
-                    return true;
-                }
-                return false;
-            }
-        );
+					if (isInCircle) {
+						console.log("inside circle");
+						this.setSelect(obj);
+						obj.mode = "move";
+						return true;
+					} else return false;
+				}
 
-        //不存在直接返回
-        if (!ele) {
-            return false;
-        }
+				// 元素是否被选中，选中就要进行多种判断
+				if (obj.selected) {
+					const rotatePos: [number, number, number] = obj.rotatePos;
+					const directPos: [number, number, number] = obj.directPos;
 
-        // 判断旋转还是移动
-        switch (ele.mode) {
-            case "move":
-                return this.listenerMove(ele, x, y);
-            case "rotate":
-                return this.listenerRotate(ele);
-            default:
-                return null;
-        }
-    }
-    // 利用闭包实现一些特殊的功能，去抖动
-    listenerMove = (ele: AllObj, x: number, y: number) => {
-        const [originX, originY] = [ele.x, ele.y];
-        let timeRecord = Date.now();
-        return (ev: MouseEvent) => {
-            // 实现去抖动的功能
-            const now = Date.now();
-            const divi = now - timeRecord;
-            if (divi < 2) {
-                return;
-            } else {
-                timeRecord = now;
-            }
+					// 判断一个点是否在这个区域内部
+					if (
+						util.isInsideArea(
+							[x, y],
+							[obj.x, obj.y],
+							obj.width,
+							obj.height,
+							obj.polygonPoints
+						) ||
+						util.isInsideCircle(x, y, directPos)
+					) {
+						obj.mode = "move";
+						return true;
+					} else if (util.isInsideCircle(x, y, rotatePos)) {
+						obj.mode = "rotate";
+						return true;
+					}
+				}
+				// 如果对象不是被已经被选中的对象
+				if (
+					util.isInsideArea(
+						[x, y],
+						[obj.x, obj.y],
+						obj.width,
+						obj.height,
+						obj.polygonPoints
+					)
+				) {
+					// 清除所有的obj对象备选状态，对当前的选中对象设置选中的状态
+					this.setSelect(obj);
+					obj.mode = "move";
+					// 更新所有的状态并且重新生成新的状态
+					this.redraw();
+					return true;
+				}
+				return false;
+			}
+		);
 
-            const [ex, ey] = util.getEventPos(ev);
-            //  这个update一定要在前面实现，这个变化的数据不能继续扩张它的影响
+		//不存在直接返回
+		if (!ele) {
+			return false;
+		}
 
-            const divix = ex - x + originX - ele.x;
-            const diviy = ey - y + originY - ele.y;
+		// 判断旋转还是移动
+		switch (ele.mode) {
+			case "move":
+				return this.listenerMove(ele, x, y);
+			case "rotate":
+				return this.listenerRotate(ele);
+			default:
+				return null;
+		}
+	}
+	// 利用闭包实现一些特殊的功能，去抖动
+	listenerMove = (ele: AllObj, x: number, y: number) => {
+		const [originX, originY] = [ele.x, ele.y];
+		let timeRecord = Date.now();
+		return (ev: MouseEvent) => {
+			// 实现去抖动的功能
+			const now = Date.now();
+			const divi = now - timeRecord;
+			if (divi < 2) {
+				return;
+			} else {
+				timeRecord = now;
+			}
 
-            ele.update(divix, diviy);
+			const [ex, ey] = util.getEventPos(ev);
+			//  这个update一定要在前面实现，这个变化的数据不能继续扩张它的影响
 
-            ele.x = ex - x + originX;
-            ele.y = ey - y + originY;
+			const divix = ex - x + originX - ele.x;
+			const diviy = ey - y + originY - ele.y;
 
-            this.redraw();
-        };
-    };
-    listenerRotate = (ele: AllObj) => {
-        // 中心点
-        const midPoint: Pos = [ele.x + ele.width / 2, ele.y + ele.height / 2];
+			ele.update(divix, diviy);
 
-        const orginPolygonPoints = util.deepcoyeArray(ele.polygonPoints);
+			ele.x = ex - x + originX;
+			ele.y = ey - y + originY;
 
-        if (ele.objType.type === "Hybrid") {
-            var originLines = (<Neo>ele).lines;
-        }
+			this.redraw();
+		};
+	};
+	listenerRotate = (ele: AllObj) => {
+		// 中心点
+		const midPoint: Pos = [ele.x + ele.width / 2, ele.y + ele.height / 2];
 
-        let timeRecord = Date.now();
-        return (ev: MouseEvent) => {
-            console.log("start rotate");
-            // 实现去抖动的功能
-            const now = Date.now();
-            const divi = now - timeRecord;
-            if (divi < 2) {
-                return;
-            } else {
-                timeRecord = now;
-            }
+		const orginPolygonPoints = util.deepcoyeArray(ele.polygonPoints);
 
-            this.rect(midPoint[0], midPoint[1], 10, 10);
+		if (ele.objType.type === "Hybrid") {
+			var originLines = (<Neo>ele).lines;
+		}
 
-            const startPoint: Pos = [midPoint[0], midPoint[1] + 10];
+		let timeRecord = Date.now();
+		return (ev: MouseEvent) => {
+			console.log("start rotate");
+			// 实现去抖动的功能
+			const now = Date.now();
+			const divi = now - timeRecord;
+			if (divi < 2) {
+				return;
+			} else {
+				timeRecord = now;
+			}
 
-            const movePoint: Pos = util.getEventPos(ev);
+			this.rect(midPoint[0], midPoint[1], 10, 10);
 
-            switch (ele.objType.type) {
-                case "Hybrid": {
-                    (<Neo>ele).updateRotate(
-                        startPoint,
-                        midPoint,
-                        movePoint,
-                        originLines
-                    );
-                    break;
-                }
-                default: {
-                    ele.polygonPoints = util.affineTransform(
-                        startPoint,
-                        midPoint,
-                        movePoint,
-                        orginPolygonPoints
-                    );
-                    break;
-                }
-            }
+			const startPoint: Pos = [midPoint[0], midPoint[1] + 10];
 
-            this.redraw();
-        };
-    };
-    listenerClip = (x: number, y: number) => {
-        this.context.beginPath();
-        this.context.moveTo(x, y);
-        let timeRecord = Date.now();
+			const movePoint: Pos = util.getEventPos(ev);
 
-        return (event: MouseEvent) => {
-            // 实现去抖动的功能
-            const now = Date.now();
-            const divi = now - timeRecord;
+			switch (ele.objType.type) {
+				case "Hybrid": {
+					(<Neo>ele).updateRotate(startPoint, midPoint, movePoint, originLines);
+					break;
+				}
+				default: {
+					ele.polygonPoints = util.affineTransform(
+						startPoint,
+						midPoint,
+						movePoint,
+						orginPolygonPoints
+					);
+					break;
+				}
+			}
 
-            if (divi < 100) {
-                return;
-            } else {
-                timeRecord = now;
-            }
+			this.redraw();
+		};
+	};
+	listenerClip = (x: number, y: number) => {
+		this.context.beginPath();
+		this.context.moveTo(x, y);
+		let timeRecord = Date.now();
 
-            this.clear();
-            this.drawBg();
-            this.draw();
+		return (event: MouseEvent) => {
+			// 实现去抖动的功能
+			const now = Date.now();
+			const divi = now - timeRecord;
 
-            this.context.beginPath();
-            this.context.setLineDash([25, 15]);
-            this.context.moveTo(x, y);
-            // 事件的坐标
-            const [ex, ey] = util.getEventPos(event);
-            this.context.lineTo(ex, ey);
+			if (divi < 100) {
+				return;
+			} else {
+				timeRecord = now;
+			}
 
-            const [preStrokeStyle, preLineWidth] = [
-                this.context.strokeStyle,
-                this.context.lineWidth
-            ];
-            this.context.lineWidth = 3;
-            this.context.strokeStyle = "red";
-            this.context.stroke();
-            this.context.setLineDash([]);
-            this.context.closePath();
+			this.clear();
+			this.drawBg();
+			this.draw();
 
-            [this.context.strokeStyle, this.context.lineWidth] = [
-                preStrokeStyle,
-                preLineWidth
-            ];
-        };
-    };
-    // 监听事件的结束
-    listenerClipEnd(x: number, y: number, ex: number, ey: number) {
-        this.clear();
-        this.drawBg();
-        this.draw();
-        this.context.beginPath();
-        const preStrokeStyle = this.context.strokeStyle;
-        this.context.lineWidth = 3;
-        this.context.strokeStyle = "red";
-        this.context.moveTo(x, y);
-        this.context.lineTo(ex, ey);
-        this.context.stroke();
-        this.context.closePath();
-        this.context.strokeStyle = preStrokeStyle;
+			this.context.beginPath();
+			this.context.setLineDash([25, 15]);
+			this.context.moveTo(x, y);
+			// 事件的坐标
+			const [ex, ey] = util.getEventPos(event);
+			this.context.lineTo(ex, ey);
 
-        this.getInsertPoints([x, y], [ex, ey]);
-    }
-    // 一个线段和物体相交的整个过程
-    getInsertPoints(lineA1: Pos, LineA2: Pos) {
-        // 将this.obj的所有物体进行整合，整合之后得到所有的物体的一个集合
+			const [preStrokeStyle, preLineWidth] = [
+				this.context.strokeStyle,
+				this.context.lineWidth
+			];
+			this.context.lineWidth = 3;
+			this.context.strokeStyle = "red";
+			this.context.stroke();
+			this.context.setLineDash([]);
+			this.context.closePath();
 
-        // 不顾是什么情况下面都全部更新,不要考虑其他的情况增加自己的麻烦
-        this.allObj = slice(this.allObj, lineA1, LineA2).reduce(
-            (
-                previous: Array<AllObj>,
-                element: Array<Pos[]>,
-                index: number
-            ): Array<AllObj> => {
-                const OriginObj = this.allObj[index];
-                // 正常情况下切割的物体只会出现element的长度为2
-                // 分析可能的出现情况，只针对被切割开得物体进行划分
-                switch (element.length) {
-                    case 2: {
-                        // 直接进行之后的下面的切割工作
-                        console.log("slice element");
-                        break;
-                    }
-                    // 这是没有被切割的物体，那么直接返回之前存在的元素
-                    case 0: {
-                        previous.push(OriginObj);
-                        return previous;
-                    }
-                    //  第三种新增加的元素,圆形的切割问题
-                    case 1: {
-                        // 看看数据本身再说
-                        const [pointOne, pointTwo, midPoint]: [
-                            Pos,
-                            Pos,
-                            Pos
-                        ] = element[0] as [Pos, Pos, Pos];
+			[this.context.strokeStyle, this.context.lineWidth] = [
+				preStrokeStyle,
+				preLineWidth
+			];
+		};
+	};
+	// 监听事件的结束
+	listenerClipEnd(x: number, y: number, ex: number, ey: number) {
+		this.clear();
+		this.drawBg();
+		this.draw();
+		this.context.beginPath();
+		const preStrokeStyle = this.context.strokeStyle;
+		this.context.lineWidth = 3;
+		this.context.strokeStyle = "red";
+		this.context.moveTo(x, y);
+		this.context.lineTo(ex, ey);
+		this.context.stroke();
+		this.context.closePath();
+		this.context.strokeStyle = preStrokeStyle;
 
-                        const startPoint: Pos = [OriginObj.x, OriginObj.y];
+		this.getInsertPoints([x, y], [ex, ey]);
+	}
+	// 一个线段和物体相交的整个过程
+	getInsertPoints(lineA1: Pos, LineA2: Pos) {
+		// 将this.obj的所有物体进行整合，整合之后得到所有的物体的一个集合
 
-                        const objType: ObjType = {
-                            type: "Sector",
-                            typecode: 1
-                        };
+		// 不顾是什么情况下面都全部更新,不要考虑其他的情况增加自己的麻烦
+		this.allObj = slice(this.allObj, lineA1, LineA2).reduce(
+			(
+				previous: Array<AllObj>,
+				element: Array<Pos[]>,
+				index: number
+			): Array<AllObj> => {
+				const OriginObj = this.allObj[index];
+				// 正常情况下切割的物体只会出现element的长度为2
+				// 分析可能的出现情况，只针对被切割开得物体进行划分
+				switch (element.length) {
+					case 2: {
+						// 直接进行之后的下面的切割工作
+						console.log("slice element");
+						break;
+					}
+					// 这是没有被切割的物体，那么直接返回之前存在的元素
+					case 0: {
+						previous.push(OriginObj);
+						return previous;
+					}
+					//  第三种新增加的元素,圆形的切割问题
+					case 1: {
+						// 看看数据本身再说
+						const [pointOne, pointTwo, midPoint]: [
+							Pos,
+							Pos,
+							Pos
+						] = element[0] as [Pos, Pos, Pos];
 
-                        const sectors = createDiviSector(
-                            this.context,
-                            startPoint,
-                            midPoint,
-                            pointOne,
-                            pointTwo,
-                            2 * (<Circle>OriginObj).r,
-                            2 * (<Circle>OriginObj).r,
-                            (<Circle>OriginObj).r,
-                            objType
-                        );
+						const startPoint: Pos = [OriginObj.x, OriginObj.y];
 
-                        console.log("sector.init()");
+						const objType: ObjType = {
+							type: "Sector",
+							typecode: 1
+						};
 
-                        sectors.forEach(ele => {
-                            ele.draw();
-                            // 绑定redraw()的方法
-                            ele.redraw = this.redraw.bind(this);
-                            util.slowMove(ele, ele.sectionDirect);
-                        });
+						const sectors = createDiviSector(
+							this.context,
+							startPoint,
+							midPoint,
+							pointOne,
+							pointTwo,
+							2 * (<Circle>OriginObj).r,
+							2 * (<Circle>OriginObj).r,
+							(<Circle>OriginObj).r,
+							objType
+						);
 
-                        previous.push(sectors[0], sectors[1]);
+						console.log("sector.init()");
 
-                        return previous;
-                    }
-                    case 4: {
-                        // 死亡也就是遗忘
-                        console.log("流淌的鲜血，湮灭的灵魂");
-                        return previous;
-                    }
-                    default: {
-                        console.log(
-                            "something wrong is happend,the length of slice element is ",
-                            element.length
-                        );
-                    }
-                }
+						sectors.forEach(ele => {
+							ele.draw();
+							// 绑定redraw()的方法
+							ele.redraw = this.redraw.bind(this);
+							util.slowMove(ele, ele.sectionDirect);
+						});
 
-                const ele = element.map(ele => {
-                    // 方向向量,考虑下这个设计是否合理,最后两个点是它的向量的一个结合点
-                    const direct1 = ele.pop() as [number, number];
-                    const direct2 = ele.pop() as [number, number];
+						previous.push(sectors[0], sectors[1]);
 
-                    const direct = util.getDirection(
-                        direct1,
-                        direct2,
-                        util.deepcoyeArray(ele)
-                    );
+						return previous;
+					}
+					case 4: {
+						// 死亡也就是遗忘
+						console.log("流淌的鲜血，湮灭的灵魂");
+						return previous;
+					}
+					default: {
+						console.log(
+							"something wrong is happend,the length of slice element is ",
+							element.length
+						);
+					}
+				}
 
-                    // 位置点阵的信息
-                    const points = util.deepcoyeArray(ele);
+				const ele = element.map(ele => {
+					// 方向向量,考虑下这个设计是否合理,最后两个点是它的向量的一个结合点
+					const direct1 = ele.pop() as [number, number];
+					const direct2 = ele.pop() as [number, number];
 
-                    // 拿到位置信息
-                    const [startPoint, [width, height]] = util.getWdithHeight(
-                        points
-                    );
+					const direct = util.getDirection(
+						direct1,
+						direct2,
+						util.deepcoyeArray(ele)
+					);
 
-                    // 得到的新的obj物体，并且先画一次
-                    const newObj = createObjBySelf(
-                        this.context,
-                        startPoint,
-                        width,
-                        height,
-                        util.deepcoyeArray(ele)
-                    ).draw();
+					// 位置点阵的信息
+					const points = util.deepcoyeArray(ele);
 
-                    // 让每一个物体都能取重新画，但是调度的任务留给自己，含义是统一管理，避免改动导致bug，所以统一所有的调度任务只能在一个类里面完成
-                    newObj.redraw = this.redraw.bind(this);
+					// 拿到位置信息
+					const [startPoint, [width, height]] = util.getWdithHeight(points);
 
-                    // 设置定时画的功能
-                    util.slowMove(newObj, direct);
+					// 得到的新的obj物体，并且先画一次
+					const newObj = createObjBySelf(
+						this.context,
+						startPoint,
+						width,
+						height,
+						util.deepcoyeArray(ele)
+					).draw();
 
-                    return newObj;
-                });
+					// 让每一个物体都能取重新画，但是调度的任务留给自己，含义是统一管理，避免改动导致bug，所以统一所有的调度任务只能在一个类里面完成
+					newObj.redraw = this.redraw.bind(this);
 
-                // 返回正常情况下被切割的两个元素
-                previous.push(...ele);
-                return previous;
-            },
-            []
-        );
+					// 设置定时画的功能
+					util.slowMove(newObj, direct);
 
-        this.redraw();
-    }
+					return newObj;
+				});
 
-    setSelect(obj: AllObj) {
-        this.allObj.forEach(obj => {
-            obj.selected = false;
-        });
-        obj.selected = true;
-    }
+				// 返回正常情况下被切割的两个元素
+				previous.push(...ele);
+				return previous;
+			},
+			[]
+		);
 
-    // 清除对象
-    rmEvething = (): boolean => {
-        //  没啥选中的就删除最后一个，选中就清除这个元素自己
-        if (this.allObj.every(obj => !obj.selected)) {
-            this.allObj.pop();
-        } else {
-            this.allObj = this.allObj.filter(obj => !obj.selected);
-        }
-        return true;
-    };
+		this.redraw();
+	}
+
+	setSelect(obj: AllObj) {
+		this.allObj.forEach(obj => {
+			obj.selected = false;
+		});
+		obj.selected = true;
+	}
+
+	// 清除对象
+	rmEvething = (): boolean => {
+		//  没啥选中的就删除最后一个，选中就清除这个元素自己
+		if (this.allObj.every(obj => !obj.selected)) {
+			this.allObj.pop();
+		} else {
+			this.allObj = this.allObj.filter(obj => !obj.selected);
+		}
+		return true;
+	};
 }
 
 export default (context: CanvasRenderingContext2D) =>
-    Cut.create(context).init();
+	Cut.create(context).init();
