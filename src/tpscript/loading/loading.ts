@@ -1,8 +1,8 @@
-import util from "../util/util";
-
 import Draw from "../draw";
 
 import limitFn, { limit } from "./limit";
+
+import { word } from "./word";
 
 type Pos = [number, number];
 
@@ -11,10 +11,9 @@ type Pos = [number, number];
 //   *       *       *
 export class LoadingPage extends Draw {
 	private polygenPoint: Pos[] = [];
+	private realPolygenPoint: Pos[] = [];
 
-	private startPos: Pos = [0, 0];
 	private midPos: Pos = [0, 0];
-	private movePos: Pos = [0, 0];
 
 	private timeId: NodeJS.Timer | number = setTimeout(void 0, 0);
 
@@ -24,11 +23,15 @@ export class LoadingPage extends Draw {
 	private bottomLimit: limit | null = null;
 	private leftLimit: limit | null = null;
 
-	private range: number = 30;
-	private speed: 1 | 2 | 3 | 4 | 5 = 1;
+	private rotateRange: number = 0;
+
+	public range: number = 25;
+	public speed: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 = 2;
+	public rotateSpeed: number = 0.01;
 
 	public context: CanvasRenderingContext2D;
 
+	public size: number = 40;
 	public width: number;
 	public height: number;
 
@@ -46,48 +49,54 @@ export class LoadingPage extends Draw {
 	// tick tick and run
 	tick = () => {
 		this.update();
-		// this.rotate();
-		this.stretch();
-		this.draw();
 	};
 
 	init() {
+		this.midPos = [this.width / 2 - 100, this.height / 2];
 		// 点阵
 		this.polygenPoint = [
-			[this.width / 2, this.height / 4],
-			[(this.width * 3) / 4, this.height / 2],
-			[this.width / 2, (this.height * 3) / 4],
-			[this.width / 4, this.height / 2]
+			[this.midPos[0], this.midPos[1] - this.size],
+			[this.midPos[0] + this.size, this.midPos[1]],
+			[this.midPos[0], this.midPos[1] + this.size],
+			[this.midPos[0] - this.size, this.midPos[1]]
 		];
-
-		this.startPos = [this.width / 2, this.height / 2 - 10]; // 起点
-		this.midPos = [this.width / 2, this.height / 2]; // 圆心点
-		this.movePos = [this.width / 2, this.height / 2 - 10]; // 移动点
 
 		// top 根据y值来计算
 		this.topLimit = limitFn(
-			[this.height / 4 - this.range, this.height / 4 + this.range],
+			[
+				this.polygenPoint[0][1] - this.range,
+				this.polygenPoint[0][1] + this.range
+			],
 			this.speed / 10,
-			true
+			false
 		);
 
 		// right 根据x值来计算
 		this.rightLimit = limitFn(
-			[(this.width * 3) / 4 - this.range, (this.width * 3) / 4 + this.range],
+			[
+				this.polygenPoint[1][0] - this.range,
+				this.polygenPoint[1][0] + this.range
+			],
 			this.speed / 10,
 			false
 		);
 
 		// bottom 根据y值进行计算
 		this.bottomLimit = limitFn(
-			[(this.height * 3) / 4 - this.range, (this.height * 3) / 4 + this.range],
+			[
+				this.polygenPoint[2][1] - this.range,
+				this.polygenPoint[2][1] + this.range
+			],
 			this.speed / 10,
-			false
+			true
 		);
 
 		// left根据x值进行计算
 		this.leftLimit = limitFn(
-			[this.width / 4 - this.range, this.width / 4 + this.range],
+			[
+				this.polygenPoint[3][0] - this.range,
+				this.polygenPoint[3][0] + this.range
+			],
 			this.speed / 10,
 			true
 		);
@@ -98,13 +107,20 @@ export class LoadingPage extends Draw {
 	update() {
 		// stretch
 		this.stretch();
+		this.rotate();
+		this.clear();
+		this.draw();
 	}
 
 	rotate() {
-		// util.affineTransform(this.startPos, this.midPos);
-		this.polygenPoint = this.polygenPoint.map(
+		this.rotateRange += this.rotateSpeed;
+		const deg = 2 * Math.PI + this.rotateRange;
+		this.realPolygenPoint = this.polygenPoint.map(
 			(pos: Pos): Pos => {
-				return [0, 0];
+				const line = [pos[0] - this.midPos[0], pos[1] - this.midPos[1]];
+				const x = Math.cos(deg) * line[0] - Math.sin(deg) * line[1];
+				const y = Math.sin(deg) * line[0] + Math.cos(deg) * line[1];
+				return [-x + this.midPos[0], -y + this.midPos[1]];
 			}
 		);
 	}
@@ -145,9 +161,47 @@ export class LoadingPage extends Draw {
 		);
 	}
 
+	clear() {
+		this.context.fillStyle = "whitesmoke";
+		this.context.rect(0, 0, this.width, this.height);
+		this.context.fill();
+	}
+
 	draw() {
-		this.clear();
-		this.polygonFill(this.polygenPoint);
+		// 文字
+		this.context.font = "lighter 30px Verdana";
+		const gradient = this.context.createLinearGradient(
+			this.midPos[0] + this.size * 2,
+			0,
+			this.width,
+			0
+		);
+		gradient.addColorStop(0, "#aa4b6b");
+		gradient.addColorStop(0.5, "#6b6b83");
+		gradient.addColorStop(1, "#3b8d99");
+		this.context.fillStyle = gradient;
+		this.context.fillText(
+			word.word,
+			this.midPos[0] + this.size * 2,
+			this.midPos[1]
+		);
+
+		const preStrokeStyle = this.context.strokeStyle;
+		this.context.beginPath();
+		this.context.lineWidth = 5;
+		this.context.lineCap = "round";
+		this.context.strokeStyle = "grey";
+		this.realPolygenPoint.forEach((pos: Pos, index: number, poses: Pos[]) => {
+			this.context.moveTo(pos[0], pos[1]);
+			if (index === poses.length - 1) {
+				this.context.lineTo(poses[0][0], poses[0][1]);
+			} else {
+				this.context.lineTo(poses[index + 1][0], poses[index + 1][1]);
+			}
+			this.context.stroke();
+		});
+		this.context.closePath();
+		this.context.strokeStyle = preStrokeStyle;
 	}
 
 	destory() {

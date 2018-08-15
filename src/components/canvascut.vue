@@ -13,6 +13,8 @@ import Vue from "vue";
 
 import drawcanvas from "../tpscript/canvas.ts";
 
+import { LoadingPage } from "../tpscript/loading/loading.ts";
+
 export default {
   name: "GeometricCutting",
   data() {
@@ -95,12 +97,16 @@ export default {
     ele ? (ele.style.display = "none") : void 0;
   },
   mounted() {
-    setTimeout(() => {
-      this.canvas = this.$refs.canvas;
-      this.canvas.width = this.width;
-      this.canvas.height = this.height;
-      this.drawcanvas = drawcanvas(this.canvas.getContext("2d"));
-    }, 100);
+    // setTimeout(() => {
+    // 	this.canvas = this.$refs.canvas;
+    // 	this.canvas.width = this.width;
+    // 	this.canvas.height = this.height;
+    // 	this.drawcanvas = drawcanvas(this.canvas.getContext("2d"));
+    // }, 100);
+    this.canvas = this.$refs.canvas;
+    this.canvas.width = this.width;
+    this.canvas.height = this.height;
+    new LoadingPage(this.canvas.getContext("2d"), 500, 500).init();
   },
   destroyed() {
     const ele = [...document.querySelectorAll("img")].find(ele =>
