@@ -1,13 +1,12 @@
 import util from "./util/util";
+import Draw from "./draw";
 
 type Pos = [number, number];
 
-export class LoadingPage {
-	private context: CanvasRenderingContext2D;
-
-	private width: number;
-	private height: number;
-
+//   *       *       *
+// *   *  *     *  *   *
+//   *       *       *
+export class LoadingPage extends Draw {
 	private top: Pos = [this.width / 2, this.height / 4];
 	private right: Pos = [(this.width * 3) / 4, this.height / 2];
 	private bottom: Pos = [this.width / 2, (this.height * 3) / 4];
@@ -18,26 +17,40 @@ export class LoadingPage {
 	private midPos: Pos = [this.width / 2, this.height / 2]; // 圆心点
 	private movePos: Pos = [this.width / 2, this.height / 2 - 10];
 
+	private timeId: NodeJS.Timer | number = setTimeout(void 0, 0);
+
+	private speed: 1 | 2 | 3 | 4 | 5 = 1;
+
+	public context: CanvasRenderingContext2D;
+
+	public width: number;
+	public height: number;
+
 	constructor(
 		context: CanvasRenderingContext2D,
 		width: number,
 		height: number
 	) {
+		super(context);
 		this.context = context;
 		this.width = width;
 		this.height = height;
 	}
 
-	tick() {}
+	// tick tick and run
+	tick = () => {
+		this.update();
+		// this.rotate();
+		this.stretch();
+		this.draw();
+	};
 
 	init() {
-		//  *
-		// * *
-		//  *
+		this.timeId = setInterval(this.tick, 1000 / 60);
+	}
 
-		// this.startPos = [];
-
-		this.draw();
+	update() {
+		// update moving pos,移动的指针
 	}
 
 	rotate() {
@@ -49,29 +62,9 @@ export class LoadingPage {
 		);
 	}
 
-	stretch() {
-		this.polygenPoint.map(
-			(pos: Pos): Pos => {
-				return [0, 0];
-			}
-		);
-	}
+	stretch() {}
 
-	update() {}
 	draw() {
-		const [preFillStyle, preStrokeStyle] = [
-			this.context.fillStyle,
-			this.context.strokeStyle
-		];
-		this.context.beginPath();
-		this.context.moveTo(this.top[0], this.top[1]);
-		this.context.lineTo(this.right[0], this.right[1]);
-		this.context.lineTo(this.bottom[0], this.bottom[1]);
-		this.context.lineTo(this.left[0], this.left[1]);
-		this.context.fill();
-		this.context.stroke();
-		this.context.closePath();
-		this.context.fillStyle = preFillStyle;
-		this.context.strokeStyle = preStrokeStyle;
+		this.polygonFill([this.top, this.right, this.bottom, this.left]);
 	}
 }
