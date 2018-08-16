@@ -119,7 +119,7 @@ export class LoadingPage extends Draw {
 					this.context,
 					this.midPos[0] + this.size * 2,
 					this.midPos[0] + this.size * 2 + 30 * 8.2,
-					this.midPos[1]
+					this.midPos[1]+10
 				);
 		}, 500);
 
@@ -226,12 +226,12 @@ export class LoadingPage extends Draw {
 		});
 
 		const startX = this.midPos[0] + this.size * 2;
-		const startY = this.midPos[1];
+		const startY = this.midPos[1]+10;
 
-		const dest2Top = -25;
-		const dest2Bottom = 5;
+		const dest2Top = -36;
+		const dest2Bottom = 19;
 
-		const width = 30 * 8.2;
+		const width = 48 * 8.2;
 
 		const newRenderWord = () => {
 			dest1 = dest1Limit(dest1);

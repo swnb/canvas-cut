@@ -6,7 +6,7 @@ export const renderWord = (
 	endX: number,
 	startY: number
 ) => {
-	context.font = "lighter 30px Verdana";
+	context.font = "45px Verdana";
 	const gradient = context.createLinearGradient(startX, 0, endX, 0);
 	gradient.addColorStop(0, "#aa4b6b");
 	gradient.addColorStop(0.5, "#6b6b83");

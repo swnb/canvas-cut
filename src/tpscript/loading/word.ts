@@ -1,19 +1,19 @@
 import { Center } from "../communication/commu";
 
 const _word = [
-	"|",
-	"-",
 	"\\",
 	"/",
+	"=",
+	"|",
 	"图",
 	"形",
 	"λ",
 	"切",
 	"割",
+	"|",
+	"=",
 	"/",
 	"\\",
-	"-",
-	"|"
 ];
 
 let Word = "";
