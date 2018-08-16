@@ -4,15 +4,17 @@ export default (
 	interval: [number, number],
 	speed: number,
 	increaseOrReduce: boolean = true,
-	loop: number | undefined = undefined
+	loop?: number,
+	cb?: () => void
 ): ((n: number) => number) => {
 	let flag = increaseOrReduce;
 
 	let cycleNumber = 0;
 
 	return (n: number): number => {
-		// 循环的次数已经够了，让他停止
+		// 循环的次数已经够了，不再增加
 		if (loop && cycleNumber >= loop) {
+			cb ? cb() : void 0;
 			return n;
 		}
 
