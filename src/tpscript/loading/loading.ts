@@ -4,7 +4,7 @@ import limitFn, { limit } from "./limit";
 
 import { Center } from "../communication/commu";
 import { renderWord } from "./renderWord";
-import { load, Imgs, injectionImg2Store } from "../img/imgStore";
+import { load, injectionImg2Store } from "../img/imgStore";
 
 type Pos = [number, number];
 
@@ -226,10 +226,10 @@ export class LoadingPage extends Draw {
 		let dest1 = 0;
 		let dest2 = 0;
 
-		const dest1Limit: limit = limitFn([-50, 0], 0.5, false, 2, () => {
+		const dest1Limit: limit = limitFn([-70, 0], 0.5, false, 2, () => {
 			this.next();
 		});
-		const dest2limit: limit = limitFn([0, 50], 0.5, true, 2, () => {
+		const dest2limit: limit = limitFn([0, 70], 0.5, true, 2, () => {
 			this.next();
 		});
 
@@ -266,8 +266,9 @@ export class LoadingPage extends Draw {
 
 		setTimeout(() => {
 			this.renderWord = newRenderWord;
-		}, 500);
+		}, 800);
 	};
+
 	renderWord() {}
 
 	destory() {

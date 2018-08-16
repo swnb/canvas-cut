@@ -13,7 +13,7 @@ const _word = [
 	"|",
 	"=",
 	"/",
-	"\\",
+	"\\"
 ];
 
 let Word = "";
@@ -51,7 +51,7 @@ export const word: {
 			// 完成增加
 			Word = _word.slice(0, word.nextlength).join("");
 			word.length = word.nextlength;
-		}, 250);
+		}, 300);
 
 		return Word;
 	}

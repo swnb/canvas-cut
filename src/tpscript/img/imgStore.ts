@@ -2,7 +2,7 @@ interface ImgStore {
 	[propname: string]: HTMLImageElement;
 }
 
-export let Imgs: ImgStore = {};
+let Imgs: ImgStore = {};
 
 import { imgSrcMap } from "./imgSrc";
 import { Center } from "../communication/commu";

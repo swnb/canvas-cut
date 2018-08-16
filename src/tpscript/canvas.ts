@@ -88,7 +88,6 @@ class Cut extends Draw {
 
 		// 注册一个通讯的实例
 		Center.setNewRegister("neo", this.onMessage);
-
 		Center.setNewRegister("clearAllObj", this.clearAllObj);
 		Center.setNewRegister("clearObj", this.rmObj);
 
