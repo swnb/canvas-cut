@@ -46,7 +46,7 @@ export class LoadingPage extends Draw {
 
 	public context: CanvasRenderingContext2D;
 
-	public size: number = 40;
+	public size: number = 50;
 	public width: number;
 	public height: number;
 

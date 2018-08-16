@@ -10,8 +10,7 @@ import {
 	Neo,
 	createObj,
 	createObjBySelf,
-	createDiviSector,
-	createNeo
+	createDiviSector
 } from "./objects/createobj";
 
 import util from "./util/util";
@@ -76,7 +75,7 @@ class Cut extends Draw {
 		this.context.strokeStyle = "whitesmoke";
 		this.context.fillStyle = "#84ccc9";
 
-		this.menu = new Menu(this.context, 1175, 50, this.createObj).draw();
+		this.menu = Menu.create(this.context, 1175, 50, this.createObj).initMenu();
 
 		this.buttons = Buttons.create(this.context).init();
 	}
@@ -180,6 +179,7 @@ class Cut extends Draw {
 						return true;
 					}
 				}
+
 				// 如果对象不是被已经被选中的对象
 				if (
 					util.isInsideArea(

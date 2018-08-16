@@ -15,6 +15,15 @@ type Mode =
 	| "none";
 
 export class Menu extends Draw {
+	static create(
+		context: CanvasRenderingContext2D,
+		x: number,
+		y: number,
+		createObj: (type: { type: string; typecode: number }) => void
+	) {
+		return new Menu(context, x, y, createObj);
+	}
+
 	private ListOfObjs: { name: Mode; prefix: number }[] = [
 		{ name: "Parallelogram", prefix: 10 },
 		{ name: "Triangle", prefix: -10 },
@@ -72,7 +81,7 @@ export class Menu extends Draw {
 	}
 
 	// 生成主菜单
-	initMenu() {
+	initMenu(): Menu {
 		const divi = 135;
 
 		this.ListOfObjs.forEach(
@@ -108,20 +117,13 @@ export class Menu extends Draw {
 				}
 			}
 		);
+		return this;
 	}
 
 	changeMode(mode: Mode) {
-		// 消除之前的计数器，这部分的编译是有问题的
-		// clearTimeout(this.closeTimeId);
-
 		this.lastMode = this.mode;
 		this.mode = mode;
 		this.updateSubMenuList();
-
-		// 定时间让菜单消失
-		// this.closeTimeId = setTimeout(() => {
-		// this.changeMode("none");
-		// }, 3000);
 	}
 
 	// 生成子菜单
