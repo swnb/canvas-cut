@@ -78,9 +78,7 @@ class Cut extends Draw {
 
 		this.menu = new Menu(this.context, 1175, 50, this.createObj).draw();
 
-		this.buttons = new Buttons(this.context, {
-			rmEverything: this.rmEvething
-		}).draw();
+		this.buttons = Buttons.create(this.context).init();
 	}
 
 	init(): Cut {
@@ -90,6 +88,9 @@ class Cut extends Draw {
 
 		// 注册一个通讯的实例
 		Center.setNewRegister("neo", this.onMessage);
+
+		Center.setNewRegister("clearAllObj", this.clearAllObj);
+		Center.setNewRegister("clearObj", this.rmObj);
 
 		return this;
 	}
@@ -483,14 +484,17 @@ class Cut extends Draw {
 	}
 
 	// 清除对象
-	rmEvething = (): boolean => {
+	rmObj = () => {
 		//  没啥选中的就删除最后一个，选中就清除这个元素自己
 		if (this.allObj.every(obj => !obj.selected)) {
 			this.allObj.pop();
 		} else {
 			this.allObj = this.allObj.filter(obj => !obj.selected);
 		}
-		return true;
+	};
+
+	clearAllObj = () => {
+		this.allObj = [];
 	};
 }
 
