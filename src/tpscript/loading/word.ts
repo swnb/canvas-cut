@@ -19,6 +19,7 @@ const _word = [
 let Word = "";
 
 let once = false;
+
 const emit = Center.setNewEvent("sliceWord");
 
 export const word: {
@@ -35,7 +36,6 @@ export const word: {
 				// 这里最好只触发一次就好了
 				once = true;
 				emit(null);
-				console.log("cdd");
 			}
 			return _word.join("");
 		}
@@ -51,7 +51,7 @@ export const word: {
 			// 完成增加
 			Word = _word.slice(0, word.nextlength).join("");
 			word.length = word.nextlength;
-		}, 300);
+		}, 250);
 
 		return Word;
 	}

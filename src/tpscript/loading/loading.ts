@@ -4,6 +4,7 @@ import limitFn, { limit } from "./limit";
 
 import { Center } from "../communication/commu";
 import { renderWord } from "./renderWord";
+import { load } from "../imgLoading";
 
 type Pos = [number, number];
 
@@ -11,6 +12,9 @@ type Pos = [number, number];
 // *   *  *     *  *   *
 //   *       *       *
 export class LoadingPage extends Draw {
+	// 开始下一个状态
+	private readyToRender: boolean = false;
+
 	private polygenPoint: Pos[] = [];
 	private realPolygenPoint: Pos[] = [];
 
@@ -36,6 +40,7 @@ export class LoadingPage extends Draw {
 	public width: number;
 	public height: number;
 
+	public imgMap: { [propname: string]: HTMLImageElement } | null = null;
 	constructor(
 		context: CanvasRenderingContext2D,
 		width: number,
@@ -104,7 +109,22 @@ export class LoadingPage extends Draw {
 
 		this.timeId = setInterval(this.tick, 1000 / 60);
 
+		// 开始初始化字体
+		setTimeout(() => {
+			this.renderWord = () =>
+				renderWord(
+					this.context,
+					this.midPos[0] + this.size * 2,
+					this.midPos[0] + this.size * 2 + 30 * 8.2,
+					this.midPos[1]
+				);
+		}, 500);
+
 		Center.setNewRegister("sliceWord", this.sliceWord);
+
+		Center.setNewRegister("imgOnload", this.end);
+
+		load();
 	}
 
 	update() {
@@ -193,8 +213,12 @@ export class LoadingPage extends Draw {
 		let dest1 = 0;
 		let dest2 = 0;
 
-		const dest1Limit: limit = limitFn([-50, 0], 0.5, false, 2);
-		const dest2limit: limit = limitFn([0, 50], 0.5, true, 2);
+		const dest1Limit: limit = limitFn([-50, 0], 0.5, false, 2, () => {
+			this.next();
+		});
+		const dest2limit: limit = limitFn([0, 50], 0.5, true, 2, () => {
+			this.next();
+		});
 
 		const startX = this.midPos[0] + this.size * 2;
 		const startY = this.midPos[1];
@@ -229,20 +253,24 @@ export class LoadingPage extends Draw {
 
 		setTimeout(() => {
 			this.renderWord = newRenderWord;
-		}, 200);
+		}, 500);
 	};
-	renderWord() {
-		// 初始化的函数
-		renderWord(
-			this.context,
-			this.midPos[0] + this.size * 2,
-			this.midPos[0] + this.size * 2 + 30 * 8.2,
-			this.midPos[1]
-		);
-	}
+	renderWord() {}
 
 	destory() {
 		clearInterval(this.timeId as number);
-		this.clear();
+	}
+
+	end = (imgMap: { [propname: string]: HTMLImageElement }) => {
+		console.info("图片加载完成了");
+		this.imgMap = imgMap;
+	};
+
+	next() {
+		if (this.imgMap && !this.readyToRender) {
+			this.readyToRender = true;
+			console.info("进入图形切割面板");
+			this.destory();
+		}
 	}
 }
