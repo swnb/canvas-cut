@@ -1,7 +1,11 @@
 <template>
   <div class="geometricCutting-root" >
     <div ref="geometricCutting-element" >
-      <canvas ref="canvas" class="geometricCutting-canvas"></canvas>
+      <div v-if="!canvasRender" class='chooseEnv'>
+        <div></div>
+        <div></div>
+      </div>
+      <canvas v-if='canvasRender' ref="canvas" class="geometricCutting-canvas"></canvas>
     </div>
   </div>
 </template>
@@ -22,6 +26,7 @@ export default {
       params: {
         name: "block-geometricCutting"
       },
+      canvasRender: false,
       width: 1280,
       height: 800,
       canvas: null,
@@ -107,6 +112,15 @@ export default {
           this.drawcanvas.listenerClipEnd(x, y, ex, ey);
         };
       }
+    },
+    loadingPage() {
+      this.canvasRender = true;
+      this.canvas = this.$refs.canvas;
+      this.canvas.width = this.width;
+      this.canvas.height = this.height;
+      LoadingPage.create(this.canvas.getContext("2d"), this.width, this.height)
+        .init()
+        .callback(this.transition);
     }
   },
   beforeMount() {
@@ -115,14 +129,8 @@ export default {
     );
     ele ? (ele.style.display = "none") : void 0;
   },
-  mounted() {
-    this.canvas = this.$refs.canvas;
-    this.canvas.width = this.width;
-    this.canvas.height = this.height;
-    LoadingPage.create(this.canvas.getContext("2d"), this.width, this.height)
-      .init()
-      .callback(this.transition);
-  },
+
+  mounted() {},
 
   destroyed() {
     const ele = [...document.querySelectorAll("img")].find(ele =>
@@ -144,5 +152,16 @@ export default {
 
 .geometricCutting-canvas {
   position: relative;
+}
+
+.chooseEnv {
+  width: 100%;
+  height: 100%;
+}
+
+.chooseEnv > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
