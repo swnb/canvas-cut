@@ -106,7 +106,11 @@ export default {
     this.canvas = this.$refs.canvas;
     this.canvas.width = this.width;
     this.canvas.height = this.height;
-    new LoadingPage(this.canvas.getContext("2d"), 500, 500).init();
+    new LoadingPage(
+      this.canvas.getContext("2d"),
+      this.width,
+      this.height
+    ).init();
   },
   destroyed() {
     const ele = [...document.querySelectorAll("img")].find(ele =>

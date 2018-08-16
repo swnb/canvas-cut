@@ -2,7 +2,8 @@ import Draw from "../draw";
 
 import limitFn, { limit } from "./limit";
 
-import { word } from "./word";
+import { Center } from "../communication/commu";
+import { renderWord } from "./renderWord";
 
 type Pos = [number, number];
 
@@ -25,8 +26,8 @@ export class LoadingPage extends Draw {
 
 	private rotateRange: number = 0;
 
-	public range: number = 25;
-	public speed: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 = 2;
+	public range: number = 15;
+	public speed: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 = 5;
 	public rotateSpeed: number = 0.01;
 
 	public context: CanvasRenderingContext2D;
@@ -52,7 +53,7 @@ export class LoadingPage extends Draw {
 	};
 
 	init() {
-		this.midPos = [this.width / 2 - 100, this.height / 2];
+		this.midPos = [this.width / 2 - 2 * 100, this.height / 2];
 		// 点阵
 		this.polygenPoint = [
 			[this.midPos[0], this.midPos[1] - this.size],
@@ -91,7 +92,7 @@ export class LoadingPage extends Draw {
 			true
 		);
 
-		// left根据x值进行计算
+		// left 根据x值进行计算
 		this.leftLimit = limitFn(
 			[
 				this.polygenPoint[3][0] - this.range,
@@ -102,13 +103,15 @@ export class LoadingPage extends Draw {
 		);
 
 		this.timeId = setInterval(this.tick, 1000 / 60);
+
+		Center.setNewRegister("sliceWord", this.sliceWord);
 	}
 
 	update() {
-		// stretch
+		this.clear();
+		this.renderWord();
 		this.stretch();
 		this.rotate();
-		this.clear();
 		this.draw();
 	}
 
@@ -168,24 +171,6 @@ export class LoadingPage extends Draw {
 	}
 
 	draw() {
-		// 文字
-		this.context.font = "lighter 30px Verdana";
-		const gradient = this.context.createLinearGradient(
-			this.midPos[0] + this.size * 2,
-			0,
-			this.width,
-			0
-		);
-		gradient.addColorStop(0, "#aa4b6b");
-		gradient.addColorStop(0.5, "#6b6b83");
-		gradient.addColorStop(1, "#3b8d99");
-		this.context.fillStyle = gradient;
-		this.context.fillText(
-			word.word,
-			this.midPos[0] + this.size * 2,
-			this.midPos[1]
-		);
-
 		const preStrokeStyle = this.context.strokeStyle;
 		this.context.beginPath();
 		this.context.lineWidth = 5;
@@ -202,6 +187,58 @@ export class LoadingPage extends Draw {
 		});
 		this.context.closePath();
 		this.context.strokeStyle = preStrokeStyle;
+	}
+
+	sliceWord = () => {
+		let dest1 = 0;
+		let dest2 = 0;
+
+		const dest1Limit: limit = limitFn([-50, 0], 0.5, false, 2);
+		const dest2limit: limit = limitFn([0, 50], 0.5, true, 2);
+
+		const startX = this.midPos[0] + this.size * 2;
+		const startY = this.midPos[1];
+
+		const dest2Top = -25;
+		const dest2Bottom = 5;
+
+		const width = 30 * 8.2;
+
+		const newRenderWord = () => {
+			dest1 = dest1Limit(dest1);
+			dest2 = dest2limit(dest2);
+			this.context.save();
+			this.context.beginPath();
+			this.context.moveTo(startX, startY + dest1 + dest2Top);
+			this.context.lineTo(startX + width, startY + dest1 + dest2Top);
+			this.context.lineTo(startX + width, startY + dest1 + dest2Bottom);
+			this.context.closePath();
+			this.context.clip();
+			renderWord(this.context, startX, startX + width, startY + dest1);
+			this.context.restore();
+			this.context.save();
+			this.context.beginPath();
+			this.context.moveTo(startX, startY + dest2 + dest2Top);
+			this.context.lineTo(startX, startY + dest2 + dest2Bottom);
+			this.context.lineTo(startX + width, startY + dest2 + dest2Bottom);
+			this.context.closePath();
+			this.context.clip();
+			renderWord(this.context, startX, startX + width, startY + dest2);
+			this.context.restore();
+		};
+
+		setTimeout(() => {
+			this.renderWord = newRenderWord;
+		}, 200);
+	};
+	renderWord() {
+		// 初始化的函数
+		renderWord(
+			this.context,
+			this.midPos[0] + this.size * 2,
+			this.midPos[0] + this.size * 2 + 30 * 8.2,
+			this.midPos[1]
+		);
 	}
 
 	destory() {

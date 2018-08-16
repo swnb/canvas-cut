@@ -1,20 +1,25 @@
+import { Center } from "../communication/commu";
+
 const _word = [
 	"|",
-	"|",
 	"-",
-	"-",
+	"\\",
+	"/",
 	"图",
 	"形",
 	"λ",
 	"切",
 	"割",
+	"/",
+	"\\",
 	"-",
-	"-",
-	"|",
 	"|"
 ];
 
 let Word = "";
+
+let once = false;
+const emit = Center.setNewEvent("sliceWord");
 
 export const word: {
 	length: number;
@@ -26,6 +31,12 @@ export const word: {
 	get word() {
 		if (word.length === _word.length) {
 			// 已经到了最后末端
+			if (!once) {
+				// 这里最好只触发一次就好了
+				once = true;
+				emit(null);
+				console.log("cdd");
+			}
 			return _word.join("");
 		}
 
