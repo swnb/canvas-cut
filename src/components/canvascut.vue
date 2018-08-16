@@ -13,6 +13,8 @@ import drawcanvas from "../tpscript/canvas.ts";
 
 import { LoadingPage } from "../tpscript/loading/loading.ts";
 
+import { Transition } from "../tpscript/transition/transition.ts";
+
 export default {
   name: "GeometricCutting",
   data() {
@@ -36,12 +38,25 @@ export default {
         this.params[key] = val;
       });
     },
-    next() {
+    renderRoom() {
       setTimeout(() => {
         this.drawcanvas = drawcanvas(this.canvas.getContext("2d"));
         this.canvas.ontouchstart = this.ontouchstart;
         this.canvas.onmousedown = this.onmousedown;
       }, 100);
+    },
+    transition() {
+      setTimeout(
+        () =>
+          Transition.create(
+            this.canvas.getContext("2d"),
+            this.width,
+            this.height
+          )
+            .init()
+            .callback(this.renderRoom),
+        100
+      );
     },
     //touchstart, touchmove, touchend
     // mousedown, mousemove, mouseup
@@ -85,7 +100,6 @@ export default {
           this.onmousemove = null;
         };
       } else {
-        // console.log(x, y);
         this.canvas.onmousemove = this.drawcanvas.listenerClip(x, y);
         this.$refs.canvas.onmouseup = event => {
           this.canvas.onmousemove = null;
@@ -105,9 +119,9 @@ export default {
     this.canvas = this.$refs.canvas;
     this.canvas.width = this.width;
     this.canvas.height = this.height;
-    new LoadingPage(this.canvas.getContext("2d"), this.width, this.height)
+    LoadingPage.create(this.canvas.getContext("2d"), this.width, this.height)
       .init()
-      .callback(this.next);
+      .callback(this.transition);
   },
 
   destroyed() {

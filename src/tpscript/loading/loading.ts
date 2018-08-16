@@ -12,6 +12,14 @@ type Pos = [number, number];
 // *   *  *     *  *   *
 //   *       *       *
 export class LoadingPage extends Draw {
+	static create(
+		context: CanvasRenderingContext2D,
+		width: number,
+		height: number
+	) {
+		return new LoadingPage(context, width, height);
+	}
+
 	// 开始下一个状态
 	private readyToRender: boolean = false;
 
@@ -119,7 +127,7 @@ export class LoadingPage extends Draw {
 					this.context,
 					this.midPos[0] + this.size * 2,
 					this.midPos[0] + this.size * 2 + 30 * 8.2,
-					this.midPos[1]+10
+					this.midPos[1] + 10
 				);
 		}, 500);
 
@@ -226,12 +234,12 @@ export class LoadingPage extends Draw {
 		});
 
 		const startX = this.midPos[0] + this.size * 2;
-		const startY = this.midPos[1]+10;
+		const startY = this.midPos[1] + 10;
 
 		const dest2Top = -36;
-		const dest2Bottom = 19;
+		const dest2Bottom = 8;
 
-		const width = 48 * 8.2;
+		const width = 49 * 8.2;
 
 		const newRenderWord = () => {
 			dest1 = dest1Limit(dest1);

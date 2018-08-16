@@ -13,8 +13,7 @@ export const imgSrcMap: dataStruct = {
 		"http://localhost:8000/Users/zhangguanyu/mycode/nodejs/pic/pic/rotate.png",
 	direct:
 		"http://localhost:8000/Users/zhangguanyu/mycode/nodejs/pic/pic/direct.png",
-	el1: "http://localhost:8000/Users/zhangguanyu/mycode/nodejs/pic/pic/el1.png",
-	// C1: "http://localhost:8000/Users/zhangguanyu/mycode/nodejs/pic/pic/C1.png",
+	C1: "http://localhost:8000/Users/zhangguanyu/mycode/nodejs/pic/pic/C1.png",
 	p1: "http://localhost:8000/Users/zhangguanyu/mycode/nodejs/pic/pic/p1.png",
 	Parallelogram:
 		"http://localhost:8000/Users/zhangguanyu/mycode/nodejs/pic/pic/Parallelogram.png",
@@ -23,13 +22,14 @@ export const imgSrcMap: dataStruct = {
 	e2: "http://localhost:8000/Users/zhangguanyu/mycode/nodejs/pic/pic/e2.png",
 	Echelon:
 		"http://localhost:8000/Users/zhangguanyu/mycode/nodejs/pic/pic/Echelon.png",
-	el2: "http://localhost:8000/Users/zhangguanyu/mycode/nodejs/pic/pic/el2.png",
-	// C2: "http://localhost:8000/Users/zhangguanyu/mycode/nodejs/pic/pic/C2.png",
+	C2: "http://localhost:8000/Users/zhangguanyu/mycode/nodejs/pic/pic/C2.png",
 	Ellipse:
 		"http://localhost:8000/Users/zhangguanyu/mycode/nodejs/pic/pic/Ellipse.png",
 	p5: "http://localhost:8000/Users/zhangguanyu/mycode/nodejs/pic/pic/p5.png",
-	buttonClear:
-		"http://localhost:8000/Users/zhangguanyu/mycode/nodejs/pic/pic/buttonClear.png",
+	clear:
+		"http://localhost:8000/Users/zhangguanyu/mycode/nodejs/pic/pic/clear.png",
+	delete:
+		"http://localhost:8000/Users/zhangguanyu/mycode/nodejs/pic/pic/delete.png",
 	t5: "http://localhost:8000/Users/zhangguanyu/mycode/nodejs/pic/pic/t5.png",
 	e3: "http://localhost:8000/Users/zhangguanyu/mycode/nodejs/pic/pic/e3.png",
 	p4: "http://localhost:8000/Users/zhangguanyu/mycode/nodejs/pic/pic/p4.png",
