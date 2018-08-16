@@ -1,9 +1,7 @@
 <template>
   <div class="geometricCutting-root" >
     <div ref="geometricCutting-element" >
-      <canvas ref="canvas" class="geometricCutting-canvas" 
-        @mousedown="onmousedown"
-       @touchstart='ontouchstart'></canvas>
+      <canvas ref="canvas" class="geometricCutting-canvas"></canvas>
     </div>
   </div>
 </template>
@@ -37,6 +35,13 @@ export default {
       Object.entries(params).forEach(([key, val]) => {
         this.params[key] = val;
       });
+    },
+    next() {
+      setTimeout(() => {
+        this.drawcanvas = drawcanvas(this.canvas.getContext("2d"));
+        this.canvas.ontouchstart = this.ontouchstart;
+        this.canvas.onmousedown = this.onmousedown;
+      }, 100);
     },
     //touchstart, touchmove, touchend
     // mousedown, mousemove, mouseup
@@ -97,21 +102,14 @@ export default {
     ele ? (ele.style.display = "none") : void 0;
   },
   mounted() {
-    // setTimeout(() => {
-    // 	this.canvas = this.$refs.canvas;
-    // 	this.canvas.width = this.width;
-    // 	this.canvas.height = this.height;
-    // 	this.drawcanvas = drawcanvas(this.canvas.getContext("2d"));
-    // }, 100);
     this.canvas = this.$refs.canvas;
     this.canvas.width = this.width;
     this.canvas.height = this.height;
-    new LoadingPage(
-      this.canvas.getContext("2d"),
-      this.width,
-      this.height
-    ).init();
+    new LoadingPage(this.canvas.getContext("2d"), this.width, this.height)
+      .init()
+      .callback(this.next);
   },
+
   destroyed() {
     const ele = [...document.querySelectorAll("img")].find(ele =>
       ele.src.endsWith("static/images/btn-submit.png")

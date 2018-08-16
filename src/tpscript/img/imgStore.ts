@@ -1,6 +1,11 @@
-import { imgSrcMap } from "./data";
-import { Center } from "./communication/commu";
+interface ImgStore {
+	[propname: string]: HTMLImageElement;
+}
 
+export let Imgs: ImgStore = {};
+
+import { imgSrcMap } from "./imgSrc";
+import { Center } from "../communication/commu";
 interface ImgMap {
 	[propname: string]: HTMLImageElement;
 }
@@ -32,3 +37,15 @@ export const load = (): void => {
 		};
 	}
 };
+
+export const injectionImg2Store = (imgMap: ImgMap) => {
+	Imgs = imgMap;
+};
+
+export function getImg(key: string): HTMLImageElement {
+	return Imgs[key];
+}
+
+export function getAllImg(): ImgStore {
+	return Imgs;
+}

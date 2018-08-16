@@ -4,7 +4,7 @@ import limitFn, { limit } from "./limit";
 
 import { Center } from "../communication/commu";
 import { renderWord } from "./renderWord";
-import { load } from "../imgLoading";
+import { load, Imgs, injectionImg2Store } from "../img/imgStore";
 
 type Pos = [number, number];
 
@@ -21,6 +21,8 @@ export class LoadingPage extends Draw {
 	private midPos: Pos = [0, 0];
 
 	private timeId: NodeJS.Timer | number = setTimeout(void 0, 0);
+
+	private cb: () => void = () => {};
 
 	// 限制函数
 	private topLimit: limit | null = null;
@@ -40,7 +42,8 @@ export class LoadingPage extends Draw {
 	public width: number;
 	public height: number;
 
-	public imgMap: { [propname: string]: HTMLImageElement } | null = null;
+	public isImgReady: boolean = false;
+
 	constructor(
 		context: CanvasRenderingContext2D,
 		width: number,
@@ -57,7 +60,7 @@ export class LoadingPage extends Draw {
 		this.update();
 	};
 
-	init() {
+	init(): LoadingPage {
 		this.midPos = [this.width / 2 - 2 * 100, this.height / 2];
 		// 点阵
 		this.polygenPoint = [
@@ -125,6 +128,8 @@ export class LoadingPage extends Draw {
 		Center.setNewRegister("imgOnload", this.end);
 
 		load();
+
+		return this;
 	}
 
 	update() {
@@ -263,14 +268,22 @@ export class LoadingPage extends Draw {
 
 	end = (imgMap: { [propname: string]: HTMLImageElement }) => {
 		console.info("图片加载完成了");
-		this.imgMap = imgMap;
+		this.isImgReady = true;
+		// 注入imgMap
+		injectionImg2Store(imgMap);
 	};
 
 	next() {
-		if (this.imgMap && !this.readyToRender) {
+		if (this.isImgReady && !this.readyToRender) {
 			this.readyToRender = true;
 			console.info("进入图形切割面板");
-			this.destory();
+			setTimeout(() => {
+				this.destory();
+				this.cb();
+			}, 1000);
 		}
+	}
+	callback(fn: () => void) {
+		this.cb = fn;
 	}
 }
