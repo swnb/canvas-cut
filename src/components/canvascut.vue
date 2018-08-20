@@ -1,12 +1,13 @@
 <template>
   <div class="geometricCutting-root" >
-    <div ref="geometricCutting-element" >
-      <div v-if="!canvasRender" class='chooseEnv'>
-        <div></div>
-        <div></div>
+      <canvas  ref="canvas" class="geometricCutting-canvas"></canvas>
+      <div  v-if ="choose" class='choose' ref='choose'>
+          <div class="mouse" @click="choosemouse">我使用鼠标滑动</div>
+          <div class="finger" @click="choosefinger">我使用手指滑动</div>
       </div>
-      <canvas v-if='canvasRender' ref="canvas" class="geometricCutting-canvas"></canvas>
-    </div>
+      <div  res="title" v-if ="choose" class="choose-title">
+        <div>{{title}}</div>
+      </div>
   </div>
 </template>
 
@@ -19,6 +20,11 @@ import { LoadingPage } from "../tpscript/loading/loading.ts";
 
 import { Transition } from "../tpscript/transition/transition.ts";
 
+import { Choose } from "../choose.ts";
+
+import { CreateBubble } from "../tpscript/bubble.ts";
+import { setTimeout } from "timers";
+
 export default {
   name: "GeometricCutting",
   data() {
@@ -26,7 +32,11 @@ export default {
       params: {
         name: "block-geometricCutting"
       },
-      canvasRender: false,
+      title: "请 帮 助 我 优 化 您 的 体 验",
+      ifshowCanvas: false,
+      rotate: false,
+      choose: true,
+      mode: "click",
       width: 1280,
       height: 800,
       canvas: null,
@@ -43,12 +53,40 @@ export default {
         this.params[key] = val;
       });
     },
-    renderRoom() {
-      setTimeout(() => {
-        this.drawcanvas = drawcanvas(this.canvas.getContext("2d"));
-        this.canvas.ontouchstart = this.ontouchstart;
-        this.canvas.onmousedown = this.onmousedown;
-      }, 100);
+    choosefinger() {
+      this.mode = "touch";
+      this.showCanvas();
+    },
+    choosemouse() {
+      this.mode = "click";
+      this.showCanvas();
+    },
+    showCanvas() {
+      if (this.ifshowCanvas) return;
+      this.ifshowCanvas = true;
+      this.canvas = this.$refs.canvas;
+      this.canvas.width = this.width;
+      this.canvas.height = this.height;
+      this.$refs.canvas.style.zIndex = 10;
+      this.clearWithBubble();
+    },
+    clearWithBubble() {
+      CreateBubble.create(this.canvas.getContext("2d"), this.width, this.height)
+        .init()
+        .callback(this.loadingPage);
+    },
+    loadingPage() {
+      setTimeout(
+        () =>
+          LoadingPage.create(
+            this.canvas.getContext("2d"),
+            this.width,
+            this.height
+          )
+            .init()
+            .callback(this.transition),
+        300
+      );
     },
     transition() {
       setTimeout(
@@ -62,6 +100,21 @@ export default {
             .callback(this.renderRoom),
         100
       );
+    },
+    renderRoom() {
+      setTimeout(() => {
+        this.drawcanvas = drawcanvas(this.canvas.getContext("2d"));
+        switch (this.mode) {
+          case "click": {
+            this.canvas.onmousedown = this.onmousedown;
+            break;
+          }
+          case "touch": {
+            this.canvas.ontouchstart = this.ontouchstart;
+            break;
+          }
+        }
+      }, 100);
     },
     //touchstart, touchmove, touchend
     // mousedown, mousemove, mouseup
@@ -112,15 +165,6 @@ export default {
           this.drawcanvas.listenerClipEnd(x, y, ex, ey);
         };
       }
-    },
-    loadingPage() {
-      this.canvasRender = true;
-      this.canvas = this.$refs.canvas;
-      this.canvas.width = this.width;
-      this.canvas.height = this.height;
-      LoadingPage.create(this.canvas.getContext("2d"), this.width, this.height)
-        .init()
-        .callback(this.transition);
     }
   },
   beforeMount() {
@@ -130,7 +174,9 @@ export default {
     ele ? (ele.style.display = "none") : void 0;
   },
 
-  mounted() {},
+  mounted() {
+    console.log("start engine swnb");
+  },
 
   destroyed() {
     const ele = [...document.querySelectorAll("img")].find(ele =>
@@ -151,17 +197,84 @@ export default {
 }
 
 .geometricCutting-canvas {
-  position: relative;
+  position: absolute;
 }
 
-.chooseEnv {
-  width: 100%;
-  height: 100%;
+.choose {
+  display: flex;
+  position: absolute;
+  align-items: center;
+  justify-content: space-around;
+  width: 1280px;
+  height: 800px;
+  background-color: whitesmoke;
 }
 
-.chooseEnv > div {
+.choose > div {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 10px;
+  font-size: 30px;
+  width: 300px;
+  height: 40px;
+  color: whitesmoke;
+  font-weight: 300;
+  border-radius: 30px;
+}
+
+.mouse {
+  background-color: #70a300;
+}
+
+.mouse:hover {
+  background-color: #ae4b0f;
+}
+
+.finger {
+  background-color: #dd5f13;
+}
+
+.finger:hover {
+  background-color: #ae4b0f;
+}
+
+@keyframes backgroundmove {
+  0% {
+    background-position-x: 0%;
+  }
+  50% {
+    background-position-x: 100%;
+  }
+  100% {
+    background-position-x: 0%;
+  }
+}
+
+.choose-title {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1280px;
+  top: 120px;
+  left: 0;
+  right: 0;
+  font-size: 50px;
+  padding: 10px;
+  font-weight: 400;
+  background: linear-gradient(
+    45deg,
+    darkolivegreen 0%,
+    darkgoldenrod 25%,
+    darkturquoise 75%,
+    darkolivegreen 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  background-size: 8% 100%;
+  background-repeat: repeat-x;
+  color: transparent;
+  animation: backgroundmove 20s linear infinite;
 }
 </style>
